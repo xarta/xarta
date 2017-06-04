@@ -1,0 +1,12 @@
+html, #container
+{
+    overflow: hidden;
+    width: 98%;
+    width: 98vw;
+    height: 98%;
+    height: 98vh;
+
+    margin: 0 auto;
+
+    background-color: #fff;
+}

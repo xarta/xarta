@@ -9,30 +9,52 @@
     <meta name="author" content="Davros Xarta a.k.a David Bayliss">
 
     <!-- (XARTA): INITIAL FILEs / INSPIRATION FROM: https://jsfiddle.net/k313cwtx/4/ -->
+    <!-- I've lifted (public) files / examples, and tweaking for my own use -->
 
-    <link rel="preload" href="OrbitControls-min.js" as="script">
-    <link rel="preload" href="water-min.js" as="script">
+    <link rel="preload" href="OrbitControls-min.js" as="script"> <!-- three.js examples -->
+    <link rel="preload" href="water-min.js" as="script"> <!-- from https://jsfiddle.net/k313cwtx/4/ -->
 
+    <!-- links to original pics found on https://jsfiddle.net/k313cwtx/4/ but compressed further and moved -->
     <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/Eu0MQrk.png">
     <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/KmwuMPu.jpg">
     <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/8pUBeuw.jpg">
     <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/fB9BaJJ.jpg">
 
 
-    <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
+    <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496448263/xarta/2014-me-at-work256.png">
+
+
+    <link rel="stylesheet" href="css/styles.css?v=1.0">
 
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <![endif]-->
+
+    <!-- For IE 9 and below. ICO should be 32x32 pixels in size -->
+    <!--[if IE]><link rel="shortcut icon" href="favicon032.ico"><![endif]-->
+
+    <!-- Touch Icons - iOS and Android 2.1+ 180x180 pixels in size. --> 
+    <link rel="apple-touch-icon-precomposed" href="favicon180.png">
+
+    <!-- Firefox, Chrome, Safari, IE 11+ and Opera. 196x196 pixels in size. -->
+    <link rel="icon" href="favicon196.png">
+
 </head>
 
     <body>
-        <div id="container"></div>
+        <div id="container">
+            Sincere apologies but currently JavaScript essential, and no accessibility provision.
+            Dave plans to introduce these things when he is stable in a new job and can prioritise time less hurriedly.
+        </div>
+
+        <script>
+            document.getElementById("container").innerHTML = "";
+        </script>
 
         <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js"></script>
-        <script src="OrbitControls-min.js"></script>
-        <script src="water-min.js"></script>
-        <script src="scene.js"></script>
+        <script src="OrbitControls-min.js"></script>  <!-- three.js examples -->
+        <script src="water-min.js"></script> <!-- from https://jsfiddle.net/k313cwtx/4/ -->
+        <script src="scene.js"></script> <!-- from https://jsfiddle.net/k313cwtx/4/ (modified)-->
     </body>
 
 <footer>
