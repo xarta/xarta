@@ -1,152 +1,200 @@
-var camera, controls, scene, renderer, clock; // water stuff
+var camera, controls, scene, renderer, clock;   // water stuff
+                                                // xarta using as a foundation
 
-var camz = 50; // easier for zooming in to preset amount
-var camx = 0;
-var camy = 10;
+// animation sequences (calling them phases)
+var phaseCubeApproach = true;   // X A R T A cubes - approaching us
+var phaseMoonPushBack = true;   // simplfies directions vs camera
+                                // i.e. start in position we want to end-up with
+                                // but put the moon back before visible, like
+                                // loading a spring-return
+var phaseMoonApproach = false;  // trigger for moon to approach
+var phaseSink = false;          // trigger for cubes X A R T A to sink under water
 
-var phase0 = true;
-var phase1 = true;
-var phase2 = false;
-var phase3 = false;
-
-var moonz = -500;
-var moonMesh;
-var starsMesh;
+// global for now for easy inter-function access
+var moonz = -500;               // where we want the moon (has to be far away with depth)
+                                // even though it's a 2D picture ... else camera views
+                                // will distort it too much, and also want it to look big
+                                // compared to pyramids that fly close to it ...
+                                // but not so far away that lighting becomes harder
+var moonMesh;                   // the mesh to add to the scene
+var starsMesh;                  // the mesh to add to the scene
 
 var num_cylinders = 0;
-var range_cylinders = 499;
-var cylinders;
+var range_cylinders = 499;  // keep within 3D bounds {x, y, z} -> 499 etc.
+var cylinders;              // Array()
 
-var fps = 1;
-var frames = 0;
-var accDelta = 0;
+var fps = 1;                // calculate from frames/accDelta etc.
+var frames = 0;             // count frames in accumalative-delta-time
+var accDelta = 0;           // accumulative delta time
 
+                            // use fps to determine computation power of rendering device
+                            // (nb not doing webGL detect specifically or explicit canvas fallbacks)
+                            // Use idea of progressive (computation) enchancement ... so don't show
+                            // computationally expensive water on low-compute devices
+                            // or, limit cylindars on low-compute devices, proportional to fps
 
-init();
+                            // nb: first 2 or 3 seconds not stable fps, when cubes are initialised
+                            //     so, not perfect.
 
-
-// xarta adding borg cube
-var borg;
-var initscale = 8;
-var cubes = new Array();
-cubes['x'] = getNewXartaCube();
-cubes['a'] = getNewXartaCube();
-cubes['r'] = getNewXartaCube();
-cubes['t'] = getNewXartaCube();
-cubes['a'] = getNewXartaCube();
-cubes['me'] = getNewXartaCube();
+                            // Xarta testing on Samsung Galaxy S3, Samsung Note 4, Haswell I7 (incl. own GPU)
+                            // and, Sandy Bridge I5 with same age medium-grade graphics card
+                            // and, year 2009 Core 2 Duo laptop with separate graphics card (gets warm)
 
 
+init(); // camera, water, moon, cylinders etc. etc. - add to scene
 
 
-borg=getNewXartaCube();
-animate();
-
-
-
-
-
-function getNewXartaCube() 
+var initscale = 8;                          // cube scaling
+var cubes = new Array();                    // 5 cubes ... X A R T A
+if (window.innerHeight > window.innerWidth) // portrait e.g. phones
 {
-	// clog("Starting the Borg cube",1);
+    cubes[0] = getNewXartaCube(-8,5,-800, "XARTA", 0); // staggar z so fits camera "perspective" view
+    cubes[1] = getNewXartaCube(0,5,-820, "ARTAX", 1);
+    cubes[2] = getNewXartaCube(10,5,-840, "RTAXA", 2);
+    cubes[3] = getNewXartaCube(20,5,-860, "TAXAR", 3);
+    cubes[4] = getNewXartaCube(30,5,-880, "AXART", 4);
+}
+else
+{
+    cubes[0] = getNewXartaCube(-10,5,-800, "XARTA", 0); // just in a row - camera zoom will always mean fitting (mostly)
+    cubes[1] = getNewXartaCube(0,5,-800, "ARTAX", 1);
+    cubes[2] = getNewXartaCube(10,5,-800, "RTAXA", 2);
+    cubes[3] = getNewXartaCube(20,5,-800, "TAXAR", 3);
+    cubes[4] = getNewXartaCube(30,5,-800, "AXART", 4);
+}
 
-    var x = document.createElement("canvas");
-    var xc = x.getContext("2d");
-    x.width = x.height = 256;
-    xc.shadowColor = "#000";
-    xc.shadowBlur = 7;
-    xc.fillStyle = "#ff0000";       // red backgroud
-    xc.fillRect(0, 0, 256, 256);
-    xc.fillStyle = "orange";        // orange font
-    xc.font = "150pt arial bold";
-    xc.fillText('X', 64, 200);
 
-    var a = document.createElement("canvas");
-    var ac = a.getContext("2d");
-    a.width = a.height = 256;
-    ac.shadowColor = "#000";
-    ac.shadowBlur = 7;
-    ac.fillStyle = "#0212f4";       // blue background
-    ac.fillRect(0, 0, 256, 256);
-    ac.fillStyle = "red";           // red font
-    ac.font = "150pt arial bold";
-    ac.fillText('A', 64, 200);
-
-    var r = document.createElement("canvas");
-    var rc = r.getContext("2d");
-    r.width = r.height = 256;
-    rc.shadowColor = "#000";
-    rc.shadowBlur = 7;
-    rc.fillStyle = "#f7ec0e";       // yellow background
-    rc.fillRect(0, 0, 256, 256);
-    rc.fillStyle = "green";         // green font
-    rc.font = "150pt arial bold";
-    rc.fillText('R', 64, 200);
-
-    var t = document.createElement("canvas");
-    var tc = t.getContext("2d");
-    t.width = t.height = 256;
-    tc.shadowColor = "#000";
-    tc.shadowBlur = 7;
-    tc.fillStyle = "#106316";       // green background
-    tc.fillRect(0, 0, 256, 256);
-    tc.fillStyle = "yellow";        // yellow font
-    tc.font = "150pt arial bold";
-    tc.fillText('T', 64, 200);
-
-    var a2 = document.createElement("canvas");
-    var a2c = a2.getContext("2d");
-    a2.width = a2.height = 256;
-    a2c.shadowColor = "#000";
-    a2c.shadowBlur = 7;
-    a2c.fillStyle = "#f77c02";      // orange background
-    a2c.fillRect(0, 0, 256, 256);
-    a2c.fillStyle = "black";         // black font
-    a2c.font = "150pt arial bold";
-    a2c.fillText('A', 64, 200);
-
-    var xm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(x), transparent: true, opacity: 0.5 });
-    xm.map.needsUpdate = true;
-
-    var am = new THREE.MeshBasicMaterial({ map: new THREE.Texture(a), transparent: true, opacity: 0.5 });
-    am.map.needsUpdate = true;
-
-    var rm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(r), transparent: true, opacity: 0.5 });
-    rm.map.needsUpdate = true;
-
-    var tm = new THREE.MeshBasicMaterial({ map: new THREE.Texture(t), transparent: true, opacity: 0.5 });
-    tm.map.needsUpdate = true;
-
-    var a2m = new THREE.MeshBasicMaterial({ map: new THREE.Texture(a2), transparent: true, opacity: 0.5 });
-    a2m.map.needsUpdate = true;
+animate();  // kickstart the animation loop
 
 
 
+function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex) 
+{
+	console.log('getNewXartaCube('+xPos+', '+yPos+', '+zPos+', '+word+', '+colourStartIndex+')');
+
+    var colours = new Array();
+    colours[0] = ["orange", "#ff0000"];     // red background
+    colours[1] = ["red", "#0212f4"];        // blue background
+    colours[2] = ["green", "#f7ec0e"];      // yellow background
+    colours[3] = ["yellow", "#106316"];     // green background
+    colours[4] = ["purple", "#f77c02"];     // orange background
+
+/*
+    console.log(colours[(colourStartIndex + 0) % 5][1])
+    console.log(colours[(colourStartIndex + 0) % 5][0]);
+    console.log(colours[(colourStartIndex + 1) % 5][1])
+    console.log(colours[(colourStartIndex + 1) % 5][0]);
+    console.log(colours[(colourStartIndex + 2) % 5][1])
+    console.log(colours[(colourStartIndex + 2) % 5][0]);
+    console.log(colours[(colourStartIndex + 3) % 5][1])
+    console.log(colours[(colourStartIndex + 3) % 5][0]);
+    console.log(colours[(colourStartIndex + 4) % 5][1])
+    console.log(colours[(colourStartIndex + 4) % 5][0]);
+*/
+
+    var RIGHT = document.createElement("canvas");
+    var RIGHTcontext = RIGHT.getContext("2d");
+    RIGHT.width = RIGHT.height = 256;
+    RIGHTcontext.shadowColor = "#000";
+    RIGHTcontext.shadowBlur = 7;
+    RIGHTcontext.fillStyle = colours[(colourStartIndex + 0) % 5][1];
+    RIGHTcontext.fillRect(0, 0, 256, 256);
+    RIGHTcontext.fillStyle = colours[(colourStartIndex + 0) % 5][0];
+    RIGHTcontext.font = "150pt arial bold";
+    RIGHTcontext.fillText(word.substr(4,1), 64, 200);
+
+    var LEFT = document.createElement("canvas");
+    var LEFTcontext = LEFT.getContext("2d");
+    LEFT.width = LEFT.height = 256;
+    LEFTcontext.shadowColor = "#000";
+    LEFTcontext.shadowBlur = 7;
+    LEFTcontext.fillStyle = colours[(colourStartIndex + 1) % 5][1];
+    LEFTcontext.fillRect(0, 0, 256, 256);
+    LEFTcontext.fillStyle = colours[(colourStartIndex + 1) % 5][0];
+    LEFTcontext.font = "150pt arial bold";
+    LEFTcontext.fillText(word.substr(1,1), 64, 200);
+
+    var TOP = document.createElement("canvas");
+    var TOPcontext = TOP.getContext("2d");
+    TOP.width = TOP.height = 256;
+    TOPcontext.shadowColor = "#000";
+    TOPcontext.shadowBlur = 7;
+    TOPcontext.fillStyle =  colours[(colourStartIndex + 2) % 5][1];
+    TOPcontext.fillRect(0, 0, 256, 256);
+    TOPcontext.fillStyle = colours[(colourStartIndex + 2) % 5][0];
+    TOPcontext.font = "150pt arial bold";
+    TOPcontext.fillText(word.substr(2,1), 64, 200);
+
+    var BOTTOM = document.createElement("canvas");
+    var BOTTOMcontext = BOTTOM.getContext("2d");
+    BOTTOM.width = BOTTOM.height = 256;
+    BOTTOMcontext.shadowColor = "#000";
+    BOTTOMcontext.shadowBlur = 7;
+    BOTTOMcontext.fillStyle = colours[(colourStartIndex + 3) % 5][1];
+    BOTTOMcontext.fillRect(0, 0, 256, 256);
+    BOTTOMcontext.fillStyle = colours[(colourStartIndex + 3) % 5][0];
+    BOTTOMcontext.font = "150pt arial bold";
+    BOTTOMcontext.fillText(word.substr(3,1), 64, 200);
+
+    var FRONT = document.createElement("canvas");
+    var FRONTcontext = FRONT.getContext("2d");
+    FRONT.width = FRONT.height = 256;
+    FRONTcontext.shadowColor = "#000";
+    FRONTcontext.shadowBlur = 7;
+    //FRONTcontext.fillStyle = colours[(colourStartIndex + 4) % 5][1];
+    FRONTcontext.fillStyle = "black";
+    FRONTcontext.fillRect(0, 0, 256, 256);
+    FRONTcontext.fillStyle = colours[(colourStartIndex + 4) % 5][0];
+    FRONTcontext.font = "150pt arial bold";
+    FRONTcontext.fillText(word.substr(0,1), 64, 200);
+
+    var RIGHTmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(RIGHT), transparent: true, opacity: 0.5 });
+    RIGHTmesh.map.needsUpdate = true;
+
+    var LEFTmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(LEFT), transparent: true, opacity: 0.5 });
+    LEFTmesh.map.needsUpdate = true;
+
+    var TOPmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(TOP), transparent: true, opacity: 0.5 });
+    TOPmesh.map.needsUpdate = true;
+
+    var BOTTOMmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(BOTTOM), transparent: true, opacity: 0.5 });
+    BOTTOMmesh.map.needsUpdate = true;
+
+    var FRONTmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(FRONT), transparent: true, opacity: 0.5 });
+    FRONTmesh.map.needsUpdate = true;
+
+
+    // cross origin so I can use cloudinary, and 256 pixels width & height
 	var textureLoader = new THREE.TextureLoader().setCrossOrigin(true);
-	var texture = textureLoader.load( "https://res.cloudinary.com/xarta/image/upload/v1496448263/xarta/2014-me-at-work256.png" ); // front
+	var texture = textureLoader.load( "https://res.cloudinary.com/xarta/image/upload/v1496448263/xarta/2014-me-at-work256.png" ); // BACK
 
+    // so we're making a cube e.g. 5 faces are letters X A R T A, and the backface is a pic of me lol ...
+    // and by using transparency, light from the rest of the dynamic scene will illuminate "me" sometimes through the transparent cube
 	var materials = [
-		xm, // right
-		am, // left
-		rm, // top
-		tm, // bottom
-		a2m, // back
-		new THREE.MeshBasicMaterial( { map: texture, side:THREE.DoubleSide, shading: THREE.FlatShading, transparent: true, opacity: 0.5, color: 0xf902d4 } ) // front
+		RIGHTmesh,
+		LEFTmesh,
+		TOPmesh,
+		BOTTOMmesh,
+		FRONTmesh,
+		new THREE.MeshBasicMaterial( { map: texture, side:THREE.DoubleSide, shading: THREE.FlatShading, transparent: true, opacity: 0.5, color: 0xf902d4 } ) // BACK
 	];
 	
 	var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 
 
     var obj = new THREE.Mesh( geometry, materials );
-	obj.scale.set(initscale,initscale,initscale);
-    obj.position.z = -800;
-    obj.position.x = -10;
-    obj.position.y = 5;
-    //borg.lightDirection = new THREE.Vector3(0.7, 20, 0)
+
+    obj.name = word.substr(0,1);                    // letter on face of cube that is facing us
+	obj.scale.set(initscale,initscale,initscale);   // initiscale is a global
+    obj.position.z = zPos;
+    obj.position.x = xPos;
+    obj.position.y = yPos;
+    
+    obj.lightDirection = new THREE.Vector3(0.7, 20, 0); // bright, off centre
+
+    obj.xartaRot = 1; // used for initial object-axis rotation direction
 
 	scene.add( obj );
-    //camera.position.set(0, 2, 50, 5);
-	//camera.position.z = 5;
 
     return(obj);
 }
@@ -155,56 +203,110 @@ function getNewXartaCube()
 
 
 
+// this function should now be called
+// extended animate or something (more than a tumble - it evolved)
 function tumble(transformRate)
 {
-    // clog("tumbling",3);
-    borg.rotation.x += transformRate;
-    borg.rotation.y += transformRate;
-    if (phase0 === true)
-    {
-        if (borg.position.z < (-200*transformRate))
+
+
+    cubes.forEach(function(cube, index, ar){
+
+
+        if ( (5 < cubes[index].rotation.x) && (cubes[index].rotation.x < 6) )
         {
-            borg.position.z += (200*transformRate);
+            cubes[index].xartaRot = -1; // reverse rotation
+        }
+        if (cubes[index].rotation.x < 0)
+        {
+            cubes[index].xartaRot = 0; // stop, showing X A R T A (not precise on slow machine)
+        }
+
+        // rotation.x starts at 0 and is positive accumulative
+        cubes[index].rotation.x += (cubes[index].xartaRot * transformRate);
+        cubes[index].rotation.y += (cubes[index].xartaRot * transformRate);
+
+        console.log(cubes[index].xartaRot);
+        console.log(cubes[index].rotation.x);
+    }, this);
+
+
+    var approachRate = 200 * transformRate;
+    var fit =  ( (window.innerWidth / window.innerHeight) * 2 ) - approachRate ;
+
+    if (phaseCubeApproach === true)
+    {
+        
+        // stop the approach of everything, possibly staggard,
+        // once X (as in X A R T A) has reached our chosen z-axis
+        if (cubes[0].position.z < fit )
+        {
+            for (i=0; i < cubes.length; i++)
+            {
+                cubes[i].position.z += approachRate;
+            }
         }
         else
         {
-            phase0 = false;
+            phaseCubeApproach = false;
+            setTimeout(function() {
+                window.phaseSink = true;
+            }, 8000);
         }
     }
 
-
-
-    if (phase1 === true)
+    // sink all the cubes under water, out the way (job done - now just adds colour)
+    if (phaseSink === true)
     {
-        moonz = -1000;
-        phase1 = false;
-        phase2 = true;
+        var yBottom = -15;
+        for (i=0; i < cubes.length; i++)
+        {
+            phaseSink = false;
+            // also straighten-out ... not fussed about off-screen sunken cubes in portrait
+            // - if device switches to landscape, will then display
+            if (cubes[i].position.z < fit )
+            {
+                cubes[i].position.z += (approachRate/50) * (i + 1);
+            }
+
+            // sink all until yBottom
+            if( cubes[i].position.y > yBottom )
+            {
+                phaseSink = true;
+                if(cubes[i].rotation.x > -0.5)
+                {
+                    // rotate 45 degrees to tilt front faces toward us, as we are looking down
+                    cubes[i].rotation.x -= transformRate;
+                }
+                cubes[i].position.y -= approachRate/50;
+            }
+            
+        }
     }
 
-    if (phase2 === true)
+    if (phaseMoonPushBack === true)
+    {
+        moonz = -1000;              // in the dark, out of view
+        phaseMoonPushBack = false;  // do once
+        phaseMoonApproach = true;   // now slow approach
+    }
+
+    if (phaseMoonApproach === true)
     {
         if (moonz < -500)
         {
             moonz += (50*transformRate);
-            //moonMesh.position.x = -1 * 0.25 * window.innerWidth;
-            //moonMesh.position.x = -350;           // half-moon = -350 (landscape)
-            //moonMesh.position.y = 20;             // half-moon = 290
-            moonMesh.position.z = moonz;           // half-moon = -500
-            //moonMesh.scale.set(13, 14,14);        // half-moon = 14, 14, 14
+            moonMesh.position.z = moonz;
         }
         else
         {   
-            phase2 = false;
-            scene.add(starsMesh);
+            phaseMoonApproach = false;
+            scene.add(starsMesh);   // "ping" stars on, after moon in place
+                                    // timing should synchronise with cubes
         }
     }
 
-    
-
-
-       // camera.updateProjectionMatrix();
-    
-
+        
+    // RANDOM CYLINDER MOVEMENT
     for (var i = 0; i < num_cylinders; i++) {
 
 
@@ -212,6 +314,7 @@ function tumble(transformRate)
         cylinders[i].position.y += cylinders[i].xartaDiry;
         cylinders[i].position.z += cylinders[i].xartaDirz;
 
+        // materialise cylinders at start
         if (cylinders[i].material.opacity < 1.0)
         {
             cylinders[i].material.opacity += transformRate/300;
@@ -222,37 +325,38 @@ function tumble(transformRate)
         }
         
 
-        rate = (Math.random() + 1) * (125*transformRate);
+        moveRate = (Math.random() + 1) * (125*transformRate);
 
+        // KEEP WITHIN X, Y, Z BOUNDARIES
         if (cylinders[i].position.x > range_cylinders)
         {
-            cylinders[i].xartaDirx = (Math.random() * -1) * rate;
+            cylinders[i].xartaDirx = (Math.random() * -1) * moveRate;
         }
 
         if (cylinders[i].position.y > range_cylinders)
         {
-            cylinders[i].xartaDiry = (Math.random() * -1) * rate;
+            cylinders[i].xartaDiry = (Math.random() * -1) * moveRate;
         }
 
         if (cylinders[i].position.z > 100)
         {
-            cylinders[i].xartaDirz = (Math.random() * -1) * rate;
+            cylinders[i].xartaDirz = (Math.random() * -1) * moveRate;
         }
 
 
         if (cylinders[i].position.x < (-1 * range_cylinders))
         {
-            cylinders[i].xartaDirx = (Math.random() * 1) * rate;
+            cylinders[i].xartaDirx = (Math.random() * 1) * moveRate;
         }
 
         if (cylinders[i].position.y <  (-1 * range_cylinders))
         {
-            cylinders[i].xartaDiry = (Math.random() * 1) * rate;
+            cylinders[i].xartaDiry = (Math.random() * 1) * moveRate;
         }
 
         if (cylinders[i].position.z <  (-1 * 498))
         {
-            cylinders[i].xartaDirz = (Math.random() * 1) * rate;
+            cylinders[i].xartaDirz = (Math.random() * 1) * moveRate;
         }
 
         cylinders[i].updateMatrix();
@@ -263,16 +367,17 @@ function tumble(transformRate)
 
 function init() {
 
+    var loader = new THREE.TextureLoader().setCrossOrigin(true);    // Use same cross-origin loader for all assets
 
-
-
-    var loader = new THREE.TextureLoader().setCrossOrigin(true);
-
+    // GET LOADING GOING NOW, STRAIGHT-AWAY
 
     // Load the background texture  STARS
     var stars = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496587567/xarta/spiral-galaxy.jpg' );               
-    // Load the background texture MOON
     
+    
+    // Load the background texture MOON
+    // responosive sizes/quality ... big moon is high quality transparent png (over 300KB)
+
     var theMoon;
     if (window.innerWidth > 768)
     {
@@ -293,15 +398,14 @@ function init() {
     clock = new THREE.Clock();
 
     scene = new THREE.Scene();
-    //scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
     scene.fog = new THREE.FogExp2(0x000000, 0.002);
 
-    renderer = new THREE.WebGLRenderer();
+    renderer = new THREE.WebGLRenderer();   // Not using WebGL Detect yet ... TODO: look into whether I really should (statistically & target audience)
     renderer.setClearColor(0x000000, 1); 
     renderer.setClearColor(scene.fog.color);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.autoclear = true;
+    renderer.autoclear = true;              // TODO: NOT SURE ABOUT THIS, AND MANUAL CLEARING OF "STAGE BUFFER" - See water.js
 
     var container = document.getElementById('container');
     container.appendChild(renderer.domElement);
@@ -311,7 +415,7 @@ function init() {
 
 
     setTimeout(function() {
-        //controls = new THREE.OrbitControls(camera, renderer.domElement);
+        //controls = new THREE.OrbitControls(camera, renderer.domElement);  TODO: toggle on/off with menu <a> link
     }, 12000);
     
 
@@ -329,12 +433,11 @@ function init() {
             map: stars
         }));
 
-    starsMesh.position.x = -350;  // 10
-    starsMesh.position.y =800;  // 22
-    starsMesh.position.z = -600; // -50
+    starsMesh.position.x = -350;  
+    starsMesh.position.z = -600;            // behind moon - further back is too dark/blurry, but obscures things behind it
     starsMesh.scale.set(50, 50,10);
-    starsMesh.material.depthTest = true; // because transparent png
-    starsMesh.material.depthWrite = true;
+    //starsMesh.material.depthTest = true;    // no need
+    //starsMesh.material.depthWrite = true;
 
 
 
@@ -346,27 +449,29 @@ function init() {
         })
     );
 
+    // keep size in portrait mode, but shift partly offscreen to left
+    // nb will appear bigger with bigger height to width ratio, because
+    // of perspective camera settings and how "near" we are to it
     moonMesh.position.x = -1 * 0.25 * window.innerWidth;
-    //moonMesh.position.x = -350;           // half-moon = -350 (landscape)
-    moonMesh.position.y = 20;             // half-moon = 290
-    moonMesh.position.z = moonz;           // half-moon = -500
-    moonMesh.scale.set(13, 14,14);        // half-moon = 14, 14, 14
+    moonMesh.position.y = 20;
+    moonMesh.position.z = moonz;
+    moonMesh.scale.set(13, 14,14); 
     moonMesh.material.depthTest = true;   // because transparent png
     moonMesh.material.depthWrite = true;
 
     setTimeout(function() {
-        if(window.fps > 10)
+        if(window.fps > 5)
         {
             scene.add(moonMesh);    
             moonMesh.material.color.setHex( 0xffffff );
         }
-    }, 1000);
+    }, 1000); // first second might be unreliable on 2014 Samsung Note 4 device
 
 
-
+    // water computationally HEAVY
     setTimeout(function() {
 
-        if(window.fps > 15)
+        if(window.fps > 7)
         {
             // WATER
             water = new Water(renderer, camera, world, {
@@ -393,12 +498,20 @@ function init() {
 
 
 
-    // CYLINDERS
+    // CYLINDERS        TODO: Some patterned ones e.g. Bee colour stripes, with Doppler-shift buzz audio from camera position
     var geometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
     var material = new THREE.MeshPhongMaterial({ color: 0xafab5b, shading: THREE.FlatShading, transparent: true,  opacity: 0 });
 
     setTimeout(function() {
-        num_cylinders = window.fps;
+        if (window.fps < 60)
+        {
+            num_cylinders = window.fps;
+        }
+        else
+        {
+            num_cylinders = 60; // plenty!!!
+        }
+        
         console.log("Number of cylinders: "+ num_cylinders);
         cylinders = new Array(num_cylinders);
         for (var i = 0; i < num_cylinders; i++) {
@@ -422,7 +535,7 @@ function init() {
 
 
 
-    // lights
+    // lights (still experimenting)
 
     light = new THREE.DirectionalLight(0xffffff, 3);
     light.position.set(250, -300, 500);
@@ -436,20 +549,7 @@ function init() {
     spotLight.target = spotTarget;
     
     scene.add(spotLight);
-    scene.add(new THREE.PointLightHelper(spotLight, 1));
-
-/*
-    var bluePoint = new THREE.PointLight(0x0033ff, 100, 1050);
-    bluePoint.position.set( 10, 15, 20 );
-    scene.add(bluePoint);
-    scene.add(new THREE.PointLightHelper(bluePoint, 3));
-    
-    var greenPoint = new THREE.PointLight(0x33ff00, 100, 1050);
-    greenPoint.position.set( -10, 15, 20 );
-    scene.add(greenPoint);
-    scene.add(new THREE.PointLightHelper(greenPoint, 3));
-*/
-    //
+    // scene.add(new THREE.PointLightHelper(spotLight, 1));
 
     window.addEventListener('resize', onWindowResize, false);
 
