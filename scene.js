@@ -22,10 +22,12 @@ var starsMesh;                  // the mesh to add to the scene
 var num_cylinders = 0;
 var range_cylinders = 499;  // keep within 3D bounds {x, y, z} -> 499 etc.
 var cylinders;              // Array()
+var calmCylinders = false;  // want cylinders to scurry off screen - stop distracting
+                            // when video player or photo slider displayed etc.
 
 var fps = 1;                // calculate from frames/accDelta etc.
 var frames = 0;             // count frames in accumalative-delta-time
-var accDelta = 0;           // accumulative delta time
+var accDelta = 0;           // accumulative delta time (avoid divide by zero)
 
                             // use fps to determine computation power of rendering device
                             // (nb not doing webGL detect specifically or explicit canvas fallbacks)
@@ -48,19 +50,19 @@ var initscale = 8;                          // cube scaling
 var cubes = new Array();                    // 5 cubes ... X A R T A
 if (window.innerHeight > window.innerWidth) // portrait e.g. phones
 {
-    cubes[0] = getNewXartaCube(-8,5,-800, "XARTA", 0); // staggar z so fits camera "perspective" view
-    cubes[1] = getNewXartaCube(0,5,-820, "ARTAX", 1);
-    cubes[2] = getNewXartaCube(10,5,-840, "RTAXA", 2);
-    cubes[3] = getNewXartaCube(20,5,-860, "TAXAR", 3);
-    cubes[4] = getNewXartaCube(30,5,-880, "AXART", 4);
+    cubes[0] = getNewXartaCube( -8,5,-800, "XARTA", 0); // staggar z so fits camera "perspective" view
+    cubes[1] = getNewXartaCube(  0,5,-820, "ARTAX", 1);
+    cubes[2] = getNewXartaCube( 10,5,-840, "RTAXA", 2);
+    cubes[3] = getNewXartaCube( 20,5,-860, "TAXAR", 3);
+    cubes[4] = getNewXartaCube( 30,5,-880, "AXART", 4);
 }
 else
 {
-    cubes[0] = getNewXartaCube(-10,5,-800, "XARTA", 0); // just in a row - camera zoom will always mean fitting (mostly)
-    cubes[1] = getNewXartaCube(0,5,-800, "ARTAX", 1);
-    cubes[2] = getNewXartaCube(10,5,-800, "RTAXA", 2);
-    cubes[3] = getNewXartaCube(20,5,-800, "TAXAR", 3);
-    cubes[4] = getNewXartaCube(30,5,-800, "AXART", 4);
+    cubes[0] = getNewXartaCube( -10,5,-800, "XARTA", 0); // just in a row - camera zoom will always mean fitting (mostly)
+    cubes[1] = getNewXartaCube(   0,5,-800, "ARTAX", 1);
+    cubes[2] = getNewXartaCube(  10,5,-800, "RTAXA", 2);
+    cubes[3] = getNewXartaCube(  20,5,-800, "TAXAR", 3);
+    cubes[4] = getNewXartaCube(  30,5,-800, "AXART", 4);
 }
 
 
@@ -73,11 +75,11 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex)
 	console.log('getNewXartaCube('+xPos+', '+yPos+', '+zPos+', '+word+', '+colourStartIndex+')');
 
     var colours = new Array();
-    colours[0] = ["orange", "#ff0000"];     // red background
-    colours[1] = ["red", "#0212f4"];        // blue background
-    colours[2] = ["green", "#f7ec0e"];      // yellow background
-    colours[3] = ["yellow", "#106316"];     // green background
-    colours[4] = ["purple", "#f77c02"];     // orange background
+    colours[0] = ["orange",     "#ff0000"];     // red background
+    colours[1] = ["red",        "#0212f4"];     // blue background
+    colours[2] = ["green",      "#f7ec0e"];     // yellow background
+    colours[3] = ["yellow",     "#106316"];     // green background
+    colours[4] = ["purple",     "#f77c02"];     // orange background
 
 /*
     console.log(colours[(colourStartIndex + 0) % 5][1])
@@ -324,8 +326,17 @@ function tumble(transformRate)
             }
         }
         
+        calmCylinders = true;
 
-        moveRate = (Math.random() + 1) * (125*transformRate);
+        if(calmCylinders === false)
+        {
+            moveRate = (Math.random() + 1) * (125*transformRate);
+        }
+        else
+        {
+            moveRate = 0; // pause cylinders when out the way
+        }
+        
 
         // KEEP WITHIN X, Y, Z BOUNDARIES
         if (cylinders[i].position.x > range_cylinders)
@@ -371,11 +382,14 @@ function init() {
 
     // GET LOADING GOING NOW, STRAIGHT-AWAY
 
-    // Load the background texture  STARS
+    // Load the background texture  STARS (from NASA galleries)
     var stars = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496587567/xarta/spiral-galaxy.jpg' );               
     
     
-    // Load the background texture MOON
+    // Load the background texture MOON (found with Google ... oops - forgot attribution)
+    //                                  ... was a jpg, but wanted a circular cropped transparent png
+    //                                  ... it's not perfect even with the feathering ... but is ok
+
     // responosive sizes/quality ... big moon is high quality transparent png (over 300KB)
 
     var theMoon;
