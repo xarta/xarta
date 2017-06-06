@@ -1,3 +1,4 @@
+/* Using code for navigation from: https://codepen.io/IanLunn/pen/NPapxy */
 html, #container {
   overflow: hidden;
   width: 98%;
@@ -14,7 +15,7 @@ body, ul {
 
 /* Decor */
 body {
-  background: #45163E; }
+  background: #45163F; }
 
 .drawer {
   position: absolute;
