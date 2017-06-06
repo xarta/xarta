@@ -25,6 +25,23 @@ var cylinders;              // Array()
 var calmCylinders = false;  // want cylinders to scurry off screen - stop distracting
                             // when video player or photo slider displayed etc.
 
+        // TEST
+        setTimeout(function() {
+            window.calmCylinders = true;
+        }, 15000);
+
+
+                            // ***********************************************************
+const YES = 2;              // NB: Choice NOT TO SUPPORT IExplr EARLIER THAN 11 (ES2015)
+const NO = 0;               // ... the target audience for my personal website is 
+const PENDING = 1;          // ... likely to have a more recent browser (technology ppl)
+                            // ***********************************************************
+
+var saveCycles = NO;        // monostable delay after calmCyclinders set to true
+                            // - use to toggle whether cylinder matrix updates with changes
+                            // reset with calmCylinders = false
+
+
 var fps = 1;                // calculate from frames/accDelta etc.
 var frames = 0;             // count frames in accumalative-delta-time
 var accDelta = 0;           // accumulative delta time (avoid divide by zero)
@@ -150,19 +167,24 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex)
     FRONTcontext.font = "150pt arial bold";
     FRONTcontext.fillText(word.substr(0,1), 64, 200);
 
-    var RIGHTmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(RIGHT), transparent: true, opacity: 0.5 });
+    var RIGHTmesh =     new THREE.MeshBasicMaterial({ map: new THREE.Texture(RIGHT), 
+                                                    transparent: true, opacity: 0.5 });
     RIGHTmesh.map.needsUpdate = true;
 
-    var LEFTmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(LEFT), transparent: true, opacity: 0.5 });
+    var LEFTmesh =      new THREE.MeshBasicMaterial({ map: new THREE.Texture(LEFT), 
+                                                    transparent: true, opacity: 0.5 });
     LEFTmesh.map.needsUpdate = true;
 
-    var TOPmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(TOP), transparent: true, opacity: 0.5 });
+    var TOPmesh =       new THREE.MeshBasicMaterial({ map: new THREE.Texture(TOP), 
+                                                    transparent: true, opacity: 0.5 });
     TOPmesh.map.needsUpdate = true;
 
-    var BOTTOMmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(BOTTOM), transparent: true, opacity: 0.5 });
+    var BOTTOMmesh =    new THREE.MeshBasicMaterial({ map: new THREE.Texture(BOTTOM), 
+                                                    transparent: true, opacity: 0.5 });
     BOTTOMmesh.map.needsUpdate = true;
 
-    var FRONTmesh = new THREE.MeshBasicMaterial({ map: new THREE.Texture(FRONT), transparent: true, opacity: 0.5 });
+    var FRONTmesh =     new THREE.MeshBasicMaterial({ map: new THREE.Texture(FRONT), 
+                                                    transparent: true, opacity: 0.5 });
     FRONTmesh.map.needsUpdate = true;
 
 
@@ -178,7 +200,10 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex)
 		TOPmesh,
 		BOTTOMmesh,
 		FRONTmesh,
-		new THREE.MeshBasicMaterial( { map: texture, side:THREE.DoubleSide, shading: THREE.FlatShading, transparent: true, opacity: 0.5, color: 0xf902d4 } ) // BACK
+		new THREE.MeshBasicMaterial( {  map: texture, 
+                                        side:THREE.DoubleSide, 
+                                        shading: THREE.FlatShading, 
+                                        transparent: true, opacity: 0.5, color: 0xf902d4 } ) // BACK
 	];
 	
 	var geometry = new THREE.BoxGeometry( 1, 1, 1 );
@@ -307,7 +332,7 @@ function tumble(transformRate)
         }
     }
 
-        
+    // TODO: Cylinder???  PYRAMID !!!  MUST HAVE BEEN MAD !!!!
     // RANDOM CYLINDER MOVEMENT
     for (var i = 0; i < num_cylinders; i++) {
 
@@ -316,25 +341,47 @@ function tumble(transformRate)
         cylinders[i].position.y += cylinders[i].xartaDiry;
         cylinders[i].position.z += cylinders[i].xartaDirz;
 
-        // materialise cylinders at start
-        if (cylinders[i].material.opacity < 1.0)
+
+        
+
+
+
+        // materialise cylinders at start or later, if not paused
+        var cylinderOpacity = cylinders[i].material.opacity;
+        if ( (cylinderOpacity < 1.0) && (calmCylinders === false) )
         {
-            cylinders[i].material.opacity += transformRate/300;
-            if (cylinders[i].material.opacity > 1.0)
+            cylinderOpacity += transformRate/300;
+            if (cylinderOpacity > 1.0)
             {
-                cylinders[i].material.opacity = 1.0;
+                cylinderOpacity = 1.0;
             }
         }
-        
-        calmCylinders = true;
+        else if ( (cylinderOpacity > 0) && (calmCylinders === true) )
+        {
+            cylinderOpacity -= transformRate/500;
+            if (cylinderOpacity < 0)
+            {
+                cylinderOpacity = 0;
+            }
+        }
 
+        cylinders[i].material.opacity = cylinderOpacity;
+    
         if(calmCylinders === false)
         {
             moveRate = (Math.random() + 1) * (125*transformRate);
+            saveCycles = NO; // reset monostable delay for suppressing matrix update
         }
         else
         {
             moveRate = 0; // pause cylinders when out the way
+            if ( saveCycles === NO)
+            {
+                saveCycles = PENDING;
+                setTimeout(function() {
+                    window.saveCycles = YES;
+                }, 14000);
+            }
         }
         
 
@@ -370,7 +417,12 @@ function tumble(transformRate)
             cylinders[i].xartaDirz = (Math.random() * 1) * moveRate;
         }
 
-        cylinders[i].updateMatrix();
+        // nb: relying on optimisation to negate other unneccessary computation
+        if ( (saveCycles === NO) || (saveCycles === PENDING) )
+        {
+            cylinders[i].updateMatrix();
+        }
+        
 
 
     }
@@ -479,7 +531,7 @@ function init() {
             scene.add(moonMesh);    
             moonMesh.material.color.setHex( 0xffffff );
         }
-    }, 1000); // first second might be unreliable on 2014 Samsung Note 4 device
+    }, 2000); // first second might be unreliable on 2014 Samsung Note 4 device
 
 
     // water computationally HEAVY
@@ -505,7 +557,7 @@ function init() {
             moonMesh.material.color.setHex( 0xffffff );
             scene.add(water);  
         }
-    }, 2000);
+    }, 3000);
 
 
 
