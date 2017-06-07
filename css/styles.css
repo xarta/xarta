@@ -6,25 +6,32 @@ html, #container {
   height: 98%;
   height: 98vh;
   margin: 0 auto;
+  right: 0;
   background-color: #fff; }
+
+#container {
+  right: 0; }
 
 /* Resets */
 body, ul {
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  width: 98vw; }
 
 /* Decor */
 body {
   background: #45163F; }
 
+/* outer <ul> */
 .drawer {
+  width: 10vw;
   position: absolute;
   z-index: 10;
   top: 0;
-  left: 0;
+  right: 0;
   height: 100%;
   padding: .4em 0;
-  background: #7D294E;
+  /* background: $backgroundLight; */
   color: white;
   text-align: center;
   /* Remove 4px gap between <li> */
@@ -64,12 +71,17 @@ body {
     /* Open the fly-out menu */
     transform: translateX(0);
     background: #B44659;
+    width: 30vw;
     /* Enable this if you wish to replicate hoverIntent */ }
+    .drawer li:hover ul > li {
+      width: 10vw; }
+    .drawer li:hover ul > li:hover {
+      width: 10vw; }
   .drawer > li {
     display: block;
     /* Add a shadow to the top-level link */
     /* Show the shadow when the link is hovered over */
-    /* Fly out menus */ }
+    /* Fly out menus (inner <ul> ) */ }
     .drawer > li > a {
       background: #7D294E; }
     .drawer > li:hover {
@@ -80,10 +92,10 @@ body {
       background: #F56356; }
     .drawer > li > a:after {
       content: "";
-      position: absolute;
+      position: relative;
       top: 0;
       bottom: 0;
-      left: 100%;
+      right: 100%;
       width: 4px;
       opacity: 0;
       background: -moz-linear-gradient(left, rgba(0, 0, 0, 0.65) 0%, transparent 100%);
@@ -99,16 +111,20 @@ body {
     .drawer > li ul {
       position: absolute;
       /* Stack below the top level */
+      overflow: hidden;
       z-index: -1;
       top: 0;
-      left: 100%;
+      right: 100%;
       height: 100%;
-      width: auto;
+      /*width: auto;*/
+      /* on mobile if we allowed normal width, would force screen wider!) */
+      width: 10vw;
       white-space: nowrap;
       /* Close the menus */
-      transform: translateX(-100%);
+      transform: translateX(100%);
       background: #B44659;
-      transition: 0.5s transform; }
+      transition: 0.5s transform;
+      transition: width 0s; }
 
 /**
  * Not required for demo
@@ -126,7 +142,7 @@ body {
   right: 20px;
   bottom: 20px; }
   .ild-ident svg {
-    overflow: visible;
+    overflow: hidden;
     transform: translateZ(0); }
     .ild-ident svg .circle-holder {
       transform: translate(-7px, -7px); }
