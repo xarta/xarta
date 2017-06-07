@@ -18,51 +18,52 @@ $textColor: white;
 $menuSpeed: .5s;
 $highlightSpeed: .3s;
 
+$drawerTop: 10px;
+
 
 html, #container
 {
+    position: absolute;
     overflow: hidden;
-    width: 98%;
-    width: 98vw;
-    height: 98%;
-    height: 98vh;
+    width: 100%;
+    width: 100vw;
+    height: 100%;
+    height: 100vh;
 
     margin: 0 auto;
-    right: 0;
-    background-color: #fff;
+
+
 }
 
-#container
-{
-    right: 0;
-}
 
 
 /* Resets */
 body, ul {
   margin: 0;
   padding: 0;
-  width: 98vw;
+
 }
 
 /* Decor */
 body {
-  background: $backgroundDark;
+    background: $backgroundDark;
 }
 
 /* outer <ul> */
 .drawer {
-  width: 10vw;
+  width: auto;
   position: absolute;
   z-index: 10;
-  top: 0;
-  right: 0;
+  top: $drawerTop;
+  right: 5px;
   height: 100%;
   padding: .4em 0;
   /* background: $backgroundLight; */
   color: $textColor;
   text-align: center;
   
+  
+
   /* Remove 4px gap between <li> */
   font-size: 0;
   
@@ -75,6 +76,12 @@ body {
     list-style: none;
     line-height: 100%;
     transform: translateZ(0);
+
+    opacity: 0.5;
+  }
+
+  li:hover {
+      opacity: 1;
   }
   
   a {
@@ -108,23 +115,24 @@ body {
     font-family: sans-serif;
     text-transform: uppercase;
   }
-  
+
+  /* ------------------------------------------------------ */
   li:hover ul {
     /* Open the fly-out menu */
     transform: translateX(0);
     background: $backgroundHighlight;
-    width: 30vw;
+    width: auto;
+    opacity: 1;
     /* Enable this if you wish to replicate hoverIntent */
-    // transition-delay: .3s;
+    transition-delay: .3s;
 
     > li {
-       width: 10vw; 
+        width: auto;
     }
-    
-    > li:hover {
-       width: 10vw; 
-    }
+
+  
   }
+  /* ---------------------------------------------------- */
   
   > li {
     display: block;
@@ -173,16 +181,18 @@ body {
       right: 100%;
       height: 100%;
       /*width: auto;*/
-      /* on mobile if we allowed normal width, would force screen wider!) */
-      width: 10vw;
+      width: auto;
       white-space: nowrap;
       /* Close the menus */
+      opacity: 0;
       transform: translateX(100%);
       background: $backgroundHighlight;
-      transition: $menuSpeed transform;
-      transition: width 0s;
+      transition: transform $menuSpeed;
+      /* transition: opacity $menuSpeed; */
+
     }
   }
+
 }
 
 
