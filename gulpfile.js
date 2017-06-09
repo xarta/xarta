@@ -13,19 +13,22 @@ gulp.task('sass', function() {
         }))
 });
 
-gulp.task('default', ['sass'], function() {
-    gulp.watch('css/*.scss', ['sass']);
-})
-
 gulp.task('compress', function() {
-  gulp.src('lib/*.js')
+  gulp.src('js-debug/*.js')
     .pipe(minify({
         ext:{
             src:'-debug.js',
-            min:'.js'
+            min:'-min.js'
         },
         exclude: ['tasks'],
-        ignoreFiles: ['.combo.js', '-min.js']
+        ignoreFiles: ['.combo.js', '-min.js'],
+        noSource: ['*.js']
     }))
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('js'))
 });
+
+gulp.task('default', ['sass', 'compress'], function() {
+    gulp.watch('css/*.scss', ['sass']);
+    gulp.watch('js-debug/*.js', ['compress']);
+})
+
