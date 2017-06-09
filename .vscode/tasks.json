@@ -11,13 +11,18 @@
 }
 
 */
+/* note to self: gulp problems: try changing Path to PATH, adding NODE_PATH */
+/* ... have to install gulp-cli globally */
+/* ... remember gulp-cli is gulp.cmd - should be able to run anywhere, and */
+/* ... any local modules should run locally ... just so long as PowerShell */
+/* ... knows where to find gulp.  Just running gulp will run gulp default (task) */
 {
     "version": "0.1.0",
     "command": "gulp",
     "isShellCommand": true,
     "tasks": [
         {
-            "taskName": "default",
+            "taskName": "xarta",
             "isBuildCommand": true,
             "showOutput": "always",
             "isBackground": true

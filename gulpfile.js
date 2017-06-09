@@ -6,22 +6,31 @@
 // https://www.npmjs.com/package/gulp-concat
 
 // https://github.com/OverZealous/run-sequence   (I want to concat, then compress)
+//                                               e.g. ['task1', 'task2'], 'task3', ['t4', 't5']
+//                                                      parallel       then series then parallel
 
 var gulp = require('gulp');             // look for gulp in package node-modules
 var sass = require('gulp-sass');
 var minify = require('gulp-minify');
+var cleanCSS = require('gulp-clean-css');
 var concat = require('gulp-concat');
 var runSequence = require('run-sequence');
 
 gulp.task('sass', function() {
-    gulp.src('css/*.scss')
+    gulp.src('css/css-debug/*.scss')
         .pipe(sass())
         .pipe(gulp.dest(function(f) {
             return f.base;
         }))
 });
 
-gulp.task('compress-home', function() {
+gulp.task('minify-css', function() {
+  return gulp.src('css/css-debug/styles.css')
+    .pipe(cleanCSS({compatibility: '*'}))
+    .pipe(gulp.dest('css'));
+});
+
+gulp.task('minify-home-js', function() {
   gulp.src('js-debug-home/*.js')
     .pipe(minify({
         ext:{
@@ -35,23 +44,29 @@ gulp.task('compress-home', function() {
     .pipe(gulp.dest('js'))
 });
 
-gulp.task('concat-home', function() {
+gulp.task('concat-home-js', function() {
   return gulp.src(['./js-debug-home/water.js', './js-debug-home/OrbitControls.js', './js-debug-home/scene.js'])
     .pipe(concat('homepage.js'))
     .pipe(gulp.dest('./js-debug-home/'));
 });
 
-// want the homepage to be fast so concatenate & compress all js files
-// to one (but also separates for three stuff, for other pages)
-gulp.task('sequence-homepage', function() {
+gulp.task('sass-minify', function() {
     runSequence(
-        ['sass', 'concat-home'],
-        'compress-home'
+        'sass', 'minify-css'
     );
 });
 
-gulp.task('default', 'sequence-homepage', function() {
-    gulp.watch('css/*.scss', ['sass']);
-    gulp.watch('js-debug-home/*.js', ['sequence-homepage']);
-})
+// want the homepage to be fast so concatenate & compress all js files
+// to one (but also separates for three stuff, for other pages)
+gulp.task('concat-minify-home-js', function() {
+    runSequence(
+        'concat-home-js', 'minify-home-js'
+    );
+});
+
+
+gulp.task('xarta', function() {
+    gulp.watch('css/css-debug/*.scss', ['sass-minify']);
+    gulp.watch('js-debug-home/*.js', ['concat-minify-home-js']);
+});
 
