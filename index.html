@@ -24,6 +24,11 @@
 
     <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1497007069/xarta/2014-me-at-work256.jpg">
 
+    <script type="text/javascript">
+        var timerStart = Date.now();    // will use later - e.g. decide on page load speed
+                                        // - if quick enough, will load higher quality moon etc.
+    </script>
+
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/styles.css?v=1.0">
 
@@ -138,29 +143,8 @@
 
 
 
-        <script>
-            //document.getElementById("container").innerHTML = "";
-        </script>
-
         <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js"></script>
-        <script src="js/homepage-min.js"></script>  <!-- three.js examples -->
-
-
-        <script>
-            /*
-            <svg version="1.1" id="svg2" xmlns:svg="http://www.w3.org/2000/svg"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="600px" height="600px"
-	 viewBox="0 0 600 600" enable-background="new 0 0 600 600" xml:space="preserve">
-<path id="X" fill="#F60000" d="M3.226,500.606c0-9.353,40.532-56.312,90.072-104.354c49.539-48.042,97.282-94.689,106.094-103.661
-	c8.813-8.972-0.34-61.051-20.339-115.729c-41.43-113.274-45.206-150.941-16.607-165.64c39.089-20.091,92.734,9.589,137.764,76.218
-	l45.619,67.501l85.668-69.92c56.329-45.975,96.539-66.45,117.413-59.789c41.299,13.18,65.133,64.751,33.923,73.402
-	c-35.424,9.82-182.04,195.369-181.763,230.028c0.132,16.411,20.965,59.974,46.295,96.805c17.866,25.978,41.881,46.478,32.348,60.567
-	l-50.961,75.323c-9.883,14.608-46.391-24.341-89.639-62.147l-75.44-65.952l-83.635,82.484
-	c-45.999,45.367-88.943,82.251-95.433,81.966C78.115,597.423,3.226,509.959,3.226,500.606z"/>
-</svg>
-*/</script>
-
-
+        <script src="js/homepage-min.js"></script>  <!-- concatenated and minified -->
 
         <div class="restart-page">
         
@@ -186,13 +170,13 @@
 	                l-3.216-4.009l-3.565,5.014c-1.961,2.757-3.792,4.998-4.068,4.981C16.533,43.992,13.34,38.677,13.34,38.108z"/>
             </svg>
         </a>
-        </div>  
+        </div> <!-- end of refresh-page discreet icon -->
 
   
 
 
 
-                </div>
+        </div> <!-- end of container -->
     </body>
 
 <footer>

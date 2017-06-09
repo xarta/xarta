@@ -257,8 +257,8 @@ function tumble(transformRate)
         cubes[index].rotation.x += (cubes[index].xartaRot * transformRate);
         cubes[index].rotation.y += (cubes[index].xartaRot * transformRate);
 
-        console.log(cubes[index].xartaRot);
-        console.log(cubes[index].rotation.x);
+        //console.log(cubes[index].xartaRot);
+        //console.log(cubes[index].rotation.x);
     }, this);
 
 
@@ -449,12 +449,20 @@ function init() {
 
     // responosive sizes/quality ... big moon is high quality transparent png (over 300KB)
 
+    
+    loadTime = Date.now() - timerStart;     // set timerStart on index.html - doing this instead of
+                                            // window.performance as need before window is ready
     var theMoon;
-    if (window.innerWidth > 768)
+    
+    // the compute times in devices might vary considerably each time the page is refreshed,
+    // even with cached resources. Resorting to lower quality only if compute/load time is
+    // excessive, to help a little ... different between 47KB and over 300KB images
+    // (The lowest quality is quite apparent on a Note 4)
+    if ( (window.innerWidth > 768) || (loadTime < 2000) )
     {
         theMoon = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496588500/xarta/moon.png' );
     }
-    else if (window.innerWidth > 512)
+    else if ( (window.innerWidth > 512) || (loadTime < 3000) )
     {
         theMoon = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496576988/xarta/moon-lower-quality-512.png' );
     }
