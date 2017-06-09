@@ -2867,7 +2867,7 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex)
 
     // cross origin so I can use cloudinary, and 256 pixels width & height
 	var textureLoader = new THREE.TextureLoader().setCrossOrigin(true);
-	var texture = textureLoader.load( "https://res.cloudinary.com/xarta/image/upload/v1496448263/xarta/2014-me-at-work256.png" ); // BACK
+	var texture = textureLoader.load( "https://res.cloudinary.com/xarta/image/upload/v1497007069/xarta/2014-me-at-work256.jpg" ); // BACK
 
     // so we're making a cube e.g. 5 faces are letters X A R T A, and the backface is a pic of me lol ...
     // and by using transparency, light from the rest of the dynamic scene will illuminate "me" sometimes through the transparent cube
