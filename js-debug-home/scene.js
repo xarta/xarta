@@ -1,6 +1,6 @@
 var camera, controls, scene, renderer, clock;   // water stuff
                                                 // xarta using as a foundation
-// testing
+
 // animation sequences (calling them phases)
 var phaseCubeApproach = true;   // X A R T A cubes - approaching us
 var phaseMoonPushBack = true;   // simplfies directions vs camera

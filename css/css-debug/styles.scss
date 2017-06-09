@@ -214,56 +214,60 @@ body {
 
 
 
+/* refresh icon at bottom */
 
-
-
-
-
-
-/**
- * Not required for demo
- */
-@keyframes circle {
+@keyframes refresh {
   50% {
     transform: scale(1.26923077);
   }
 }
 
-@keyframes initials {
+@keyframes the-x {
   50% {
     transform: translateY(-8px) translateZ(0);
   }
 }
 
-.ild-ident {
+.restart-page {
   position: absolute;
-  right: 20px;
-  bottom: 20px;
+  right: 5px;
+  bottom: 5px;
+  z-index: 101;
+  
+  height: 2rem;
+  width: 2rem; 
+  
+  opacity: 0.4;
   
   svg {
-    overflow: hidden;
+    overflow: display;
     transform: translateZ(0);
+    height: 2rem;
+    width: 2rem;
 
-    .circle-holder {
+
+    .refresh-holder {
       transform: translate(-7px, -7px);
     }
 
-    .circle {
+    .refresh {
       transform: translate(7px, 7px);
-      fill: #7D294E;
+      fill: $yellow;
+    }
+
+    .x {
+        fill: $yellow;
     }
 
     &.active {
-      .i {
-        animation: initials .4s ease-in-out;
+      .x {
+        animation: the-x .4s ease-in-out;
+        fill: $red;
       }
 
-      .l {
-        animation: initials .4s .2s ease-in-out;
-      }
-
-      .circle {
-        animation: circle .5s .1s ease-in-out;
+      .refresh {
+        animation: refresh .5s .1s ease-in-out;
+        fill: $red;
       }
     }
   }

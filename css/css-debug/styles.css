@@ -140,32 +140,38 @@ body {
         border: 2px solid #ff0000;
         float: right; }
 
-/**
- * Not required for demo
- */
-@keyframes circle {
+/* refresh icon at bottom */
+@keyframes refresh {
   50% {
     transform: scale(1.26923); } }
 
-@keyframes initials {
+@keyframes the-x {
   50% {
     transform: translateY(-8px) translateZ(0); } }
 
-.ild-ident {
+.restart-page {
   position: absolute;
-  right: 20px;
-  bottom: 20px; }
-  .ild-ident svg {
-    overflow: hidden;
-    transform: translateZ(0); }
-    .ild-ident svg .circle-holder {
+  right: 5px;
+  bottom: 5px;
+  z-index: 101;
+  height: 2rem;
+  width: 2rem;
+  opacity: 0.4; }
+  .restart-page svg {
+    overflow: display;
+    transform: translateZ(0);
+    height: 2rem;
+    width: 2rem; }
+    .restart-page svg .refresh-holder {
       transform: translate(-7px, -7px); }
-    .ild-ident svg .circle {
+    .restart-page svg .refresh {
       transform: translate(7px, 7px);
-      fill: #7D294E; }
-    .ild-ident svg.active .i {
-      animation: initials .4s ease-in-out; }
-    .ild-ident svg.active .l {
-      animation: initials .4s .2s ease-in-out; }
-    .ild-ident svg.active .circle {
-      animation: circle .5s .1s ease-in-out; }
+      fill: #f7ec0e; }
+    .restart-page svg .x {
+      fill: #f7ec0e; }
+    .restart-page svg.active .x {
+      animation: the-x .4s ease-in-out;
+      fill: #ff0000; }
+    .restart-page svg.active .refresh {
+      animation: refresh .5s .1s ease-in-out;
+      fill: #ff0000; }

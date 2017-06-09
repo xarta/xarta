@@ -66,7 +66,8 @@ gulp.task('concat-minify-home-js', function() {
 
 
 gulp.task('xarta', function() {
-    gulp.watch('css/css-debug/*.scss', ['sass-minify']);
+    gulp.watch('css/css-debug/*.scss', ['sass']);
+    gulp.watch('css/css-debug/*.css', ['minify-css']);
     gulp.watch('js-debug-home/*.js', ['concat-minify-home-js']);
 });
 
