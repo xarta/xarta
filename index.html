@@ -13,23 +13,35 @@
     <!-- https://github.com/xarta/xarta -->
     <!-- (XARTA): INITIAL FILEs / INSPIRATION FROM: https://jsfiddle.net/k313cwtx/4/ -->
 
-    <link rel="preload" href="js/homepage-min.js" as="script"> <!-- concatenated / minified - see my repo for source -->
+    <!-- concatenated / minified - see my repo for source -->
+    <link rel="preload" href="js/homepage-min.js" as="script"> 
 
-    <!-- links to original pics found on https://jsfiddle.net/k313cwtx/4/ but compressed further and moved -->
-    <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/Eu0MQrk.png">
-    <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/KmwuMPu.jpg">
-    <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/8pUBeuw.jpg">
-    <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/fB9BaJJ.jpg">
+    <!-- links to original pics found on https://jsfiddle.net/k313cwtx/4/ -->
+    <!--  but compressed further and moved -->
+    <link rel="preload" href=
+        "https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/Eu0MQrk.png">
+    <link rel="preload" href=
+        "https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/KmwuMPu.jpg">
+    <link rel="preload" href=
+        "https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/8pUBeuw.jpg">
+    <link rel="preload" href=
+        "https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/fB9BaJJ.jpg">
 
 
-    <link rel="preload" href="https://res.cloudinary.com/xarta/image/upload/v1497007069/xarta/2014-me-at-work256.jpg">
+    <link rel="preload" href=
+        "https://res.cloudinary.com/xarta/image/upload/v1497007069/xarta/2014-me-at-work256.jpg">
+    <link rel="preload" href=
+        "https://res.cloudinary.com/xarta/image/upload/v1496587567/xarta/spiral-galaxy.jpg">
 
     <script type="text/javascript">
         var timerStart = Date.now();    // will use later - e.g. decide on page load speed
                                         // - if quick enough, will load higher quality moon etc.
+        
     </script>
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href=
+        "//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    
     <link rel="stylesheet" href="css/styles.css?v=1.0">
 
     <!--[if lt IE 9]>
@@ -48,12 +60,13 @@
 </head>
 
     <body>
-        <div id="container">
+        <div id="container" class="no-js">
 
 
 
 
-        <!-- <ul class="drawer">  <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
+        <!-- <ul class="drawer">  -->
+            <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
         <ul class="drawer">
         <li>
             <a href="#">
@@ -149,25 +162,41 @@
         <div class="restart-page">
         
         <a href="javascript:history.go(0)" target="_self" title="Refresh">
-            
-            <svg onmouseenter="el=this;el.classList.add('active');setTimeout(function(){el.classList.remove('active')},600);" xmlns="http://www.w3.org/2000/svg"  viewBox="-14 -14 80 80">
+
+            <svg onmouseenter= "el=this;el.classList.add('active');
+                 setTimeout(function(){el.classList.remove('active')},600);"
+                 xmlns="http://www.w3.org/2000/svg"  viewBox="-14 -14 80 80">
+
             <g class="refresh-holder">
-                <path class="refresh" d="M61.063-6.444c-3.155,3.74-6.231,7.583-9.375,11.339c-0.152,0.217-0.328-0.028-0.449-0.149
-                    c-3.563-4.229-7.932-7.455-12.674-9.317c-5.465-2.145-11.4-2.48-17.007-0.985C11.578-2.971,2.838,5.738-1.176,17.122
-                    c0.005,0.002,0.009,0.004,0.014,0.007c-0.335,0.8-0.523,1.704-0.523,2.662c0,3.258,2.177,5.898,4.86,5.898
-                    c2.302,0,4.228-1.939,4.73-4.545c2.871-7.401,8.55-13.128,15.107-15.082c7.585-2.322,16.185,0.234,21.71,7.062
-                    c-3.201,3.85-6.449,7.643-9.64,11.508c8.649-0.056,17.301-0.024,25.952-0.016C61.109,14.264,61.057,3.909,61.063-6.444z"/>
-                <path class="refresh" d="M46.139,30.043c-2.125,0-3.93,1.654-4.591,3.959c-0.001,0-0.003-0.001-0.004-0.002
-                    C38.768,41.512,33.18,47.439,26.6,49.55c-7.673,2.522-16.486,0.054-22.114-6.887c3.187-3.837,6.448-7.584,9.619-11.438
-                    c-8.676,0.01-17.353,0.006-26.028,0.004c-0.02,10.332-0.021,20.664,0.003,30.996c3.186-3.861,6.356-7.742,9.561-11.584
-                    c2.05,2.432,4.324,4.598,6.818,6.324c7.953,5.639,17.932,6.809,26.637,3.154c8.352-3.402,15.413-11.141,19.065-20.863
-                    C50.689,38.313,51,37.17,51,35.941C51,32.686,48.822,30.043,46.139,30.043z"/>
+                <path class="refresh" d=    
+                    "M61.063-6.444c-3.155,3.74-6.231,7.583-9.375,11.339c-0.152,
+                    0.217-0.328-0.028-0.449-0.149c-3.563-4.229-7.932-7.455-12.674-9.317
+                    c-5.465-2.145-11.4-2.48-17.007-0.985C11.578-2.971,2.838,5.738-1.176,
+                    17.122c0.005,0.002,0.009,0.004,0.014,0.007c-0.335,0.8-0.523,
+                    1.704-0.523,2.662c0,3.258,2.177,5.898,4.86,5.898c2.302,0,4.228-1.939,
+                    4.73-4.545c2.871-7.401,8.55-13.128,15.107-15.082c7.585-2.322,16.185,
+                    0.234,21.71,7.062c-3.201,3.85-6.449,7.643-9.64,11.508c8.649-0.056,
+                    17.301-0.024,25.952-0.016C61.109,14.264,61.057,3.909,61.063-6.444z"/>
+
+                <path class="refresh" d=
+                    "M46.139,30.043c-2.125,0-3.93,1.654-4.591,3.959c-0.001,
+                    0-0.003-0.001-0.004-0.002C38.768,41.512,33.18,47.439,26.6,49.55c-7.673,
+                    2.522-16.486,0.054-22.114-6.887c3.187-3.837,6.448-7.584,9.619-11.438
+                    c-8.676,0.01-17.353,0.006-26.028,0.004c-0.02,10.332-0.021,20.664,
+                    0.003,30.996c3.186-3.861,6.356-7.742,9.561-11.584c2.05,2.432,4.324,
+                    4.598,6.818,6.324c7.953,5.639,17.932,6.809,26.637,3.154c8.352-3.402,
+                    15.413-11.141,19.065-20.863C50.689,38.313,51,37.17,51,35.941C51,32.686,
+                    48.822,30.043,46.139,30.043z"/>
             </g>
-                <path class="x" d="M13.34,38.108c0-0.568,1.728-3.423,3.84-6.342c2.112-2.92,4.147-5.755,4.523-6.3
-	                c0.376-0.546-0.015-3.711-0.867-7.033c-1.767-6.885-1.928-9.174-0.708-10.066c1.667-1.222,3.953,0.582,5.873,4.632l1.946,4.102
-	                l3.652-4.249c2.4-2.794,4.115-4.038,5.006-3.634c1.76,0.802,2.775,3.936,1.445,4.461c-1.51,0.597-7.762,11.873-7.748,13.979
-	                c0.004,0.998,0.893,3.646,1.973,5.884c0.762,1.578,1.785,2.824,1.379,3.681L31.482,41.8c-0.422,0.888-1.979-1.479-3.822-3.776
-	                l-3.216-4.009l-3.565,5.014c-1.961,2.757-3.792,4.998-4.068,4.981C16.533,43.992,13.34,38.677,13.34,38.108z"/>
+            <path class="x" d=
+                "M13.34,38.108c0-0.568,1.728-3.423,3.84-6.342c2.112-2.92,4.147-5.755,4.523-6.3
+	            c0.376-0.546-0.015-3.711-0.867-7.033c-1.767-6.885-1.928-9.174-0.708-10.066c1.667-1.222,
+                3.953,0.582,5.873,4.632l1.946,4.102l3.652-4.249c2.4-2.794,4.115-4.038,5.006-3.634c1.76,
+                0.802,2.775,3.936,1.445,4.461c-1.51,0.597-7.762,11.873-7.748,13.979c0.004,0.998,0.893,
+                3.646,1.973,5.884c0.762,1.578,1.785,2.824,1.379,3.681L31.482,41.8c-0.422,
+                0.888-1.979-1.479-3.822-3.776l-3.216-4.009l-3.565,5.014c-1.961,2.757-3.792,4.998-4.068,
+                4.981C16.533,43.992,13.34,38.677,13.34,38.108z"/>
+
             </svg>
         </a>
         </div> <!-- end of refresh-page discreet icon -->
@@ -181,6 +210,8 @@
 
 <footer>
     <script>
+        document.getElementById("container").classList.remove("no-js");
+
         window.onload = function(e)
         { 
             console.log("window.onload", e, Date.now());
@@ -188,6 +219,22 @@
 
 
         }
+
+    </script>
+    <div id="xarta-no-js">
+        <style>
+            /* TODO: @media for no-js, and more functionality */
+            .no-js
+            {
+                background-image: url("https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg");
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+    </div>
+    <script>
+        var element = document.getElementById("xarta-no-js");
+        element.parentNode.removeChild(element);
     </script>
 
 </footer>
