@@ -1,10 +1,12 @@
 /* Using code for navigation from: https://codepen.io/IanLunn/pen/NPapxy */
+/* colours in scene.js */
+/* TODO: sass to js for these colours */
+/* also use ... */
+/* not planning to exceed 4 li's deep in this design */
 html, #container {
   position: absolute;
   overflow: hidden;
-  width: 100%;
   width: 100vw;
-  height: 100%;
   height: 100vh;
   margin: 0 auto; }
 
@@ -26,13 +28,12 @@ body {
   right: 5px;
   height: 100%;
   padding: .4em 0;
-  /* background: $backgroundLight; */
   color: white;
   text-align: center;
   /* Remove 4px gap between <li> */
   font-size: 0;
-  /* ------------------------------------------------------ */
-  /* ---------------------------------------------------- */ }
+  /* ------------------------- */
+  /* ------------------------- */ }
   .drawer li {
     pointer-events: none;
     position: relative;
@@ -41,6 +42,7 @@ body {
     list-style: none;
     line-height: 100%;
     transform: translateZ(0);
+    background-color: rgba(0, 0, 0, 0.7);
     opacity: 0.5; }
   .drawer li:hover {
     opacity: 1; }
@@ -49,16 +51,17 @@ body {
     position: relative;
     display: block;
     min-width: 5em;
-    margin-bottom: .4em;
+    /*margin-bottom: .4em;*/
     padding: .4em;
     line-height: 100%;
     /* Reset font-size */
     font-size: 16px;
     text-decoration: none;
     color: white;
-    transition: background 0.3s; }
+    transition: background 0.3s;
+    /* i.e. clicked on something - retains focus/active */ }
     .drawer a:active, .drawer a:focus {
-      background: #B44659; }
+      background: #45163F; }
   .drawer i {
     display: block;
     margin-bottom: .2em;
@@ -68,28 +71,31 @@ body {
     font-family: sans-serif;
     text-transform: uppercase; }
   .drawer li:hover ul {
+    /* --------------------- */
     /* Open the fly-out menu */
-    transform: translateX(0);
-    background: #B44659;
-    width: auto;
+    /* --------------------- */
+    transform: translateX(-10px);
     opacity: 1;
-    /* Enable this if you wish to replicate hoverIntent */
-    transition-delay: .3s; }
-    .drawer li:hover ul > li {
-      width: auto; }
+    transition-delay: .1s; }
+  .drawer > li li:nth-child(5n+1) a:hover {
+    background: #45163F; }
+  .drawer > li li:nth-child(5n+2) a:hover {
+    background: #106316; }
+  .drawer > li li:nth-child(5n+3) a:hover {
+    background: #f77c02; }
+  .drawer > li li:nth-child(5n+4) a:hover {
+    background: #ff0000; }
+  .drawer > li li:nth-child(5n+5) a:hover {
+    background: #0212f4; }
   .drawer > li {
     display: block;
     /* Add a shadow to the top-level link */
     /* Show the shadow when the link is hovered over */
     /* Fly out menus (inner <ul> ) */ }
-    .drawer > li > a {
-      background: #7D294E; }
+    .drawer > li a:hover {
+      background-color: #45163F; }
     .drawer > li:hover {
       z-index: 100; }
-    .drawer > li:hover a {
-      background: #B44659; }
-    .drawer > li a:hover {
-      background: #F56356; }
     .drawer > li > a:after {
       content: "";
       position: relative;
@@ -115,16 +121,24 @@ body {
       z-index: -1;
       top: 0;
       right: 100%;
-      height: 100%;
-      /*width: auto;*/
       width: auto;
+      max-height: 80vw;
+      max-width: 80vw;
+      min-width: 75vw;
       white-space: nowrap;
+      /* --------------- */
       /* Close the menus */
+      /* --------------- */
       opacity: 0;
       transform: translateX(100%);
-      background: #B44659;
-      transition: transform 0.5s;
-      /* transition: opacity $menuSpeed; */ }
+      transition: transform 0.5s, opacity 0.5s;
+      transition-delay: 0.3s; }
+      .drawer > li ul > li {
+        padding: 2px;
+        margin: 2px;
+        float: right;
+        border: 2px solid #ff0000;
+        float: right; }
 
 /**
  * Not required for demo
