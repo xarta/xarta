@@ -391,7 +391,7 @@ function tumble(transformRate)
     
         if(calmCylinders === false)
         {
-            moveRate = 10+((Math.random() + 1) * (125*transformRate));
+            moveRate = (90*transformRate)+((Math.random() + 1) * (90*transformRate));
             saveCycles = NO; // reset monostable delay for suppressing matrix update
         }
         else
@@ -475,7 +475,7 @@ function init() {
     // even with cached resources. Resorting to lower quality only if compute/load time is
     // excessive, to help a little ... different between 47KB and over 300KB images
     // (The lowest quality is quite apparent on a Note 4)
-    if ( (window.innerWidth > 768) || (loadTime < 2000) )
+    if ( (window.innerWidth > 768) || (loadTime < 2500) )
     {
         theMoon = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496588500/xarta/moon.png' );
     }
@@ -681,7 +681,7 @@ function init() {
                     cylinders[i] = getNewXartaCube(  20,5,-800, "TAXAR", 3, colours);
                     cylinders[i] = getNewXartaCube(  30,5,-800, "AXART", 4, colours);
                 }
-                else if (window.fps > 40)
+                else if ((window.fps + getRandomInt(0,20) > 36))
                 {
                     if (i < num_cylinders/4)
                     {
@@ -734,9 +734,9 @@ function init() {
                 cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
                 cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
 
-                cylinders[i].xartaDirx = (Math.random() - 0.5) * 5;
-                cylinders[i].xartaDiry = (Math.random() - 0.5) * 5;
-                cylinders[i].xartaDirz = (Math.random() - 0.5) * 5;
+                cylinders[i].xartaDirx = (Math.random() - 0.5) * 15; // velocity
+                cylinders[i].xartaDiry = (Math.random() - 0.5) * 10;
+                cylinders[i].xartaDirz = (Math.random() - 0.5) * 20;
 
                 cylinders[i].updateMatrix();
                 cylinders[i].matrixAutoUpdate = false;
@@ -794,7 +794,7 @@ function calcFps(delta)
 
     if(accDelta > 1)
     {
-        fps = frames;
+        window.fps = frames;
         accDelta = 0;
         frames = 1;
     }
