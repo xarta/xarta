@@ -70,6 +70,7 @@ body {
   color: $textColor;
   text-align: center;
   transition: opacity $menuSpeed;
+  transition-delay: 0.3s;
   
 
   /* Remove 4px gap between <li> */
@@ -204,7 +205,7 @@ body {
       opacity: 0;
       transform: translateX(100%);
       transition: transform $menuSpeed, opacity $menuSpeed;
-      transition-delay: 0.3s;
+      transition-delay: 0.4s;
 
         > li {
             padding: 2px;
