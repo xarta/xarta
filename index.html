@@ -288,6 +288,10 @@
         // AND ACTIVE ONE HAS OPACITY "1"
         for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
         {
+            // DAVE: TODO ... USE DIFFERENT EVENT LISTENERS - ONE FOR EACH <LI> - IDENTIFY EACH ONE
+            //                EASILY !!!!
+            // I.E. EACH FUNCTION: TOGGLE REFERRING ELEMENT, AND ADD CLASS TO OTHER ELEMENTS
+            
             document.getElementsByClassName("sticky")[i].addEventListener('touchstart', function(e){
                 var touchlist = e.touches
 

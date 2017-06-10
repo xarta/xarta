@@ -85,11 +85,15 @@ body {
     line-height: 100%;
     transform: translateZ(0);
     background-color: $black-tint;
-    opacity: 0.5;
+    opacity: 0.7;
+  }
+
+  li:hover {
+      opacity: 1.0;
   }
 
   li.has-hover:hover {
-      opacity: 1;
+    opacity: 1.0;
   }
   
   a {
@@ -147,13 +151,16 @@ body {
 
   > li {
     display: block;
+ 
       
     a:hover {
+        opacity: 1;
         background-color: $backgroundHighlight;
     }
     
     &:hover {
       z-index: 100;
+      opacity: 1;
     }
         
     /* Add a shadow to the top-level link */
