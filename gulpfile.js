@@ -45,7 +45,7 @@ gulp.task('minify-html', function() {
 });
 
 gulp.task('sass', function() {
-    gulp.src('css/css-debug/*.scss')
+    return gulp.src('css/css-debug/*.scss')
         .pipe(sass())
         .pipe(gulp.dest(function(f) {
             return f.base;
@@ -59,7 +59,7 @@ gulp.task('minify-css', function() {
 });
 
 gulp.task('minify-home-js', function() {
-  gulp.src('js-debug-home/*.js')
+  return gulp.src('js-debug-home/*.js')
     .pipe(minify({
         ext:{
             src:'-debug.js',
