@@ -88,7 +88,7 @@ body {
     opacity: 0.5;
   }
 
-  li:hover {
+  li.has-hover:hover {
       opacity: 1;
   }
   
@@ -127,7 +127,7 @@ body {
 
   /* ------------------------- */
     
-  li:hover ul {
+  li.has-hover:hover ul {
     /* --------------------- */
     /* Open the fly-out menu */
     /* --------------------- */
@@ -238,7 +238,7 @@ body {
   width: 2rem; 
   
   opacity: 0.4;
-  
+
   svg {
     overflow: display;
     transform: translateZ(0);

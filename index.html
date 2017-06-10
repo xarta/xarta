@@ -39,9 +39,38 @@
         
     </script>
 
+    <script>/*
+    <!-- BOOTSTRAP -->
+    <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href=
-        "//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    
+        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+        crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href=
+        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" 
+        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" 
+        crossorigin="anonymous">
+    */</script>
+    <!--
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    -->
+    <!-- Latest compiled and minified JavaScript -->
+    <!--
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
+        crossorigin="anonymous"></script>
+    -->
+
+    <link rel="stylesheet" href=
+        "https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
+
     <link rel="stylesheet" href="css/styles.css?v=1.0">
 
     <!--[if lt IE 9]>
@@ -68,12 +97,12 @@
         <!-- <ul class="drawer">  -->
             <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
         <ul class="drawer">
-        <li>
-            <a href="#">
+        <li id="li01" class="has-hover">
+            <a class="sticky" href="#?xarta1">
             <i class="fa fa-info-circle"></i>
             <span>Info</span>
             </a>
-            <ul>
+            <ul class="ul01">
             <li>
                 <a href="https://blog.xarta.co.uk/" target="_blank">
                 <i class="fa fa-folder-open"></i>
@@ -94,8 +123,8 @@
             </li>
             </ul>
         </li>
-        <li>
-            <a href="#">
+        <li id="li02" class="has-hover">
+            <a class="sticky" href="#?xarta2">
             <i class="fa fa-folder"></i>
             <span>Projects</span>
             </a>
@@ -120,8 +149,8 @@
             </li>
             </ul>
         </li>
-        <li>
-            <a href="#">
+        <li id="li03" class="has-hover">
+            <a class="sticky" href="#?xarta3">
             <i class="fa fa-share-alt"></i>
             <span>Social</span>
             </a>
@@ -190,7 +219,7 @@
             </g>
             <path class="x" d=
                 "M13.34,38.108c0-0.568,1.728-3.423,3.84-6.342c2.112-2.92,4.147-5.755,4.523-6.3
-	            c0.376-0.546-0.015-3.711-0.867-7.033c-1.767-6.885-1.928-9.174-0.708-10.066c1.667-1.222,
+                c0.376-0.546-0.015-3.711-0.867-7.033c-1.767-6.885-1.928-9.174-0.708-10.066c1.667-1.222,
                 3.953,0.582,5.873,4.632l1.946,4.102l3.652-4.249c2.4-2.794,4.115-4.038,5.006-3.634c1.76,
                 0.802,2.775,3.936,1.445,4.461c-1.51,0.597-7.762,11.873-7.748,13.979c0.004,0.998,0.893,
                 3.646,1.973,5.884c0.762,1.578,1.785,2.824,1.379,3.681L31.482,41.8c-0.422,
@@ -201,8 +230,11 @@
         </a>
         </div> <!-- end of refresh-page discreet icon -->
 
-  
-
+        <!--
+        <div id="log" style="position: absolute; z-index: 100; top: 5px; left: 20px; 
+                            background-color: white; width: 50vw; height: 75vh;">
+        </div>
+        -->
 
 
         </div> <!-- end of container -->
@@ -235,6 +267,78 @@
     <script>
         var element = document.getElementById("xarta-no-js");
         element.parentNode.removeChild(element);
+
+        
+        function log(msg) {
+            //var p = document.getElementById('log');
+            //p.innerHTML = msg + "<br>" + p.innerHTML;
+        }
+
+        var button1now = false;
+        var button1was = false;
+        var button2now = false;
+        var button2was = false;
+        var button3now = false;
+        var button3was = false;
+        var probElement = "li01";
+        var count = 0;
+
+        // experimenting with touch, for cancelling sticky flyout menu on double-tap
+        // THIS IS DEPENDENT ON HACKY-WAY OF USING OPACITY ... ASSUMES 3 BUTTONS,
+        // AND ACTIVE ONE HAS OPACITY "1"
+        for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
+        {
+            document.getElementsByClassName("sticky")[i].addEventListener('touchstart', function(e){
+                var touchlist = e.touches
+
+                count += 1;
+
+                var li01 =document.getElementById("li01");
+                var li02 =document.getElementById("li02");
+                var li03 =document.getElementById("li03");
+
+                var li01opac = window.getComputedStyle(li01).opacity;
+                var li02opac = window.getComputedStyle(li02).opacity;
+                var li03opac = window.getComputedStyle(li03).opacity;
+
+                if (li01opac >0.8) {button1now = true; probElement = "li01";};
+                if (li02opac >0.8) {button2now = true; probElement = "li02";};
+                if (li03opac >0.8) {button3now = true; probElement = "li03";};
+
+                var change =    (button1now && !button1was) || 
+                                (button2now && !button2was) ||
+                                (button3now && !button3was);
+
+                if (!change && (count > 1))
+                {
+                    document.getElementById(probElement).classList.remove("has-hover");
+                    log("&gt; DO SOMETHING");
+                    count = 0;
+                }
+                else if (change)
+                {
+                    count = count -1;
+                    button1was = button1now;
+                    button2was = button2now;
+                    button3was = button3now;
+
+                    log("&gt; DO NOTHING");
+                }
+                else
+                {
+                    document.getElementById("li01").classList.add("has-hover");
+                    document.getElementById("li02").classList.add("has-hover");
+                    document.getElementById("li03").classList.add("has-hover");
+                }
+
+                button1now = false;
+                button2now = false;
+                button3now = false;
+                
+            }, false)
+        }
+
+        
     </script>
 
 </footer>

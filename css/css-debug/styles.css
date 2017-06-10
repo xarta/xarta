@@ -44,7 +44,7 @@ body {
     transform: translateZ(0);
     background-color: rgba(0, 0, 0, 0.7);
     opacity: 0.5; }
-  .drawer li:hover {
+  .drawer li.has-hover:hover {
     opacity: 1; }
   .drawer a {
     pointer-events: auto;
@@ -70,7 +70,7 @@ body {
     font-size: .625em;
     font-family: sans-serif;
     text-transform: uppercase; }
-  .drawer li:hover ul {
+  .drawer li.has-hover:hover ul {
     /* --------------------- */
     /* Open the fly-out menu */
     /* --------------------- */
