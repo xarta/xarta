@@ -1,3 +1,11 @@
+// TODO: SASS TO JS TECHNIQUE TO READ THESE FROM .scss style sheet variables
+var colours = new Array();                  // multi-use incl. pyramids (cylinders sic)
+colours[0] = ["orange",     "#ff0000"];     // red background
+colours[1] = ["red",        "#0212f4"];     // blue background
+colours[2] = ["green",      "#f7ec0e"];     // yellow background
+colours[3] = ["yellow",     "#106316"];     // green background
+colours[4] = ["purple",     "#f77c02"];     // orange background
+
 var camera, controls, scene, renderer, clock;   // water stuff
                                                 // xarta using as a foundation
 
@@ -20,6 +28,8 @@ var moonMesh;                   // the mesh to add to the scene
 var starsMesh;                  // the mesh to add to the scene
 
 var num_cylinders = 0;
+var num_cylinders_so_far = 0;
+var cylinderMasterOpacity = 0;
 var range_cylinders = 499;  // keep within 3D bounds {x, y, z} -> 499 etc.
 var cylinders;              // Array()
 var calmCylinders = false;  // want cylinders to scurry off screen - stop distracting
@@ -68,19 +78,21 @@ var initscale = 8;                          // cube scaling
 var cubes = new Array();                    // 5 cubes ... X A R T A
 if (window.innerHeight > window.innerWidth) // portrait e.g. phones
 {
-    cubes[0] = getNewXartaCube( -8,5,-800, "XARTA", 0); // staggar z so fits camera "perspective" view
-    cubes[1] = getNewXartaCube(  0,5,-820, "ARTAX", 1);
-    cubes[2] = getNewXartaCube( 10,5,-840, "RTAXA", 2);
-    cubes[3] = getNewXartaCube( 20,5,-860, "TAXAR", 3);
-    cubes[4] = getNewXartaCube( 30,5,-880, "AXART", 4);
+    // staggar z so fits camera "perspective" view
+    cubes[0] = getNewXartaCube( -8,5,-800, "XARTA", 0, colours);
+    cubes[1] = getNewXartaCube(  0,5,-820, "ARTAX", 1, colours);
+    cubes[2] = getNewXartaCube( 10,5,-840, "RTAXA", 2, colours);
+    cubes[3] = getNewXartaCube( 20,5,-860, "TAXAR", 3, colours);
+    cubes[4] = getNewXartaCube( 30,5,-880, "AXART", 4, colours);
 }
 else
 {
-    cubes[0] = getNewXartaCube( -10,5,-800, "XARTA", 0); // just in a row - camera zoom will always mean fitting (mostly)
-    cubes[1] = getNewXartaCube(   0,5,-800, "ARTAX", 1);
-    cubes[2] = getNewXartaCube(  10,5,-800, "RTAXA", 2);
-    cubes[3] = getNewXartaCube(  20,5,-800, "TAXAR", 3);
-    cubes[4] = getNewXartaCube(  30,5,-800, "AXART", 4);
+    // just in a row - camera zoom will always mean fitting (mostly)
+    cubes[0] = getNewXartaCube( -10,5,-800, "XARTA", 0, colours);
+    cubes[1] = getNewXartaCube(   0,5,-800, "ARTAX", 1, colours);
+    cubes[2] = getNewXartaCube(  10,5,-800, "RTAXA", 2, colours);
+    cubes[3] = getNewXartaCube(  20,5,-800, "TAXAR", 3, colours);
+    cubes[4] = getNewXartaCube(  30,5,-800, "AXART", 4, colours);
 }
 
 
@@ -88,16 +100,11 @@ animate();  // kickstart the animation loop
 
 
 
-function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex) 
+function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours) 
 {
 	console.log('getNewXartaCube('+xPos+', '+yPos+', '+zPos+', '+word+', '+colourStartIndex+')');
 
-    var colours = new Array();
-    colours[0] = ["orange",     "#ff0000"];     // red background
-    colours[1] = ["red",        "#0212f4"];     // blue background
-    colours[2] = ["green",      "#f7ec0e"];     // yellow background
-    colours[3] = ["yellow",     "#106316"];     // green background
-    colours[4] = ["purple",     "#f77c02"];     // orange background
+
 
 /*
     console.log(colours[(colourStartIndex + 0) % 5][1])
@@ -233,30 +240,42 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex)
 
 // this function should now be called
 // extended animate or something (more than a tumble - it evolved)
+var cubesToTumble = true;
 function tumble(transformRate)
 {
 
+    if (cubesToTumble)
+    {
+        var xartaRotAcc = 0;
+        cubes.forEach(function(cube, index, ar){
 
-    cubes.forEach(function(cube, index, ar){
 
+            if ( (5 < cubes[index].rotation.x) && (cubes[index].rotation.x < 6) )
+            {
+                cubes[index].xartaRot = -1; // reverse rotation
+            }
+            if (cubes[index].rotation.x < 0)
+            {
+                cubes[index].xartaRot = 0; // stop, showing X A R T A (not precise on slow machine)
+            }
+            
+            xartaRotAcc += cubes[index].xartaRot;
 
-        if ( (5 < cubes[index].rotation.x) && (cubes[index].rotation.x < 6) )
+            // rotation.x starts at 0 and is positive accumulative
+            cubes[index].rotation.x += (cubes[index].xartaRot * transformRate);
+            cubes[index].rotation.y += (cubes[index].xartaRot * transformRate);
+
+            //console.log(cubes[index].xartaRot);
+            //console.log(cubes[index].rotation.x);
+        }, this);
+
+        if (xartaRotAcc === 0)
         {
-            cubes[index].xartaRot = -1; // reverse rotation
-        }
-        if (cubes[index].rotation.x < 0)
-        {
-            cubes[index].xartaRot = 0; // stop, showing X A R T A (not precise on slow machine)
+            cubesToTumble = false;
         }
 
-        // rotation.x starts at 0 and is positive accumulative
-        cubes[index].rotation.x += (cubes[index].xartaRot * transformRate);
-        cubes[index].rotation.y += (cubes[index].xartaRot * transformRate);
-
-        //console.log(cubes[index].xartaRot);
-        //console.log(cubes[index].rotation.x);
-    }, this);
-
+    }
+ 
 
     var approachRate = 200 * transformRate;
     var fit =  ( (window.innerWidth / window.innerHeight) * 2 ) - approachRate ;
@@ -335,7 +354,7 @@ function tumble(transformRate)
 
     // TODO: Cylinder???  PYRAMID !!!  MUST HAVE BEEN MAD !!!!
     // RANDOM CYLINDER MOVEMENT
-    for (var i = 0; i < num_cylinders; i++) {
+    for (var i = 0; i < num_cylinders_so_far; i++) {
 
 
         cylinders[i].position.x += cylinders[i].xartaDirx;
@@ -348,6 +367,7 @@ function tumble(transformRate)
 
 
         // materialise cylinders at start or later, if not paused
+        //var cylinderOpacity = cylinderMasterOpacity;
         var cylinderOpacity = cylinders[i].material.opacity;
         if ( (cylinderOpacity < 1.0) && (calmCylinders === false) )
         {
@@ -366,11 +386,12 @@ function tumble(transformRate)
             }
         }
 
+        cylinderMasterOpacity = cylinderOpacity;
         cylinders[i].material.opacity = cylinderOpacity;
     
         if(calmCylinders === false)
         {
-            moveRate = (Math.random() + 1) * (125*transformRate);
+            moveRate = 10+((Math.random() + 1) * (125*transformRate));
             saveCycles = NO; // reset monostable delay for suppressing matrix update
         }
         else
@@ -559,23 +580,70 @@ function init() {
             water.position.set(-70, 1, 0);
             water.rotation.set(Math.PI * -0.5, 0, 0);
             water.updateMatrix();
-
-
-            scene.add(moonMesh);
             
-            moonMesh.material.color.setHex( 0xffffff );
-            scene.add(water);  
+            setTimeout(function() {
+                scene.add(water);  
+            }, 200);
+            
         }
     }, 3000);
 
 
 
 
+    function getRandomInt(min, max) 
+    {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
+    function getRandomCol(colours)
+    {
+        var randColour = getRandomInt(0,colours.length-1);
+        return colours[randColour][1].replace("#","0x");
+    }
 
-    // CYLINDERS        TODO: Some patterned ones e.g. Bee colour stripes, with Doppler-shift buzz audio from camera position
-    var geometry = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
-    var material = new THREE.MeshPhongMaterial({ color: 0xafab5b, shading: THREE.FlatShading, transparent: true,  opacity: 0 });
+    // (I say cylinders ... I mean pyramids ... brain-dead moment early on)
+    // CYLINDERS        TODO: Some patterned ones e.g. Bee colour stripes, 
+    //                  with Doppler-shift buzz audio from camera position
+    //                  nb: nice colour is yellow/gold: 0xafab5b
+    var geometryDefault = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+
+    var materialDefault = new THREE.MeshPhongMaterial({ 
+                    color: 0xafab5b, 
+                    shading: THREE.FlatShading, 
+                    transparent: true,  opacity: 0 });
+
+    var geometrySphere = new THREE.SphereGeometry( 5, 32, 32 );
+
+    var geometryComplex = new THREE.Geometry();
+
+    for ( var count = 0; count < 10; count ++ ) 
+    {
+
+        var geo = new THREE.BoxGeometry( 5, 5, 5 );
+
+        geo.translate( THREE.Math.randFloat( - 5, 5 ), THREE.Math.randFloat( - 5, 5 ), THREE.Math.randFloat( - 5, 5 ) );
+
+        var color = new THREE.Color().setHex(getRandomCol(colours));
+
+        for ( var i = 0; i < geo.faces.length; i ++ ) 
+        {
+
+            var face = geo.faces[ i ];
+            face.vertexColors.push( color, color, color ); // all the same in this case
+            //face.color.set( color ); // this works, too; use one or the other
+
+        }
+
+        geometryComplex.merge( geo );
+
+    }
+
+    var materialComplex = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff, 
+                    vertexColors: THREE.VertexColors,
+                    shading: THREE.FlatShading, 
+                    transparent: true,  opacity: 0 });
 
     setTimeout(function() {
         if (window.fps < 60)
@@ -589,22 +657,100 @@ function init() {
         
         console.log("Number of cylinders: "+ num_cylinders);
         cylinders = new Array(num_cylinders);
-        for (var i = 0; i < num_cylinders; i++) {
 
-            cylinders[i] = new THREE.Mesh(geometry, material);
-            cylinders[i].position.x = (Math.random() - 0.5) * range_cylinders;
-            cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
-            cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
 
-            cylinders[i].xartaDirx = (Math.random() - 0.5) * 5;
-            cylinders[i].xartaDiry = (Math.random() - 0.5) * 5;
-            cylinders[i].xartaDirz = (Math.random() - 0.5) * 5;
+        let i = 0;
 
-            cylinders[i].updateMatrix();
-            cylinders[i].matrixAutoUpdate = false;
-            scene.add(cylinders[i]);
+        let start = Date.now();
 
-        }      
+        function addShape() 
+        {
+
+            if (i < num_cylinders) 
+            {
+                setTimeout(addShape, Math.floor(30000/window.fps)); 
+
+                var setColour = getRandomCol(colours);
+                console.log("Adding shape: " + i);
+                
+                if ( (i < 5) && (window.fps > 50) )
+                {
+                    cylinders[i] = getNewXartaCube( -10,5,-800, "XARTA", 0, colours);
+                    cylinders[i] = getNewXartaCube(   0,5,-800, "ARTAX", 1, colours);
+                    cylinders[i] = getNewXartaCube(  10,5,-800, "RTAXA", 2, colours);
+                    cylinders[i] = getNewXartaCube(  20,5,-800, "TAXAR", 3, colours);
+                    cylinders[i] = getNewXartaCube(  30,5,-800, "AXART", 4, colours);
+                }
+                else if (window.fps > 40)
+                {
+                    if (i < num_cylinders/4)
+                    {
+                        // separate for different colours though more compute?
+                        var geometrySimple = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+                        var materialSimple = new THREE.MeshPhongMaterial({ 
+                        color: 0xffffff, 
+                        shading: THREE.FlatShading, 
+                        transparent: true,  opacity: 0 });
+
+                        cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                        cylinders[i].material.color.setHex(setColour);
+                    }
+                    else if (i < num_cylinders/2)
+                    {
+                        cylinders[i] = new THREE.Mesh(geometryComplex, materialComplex);
+                    }
+                    else if (i < num_cylinders*0.75)
+                    {
+                        var geometrySimple = new THREE.SphereGeometry( 10, 64, 64 );
+                        var materialSimple = new THREE.MeshPhongMaterial({ 
+                        color: 0xffffff, 
+                        shading: THREE.FlatShading, 
+                        transparent: true,  opacity: 0 });
+
+                        cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                        cylinders[i].material.color.setHex(setColour);
+                    }
+                    else
+                    {
+                        var geometrySimple = new THREE.BoxBufferGeometry( 50, 50, 50 );
+                        var materialSimple = new THREE.MeshPhongMaterial({ 
+                        color: 0xffffff, 
+                        shading: THREE.FlatShading, 
+                        transparent: true,  opacity: 0 });
+
+                        cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                        cylinders[i].material.color.setHex(setColour);
+                    }
+                }
+                else
+                {
+                    cylinders[i] = new THREE.Mesh(geometryDefault, materialDefault);
+                }
+
+                
+                
+
+                cylinders[i].position.x = (Math.random() - 0.5) * range_cylinders;
+                cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
+                cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
+
+                cylinders[i].xartaDirx = (Math.random() - 0.5) * 5;
+                cylinders[i].xartaDiry = (Math.random() - 0.5) * 5;
+                cylinders[i].xartaDirz = (Math.random() - 0.5) * 5;
+
+                cylinders[i].updateMatrix();
+                cylinders[i].matrixAutoUpdate = false;
+
+                if(calmCylinders === false)
+                {
+                    scene.add(cylinders[i]);
+                    window.num_cylinders_so_far = i;
+                    i++;
+                }
+            }
+        }
+        addShape();
+             
     },6000);
 
 
