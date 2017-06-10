@@ -69,7 +69,7 @@ body {
   padding: .4em 0;
   color: $textColor;
   text-align: center;
-  
+  transition: opacity $menuSpeed;
   
 
   /* Remove 4px gap between <li> */

@@ -36,7 +36,10 @@
     <script type="text/javascript">
         var timerStart = Date.now();    // will use later - e.g. decide on page load speed
                                         // - if quick enough, will load higher quality moon etc.
-        
+        //** ******************
+        var xartaDebug = false;
+        //** ******************
+
     </script>
 
     <script>/*
@@ -97,12 +100,12 @@
         <!-- <ul class="drawer">  -->
             <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
         <ul class="drawer">
-        <li id="li01" class="has-hover">
-            <a class="sticky" href="#?xarta1">
+        <li id="li01" class="sticky has-hover">
+            <a href="#?li01">
             <i class="fa fa-info-circle"></i>
             <span>Info</span>
             </a>
-            <ul class="ul01">
+            <ul>
             <li>
                 <a href="https://blog.xarta.co.uk/" target="_blank">
                 <i class="fa fa-folder-open"></i>
@@ -123,8 +126,8 @@
             </li>
             </ul>
         </li>
-        <li id="li02" class="has-hover">
-            <a class="sticky" href="#?xarta2">
+        <li id="li02" class="sticky has-hover">
+            <a href="#?li02">
             <i class="fa fa-folder"></i>
             <span>Projects</span>
             </a>
@@ -149,8 +152,8 @@
             </li>
             </ul>
         </li>
-        <li id="li03" class="has-hover">
-            <a class="sticky" href="#?xarta3">
+        <li id="li03" class="sticky has-hover">
+            <a href="#?xarta?li03">
             <i class="fa fa-share-alt"></i>
             <span>Social</span>
             </a>
@@ -230,11 +233,12 @@
         </a>
         </div> <!-- end of refresh-page discreet icon -->
 
-        <!--
-        <div id="log" style="position: absolute; z-index: 100; top: 5px; left: 20px; 
-                            background-color: white; width: 50vw; height: 75vh;">
+        
+        <div id="log" class = "debug" style="position: absolute; display: none;
+                                z-index: 100; top: 5px; left: 20px; 
+                                background-color: white; width: 50vw; height: 75vh;">
         </div>
-        -->
+        
 
 
         </div> <!-- end of container -->
@@ -268,78 +272,80 @@
         var element = document.getElementById("xarta-no-js");
         element.parentNode.removeChild(element);
 
-        
-        function log(msg) {
-            //var p = document.getElementById('log');
-            //p.innerHTML = msg + "<br>" + p.innerHTML;
+        if (window.xartaDebug === true)
+        {
+            for (var i=0; i<document.getElementsByClassName("debug").length; i++)
+            {
+                document.getElementsByClassName("debug")[i].style.display = "block";
+            }
         }
 
-        var button1now = false;
-        var button1was = false;
-        var button2now = false;
-        var button2was = false;
-        var button3now = false;
-        var button3was = false;
-        var probElement = "li01";
-        var count = 0;
+        function log(msg) {
+            var p = document.getElementById('log');
+            p.innerHTML = msg + "<br>" + p.innerHTML;
+        }
+
+        var navDrawer = document.getElementsByClassName("drawer")[0];
+        var dimDrawer;
+        navDrawer.style.opacity = 0.4;
+ 
+        navDrawer.addEventListener('mouseover', function(e){
+            window.navDrawer.style.opacity = 1.0;
+        }, false);
+
+        navDrawer.addEventListener('mouseout', function(e){
+            window.navDrawer.style.opacity = 0.3;
+        }, false);
+
+        navDrawer.addEventListener('touchstart', function(e){
+            window.navDrawer.style.opacity = 1.0;
+            clearTimeout(dimDrawer);
+            dimDrawer = setTimeout(function() {
+                window.navDrawer.style.opacity = 0.2;
+            }, 3000);
+        }, false);
+
 
         // experimenting with touch, for cancelling sticky flyout menu on double-tap
-        // THIS IS DEPENDENT ON HACKY-WAY OF USING OPACITY ... ASSUMES 3 BUTTONS,
-        // AND ACTIVE ONE HAS OPACITY "1"
+        // THIS IS DEPENDENT ON HACKY-WAY OF USING KNOW INFORMATION ON OPACITY
+        var topListButton;
         for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
         {
-            // DAVE: TODO ... USE DIFFERENT EVENT LISTENERS - ONE FOR EACH <LI> - IDENTIFY EACH ONE
-            //                EASILY !!!!
-            // I.E. EACH FUNCTION: TOGGLE REFERRING ELEMENT, AND ADD CLASS TO OTHER ELEMENTS
-            
-            document.getElementsByClassName("sticky")[i].addEventListener('touchstart', function(e){
-                var touchlist = e.touches
+            topListButton = document.getElementsByClassName("sticky")[i].id;
+            /*
+            log("Adding event listener for " + topListButton);
+            log("children length: " + document.getElementsByClassName("sticky")[i].children.length);
 
-                count += 1;
+            for (var k=0; k<document.getElementById(topListButton).children.length; k++)
+            {
+                log(k + ": " + document.getElementById(topListButton).children[k].innerHTML);
+            }
+            */
 
-                var li01 =document.getElementById("li01");
-                var li02 =document.getElementById("li02");
-                var li03 =document.getElementById("li03");
+            (function(topListButton) {
 
-                var li01opac = window.getComputedStyle(li01).opacity;
-                var li02opac = window.getComputedStyle(li02).opacity;
-                var li03opac = window.getComputedStyle(li03).opacity;
 
-                if (li01opac >0.8) {button1now = true; probElement = "li01";};
-                if (li02opac >0.8) {button2now = true; probElement = "li02";};
-                if (li03opac >0.8) {button3now = true; probElement = "li03";};
+                document.getElementById(topListButton).children[0].addEventListener('touchstart', function(e){
+                    var touchlist = e.touches
+                    //log(topListButton);
+                    var alreadySelected = (window.getComputedStyle(document.getElementById(topListButton)).opacity > 0.9);
 
-                var change =    (button1now && !button1was) || 
-                                (button2now && !button2was) ||
-                                (button3now && !button3was);
+                    window.navDrawer.style.opacity = 1.0;
 
-                if (!change && (count > 1))
-                {
-                    document.getElementById(probElement).classList.remove("has-hover");
-                    log("&gt; DO SOMETHING");
-                    count = 0;
-                }
-                else if (change)
-                {
-                    count = count -1;
-                    button1was = button1now;
-                    button2was = button2now;
-                    button3was = button3now;
+                    //log(topListButton + ": " + alreadySelected);
 
-                    log("&gt; DO NOTHING");
-                }
-                else
-                {
-                    document.getElementById("li01").classList.add("has-hover");
-                    document.getElementById("li02").classList.add("has-hover");
-                    document.getElementById("li03").classList.add("has-hover");
-                }
-
-                button1now = false;
-                button2now = false;
-                button3now = false;
-                
-            }, false)
+                    if (alreadySelected)
+                    {
+                        document.getElementById(topListButton).classList.toggle("has-hover");
+                    }
+                    else
+                    {
+                        document.getElementById(topListButton).classList.add("has-hover");
+                    }
+    
+                    
+                }, false);
+            })(topListButton);
         }
 
         

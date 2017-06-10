@@ -59,11 +59,7 @@ var accDelta = 0;           // accumulative delta time (avoid divide by zero)
                             // and, Sandy Bridge I5 with same age medium-grade graphics card
                             // and, year 2009 Core 2 Duo laptop with separate graphics card (gets warm)
 
-var navDrawer = document.getElementsByClassName("drawer")[0];
-navDrawer.style.opacity = 0.4;
-setTimeout(function() {
-    window.navDrawer.style.opacity = 1;
-}, 10000);
+
 
 init(); // camera, water, moon, cylinders etc. etc. - add to scene
 
