@@ -24,12 +24,12 @@ var range_cylinders = 499;  // keep within 3D bounds {x, y, z} -> 499 etc.
 var cylinders;              // Array()
 var calmCylinders = false;  // want cylinders to scurry off screen - stop distracting
                             // when video player or photo slider displayed etc.
-
+        /*
         // TEST
         setTimeout(function() {
             window.calmCylinders = true;
         }, 15000);
-
+        */
 
                             // ***********************************************************
 const YES = 2;              // NB: Choice NOT TO SUPPORT IExplr EARLIER THAN 11 (ES2015)

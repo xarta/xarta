@@ -291,17 +291,21 @@
  
         navDrawer.addEventListener('mouseover', function(e){
             window.navDrawer.style.opacity = 1.0;
+            window.calmCylinders = true;        // used in scene.js minified to homepage.js
             clearTimeout(dimDrawer);
             dimDrawer = setTimeout(function() {
                 window.navDrawer.style.opacity = 0.3;
+                window.calmCylinders = false;   // used in scene.js minified to homepage.js
             }, 3000);
         }, false);
 
         navDrawer.addEventListener('touchstart', function(e){
+            window.calmCylinders = true;        // used in scene.js minified to homepage.js
             window.navDrawer.style.opacity = 1.0;
             clearTimeout(dimDrawer);
             dimDrawer = setTimeout(function() {
                 window.navDrawer.style.opacity = 0.2;
+                window.calmCylinders = false;   // used in scene.js minified to homepage.js
             }, 3000);
         }, false);
 
