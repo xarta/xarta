@@ -391,7 +391,7 @@ function tumble(transformRate)
     
         if(calmCylinders === false)
         {
-            moveRate = (90*transformRate)+((Math.random() + 1) * (90*transformRate));
+            moveRate = 90*transformRate;
             saveCycles = NO; // reset monostable delay for suppressing matrix update
         }
         else
@@ -406,6 +406,111 @@ function tumble(transformRate)
             }
         }
         
+        // slow down x direction moverate if even partly under-water
+        // as if low-fps device then fps under water part can't keep up
+        if (moveRate > 0)
+        {
+            
+
+            if (cylinders[i].position.y < 0)
+            {
+                // console.log("slowing a shape down by window.fps/100: " + window.fps/100);
+
+                if (cylinders[i].xartaDirx < 0)
+                {
+                    if ( (cylinders[i].xartaDirx * -1) > ( (window.fps/150) * moveRate ) )
+                    {
+                        cylinders[i].xartaDirx = 0.95 * cylinders[i].xartaDirx;
+                    }
+                    
+                }
+                else
+                {
+                    if ( (cylinders[i].xartaDirx) > ( (window.fps/150) * moveRate ) )
+                    {
+                        cylinders[i].xartaDirx = 0.95 * cylinders[i].xartaDirx;
+                    }
+                    
+                }   
+                
+                
+                if (cylinders[i].xartaDiry < 0) 
+                {
+                    if ( (cylinders[i].xartaDiry * -1) > ( (window.fps/120) * moveRate ) )
+                    {
+                        cylinders[i].xartaDiry = cylinders[i].xartaDiry * 0.97;
+                    }
+                    
+                }
+                else
+                {
+                    if ( (cylinders[i].xartaDiry) < ( (window.fps/100) * moveRate * 1.2 ) )
+                    {
+                        cylinders[i].xartaDiry = cylinders[i].xartaDiry * 1.1;
+                    }
+                }
+
+                if (cylinders[i].xartaDirz < 0) 
+                {
+                    if ( (cylinders[i].xartaDirz * -1) > ( (window.fps/100) * moveRate ) )
+                    {
+                        cylinders[i].xartaDirz = cylinders[i].xartaDirz * 0.9;
+                    }
+                    
+                }
+                else
+                {
+                    if ( (cylinders[i].xartaDirz) < ( (window.fps/100) * moveRate ) )
+                    {
+                        cylinders[i].xartaDirz = cylinders[i].xartaDirz * 1.1;
+                    }
+                }
+                
+            }
+            else if ( (cylinders[i].position.y < 250) && (cylinders[i].position.y > 100) )
+            {
+                if (i % Math.floor(Math.random() * 10) === 1)
+                {
+                    // add some random x-direction
+                    if(Math.abs(cylinders[i].xartaDirx) < (window.fps/100)*moveRate )
+                    {
+                        cylinders[i].xartaDirx = (Math.random() - 0.5) * 2 * moveRate; // velocity
+                    }              
+                };
+
+                if (i % Math.floor(Math.random() * 5) === 1)
+                {
+                    // add some random x-direction
+                    if(Math.abs(cylinders[i].xartaDirz) < (window.fps/100)*moveRate )
+                    {
+                        cylinders[i].xartaDirz = (Math.random() - 0.5) * 2 * moveRate; // velocity
+                    }              
+                };               
+
+                if (cylinders[i].xartaDiry > 0)
+                {
+                    if ( (cylinders[i].xartaDiry) < ( 0.9 * moveRate) )
+                    {
+                        cylinders[i].xartaDiry = cylinders[i].xartaDiry * 1.5;
+                    }
+                }
+                else
+                {
+                     if ( (cylinders[i].xartaDiry) < ( moveRate ) )
+                    {
+                        cylinders[i].xartaDiry = cylinders[i].xartaDiry * 1.01;
+                    }                   
+                }
+            }
+        }
+
+        // move out the way faster (once at the edges, will have velocity 0)
+        if(saveCycles === PENDING)
+        {
+            cylinders[i].xartaDirx = cylinders[i].xartaDirx * 1.02;
+            cylinders[i].xartaDiry = cylinders[i].xartaDiry * 1.02;
+            cylinders[i].xartaDirz = cylinders[i].xartaDirz * 1.02;
+        }
 
         // KEEP WITHIN X, Y, Z BOUNDARIES
         if (cylinders[i].position.x > range_cylinders)
@@ -675,11 +780,25 @@ function init() {
                 
                 if ( (i < 5) && (window.fps > 50) )
                 {
-                    cylinders[i] = getNewXartaCube( -10,5,-800, "XARTA", 0, colours);
-                    cylinders[i] = getNewXartaCube(   0,5,-800, "ARTAX", 1, colours);
-                    cylinders[i] = getNewXartaCube(  10,5,-800, "RTAXA", 2, colours);
-                    cylinders[i] = getNewXartaCube(  20,5,-800, "TAXAR", 3, colours);
-                    cylinders[i] = getNewXartaCube(  30,5,-800, "AXART", 4, colours);
+                    switch(i)
+                    {
+                        case 0:
+                            cylinders[i] = getNewXartaCube( -10,5,-100, "XARTA", i, colours);
+                            break;
+                        case 1:
+                            cylinders[i] = getNewXartaCube(   0,5,-200, "ARTAX", i, colours);
+                            break;
+                        case 2:
+                            cylinders[i] = getNewXartaCube(  10,5,-300, "RTAXA", i, colours);
+                            break;
+                        case 3:
+                            cylinders[i] = getNewXartaCube(  20,5,-400, "TAXAR", i, colours);
+                            break;
+                        case 4:
+                            cylinders[i] = getNewXartaCube(  30,5,-400, "AXART", i, colours);
+                            break;
+                    }
+ 
                 }
                 else if ((window.fps + getRandomInt(0,20) > 36))
                 {
