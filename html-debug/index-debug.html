@@ -239,7 +239,11 @@
                                 background-color: white; width: 50vw; height: 75vh;">
         </div>
         
-
+        <div id="sounds" style="display:none">
+            <audio id="whoop" preload="auto"    src="https://xarta.co.uk/sound/whoop.mp3" 
+                                                autostart="false" >
+            </audio><a onclick="playSound();"> Play</a>
+        </div>
 
         </div> <!-- end of container -->
     </body>
@@ -285,6 +289,11 @@
             p.innerHTML = msg + "<br>" + p.innerHTML;
         }
 
+        function playSound(clip) {
+            var sound = document.getElementById(clip);
+            sound.play();
+        }
+
         var navDrawer = document.getElementsByClassName("drawer")[0];
         var dimDrawer;
         navDrawer.style.opacity = 0.4;
@@ -297,6 +306,7 @@
                 window.navDrawer.style.opacity = 0.3;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
             }, 3000);
+            playSound("whoop");
         }, false);
 
         navDrawer.addEventListener('touchstart', function(e){
@@ -307,6 +317,7 @@
                 window.navDrawer.style.opacity = 0.2;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
             }, 3000);
+            playSound("whoop");
         }, false);
 
 
