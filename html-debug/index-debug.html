@@ -191,6 +191,12 @@
         <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js"></script>
         <script src="js/homepage-min.js"></script>  <!-- concatenated and minified -->
 
+        <div id="orbitControls">
+            <a href="https://blog.xarta.co.uk/contact/" target="_self">
+                <i class="fa fa-street-view"></i>
+                <span>Controls</span>
+            </a>
+        </div>
         <div class="restart-page">
         
         <a href="javascript:history.go(0)" target="_self" title="Refresh">
@@ -385,6 +391,10 @@
             }
             else
             {
+                if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
+                {
+                    window.moonMesh.material.color.setHex( 0xffffff );
+                }
                 new Beep(22050).play(500, 0.05, [Beep.utils.amplify(1000)]);
             }
             
