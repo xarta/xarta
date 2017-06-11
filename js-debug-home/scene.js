@@ -11,10 +11,11 @@ var camera, controls, scene, renderer, clock;   // water stuff
 
 // animation sequences (calling them phases)
 var phaseCubeApproach = true;   // X A R T A cubes - approaching us
-var phaseMoonPushBack = true;   // simplfies directions vs camera
+var phaseMoonPushBack = false;   // simplfies directions vs camera
                                 // i.e. start in position we want to end-up with
                                 // but put the moon back before visible, like
                                 // loading a spring-return
+
 var phaseMoonApproach = false;  // trigger for moon to approach
 var phaseSink = false;          // trigger for cubes X A R T A to sink under water
 
@@ -582,11 +583,11 @@ function tumble(transformRate)
 function init() {
 
     var loader = new THREE.TextureLoader().setCrossOrigin(true);    // Use same cross-origin loader for all assets
-
+    loader.setPath('https://res.cloudinary.com/xarta/image/upload/');
     // GET LOADING GOING NOW, STRAIGHT-AWAY
 
     // Load the background texture  STARS (from NASA galleries)
-    var stars = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496587567/xarta/spiral-galaxy.jpg' );               
+    var stars = loader.load( 'v1496587567/xarta/spiral-galaxy.jpg' );               
     
     
     // Load the background texture MOON (found with Google ... oops - forgot attribution)
@@ -598,29 +599,8 @@ function init() {
     
     loadTime = Date.now() - timerStart;     // set timerStart on index.html - doing this instead of
                                             // window.performance as need before window is ready
-    var theMoon;
-    
-    // the compute times in devices might vary considerably each time the page is refreshed,
-    // even with cached resources. Resorting to lower quality only if compute/load time is
-    // excessive, to help a little ... different between 47KB and over 300KB images
-    // (The lowest quality is quite apparent on a Note 4)
-    if ( (window.innerWidth > 768) || (loadTime < 2500) )
-    {
-        theMoon = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496588500/xarta/moon.png' );
-    }
-    else if ( (window.innerWidth > 512) || (loadTime < 3000) )
-    {
-        theMoon = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496576988/xarta/moon-lower-quality-512.png' );
-    }
-    else
-    {
-        theMoon = loader.load( 'https://res.cloudinary.com/xarta/image/upload/v1496586463/xarta/moon-lower-quality-256.png');
-    }
 
-
-
-
-    clock = new THREE.Clock();
+     clock = new THREE.Clock();
 
     scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.002);
@@ -659,31 +639,62 @@ function init() {
 
 
 
-    // MOON
-    moonMesh = new THREE.Mesh( 
-        new THREE.PlaneGeometry(45, 45,1, 1),
-        new THREE.MeshBasicMaterial({
-            map: theMoon, transparent: true, opacity: 1.0, color: 0xff0000
-        })
-    );
+   // MOON
+    function getTheMoon()
+    {
 
-    // keep size in portrait mode, but shift partly offscreen to left
-    // nb will appear bigger with bigger height to width ratio, because
-    // of perspective camera settings and how "near" we are to it
-    moonMesh.position.x = -1 * 0.25 * window.innerWidth;
-    moonMesh.position.y = 20;
-    moonMesh.position.z = moonz;
-    moonMesh.scale.set(13, 14,14); 
-    moonMesh.material.depthTest = true;   // because transparent png
-    moonMesh.material.depthWrite = true;
-
-    setTimeout(function() {
-        if(window.fps > 5)
+        var moonLoaded = function()
         {
-            scene.add(moonMesh);    
-            moonMesh.material.color.setHex( 0xffffff );
+            console.log("in moonLoaded");
+            window.moonMesh = new THREE.Mesh( 
+                new THREE.PlaneGeometry(45, 45,1, 1),
+                new THREE.MeshBasicMaterial(
+                    {
+                        map: theMoon, 
+                        transparent: true, 
+                        opacity: 1.0, color: 0xff0000
+                    })
+                );   
+            // keep size in portrait mode, but shift partly offscreen to left
+            // nb will appear bigger with bigger height to width ratio, because
+            // of perspective camera settings and how "near" we are to it
+            window.moonMesh.position.x = -1 * 0.25 * window.innerWidth;
+            window.moonMesh.position.y = 20;
+            window.moonMesh.position.z = moonz;
+            window.moonMesh.scale.set(13, 14,14); 
+            window.moonMesh.material.depthTest = true;   // because transparent png
+            window.moonMesh.material.depthWrite = true;
+
+            scene.add(window.moonMesh);    
+            window.moonMesh.material.color.setHex( 0xffffff );
+            window.phaseMoonPushBack = true;
+            console.log("moon should be added to scene now");
+
+        };
+
+        // the compute times in devices might vary considerably each time the page is refreshed,
+        // even with cached resources. Resorting to lower quality only if compute/load time is
+        // excessive, to help a little ... different between 47KB and over 300KB images
+        // (The lowest quality is quite apparent on a Note 4)
+        if ( (window.innerWidth > 768) || (loadTime < 2500) || window.fps > 5 )
+        {
+            theMoon = loader.load( 'v1496588500/xarta/moon.png', moonLoaded );
         }
-    }, 2000); // first second might be unreliable on 2014 Samsung Note 4 device
+        else if ( (window.innerWidth > 512) || (loadTime < 3000) )
+        {
+            theMoon = loader.load( 'v1496576988/xarta/moon-lower-quality-512.png', moonLoaded );
+        }
+        else
+        {
+            theMoon = loader.load( 'v1496586463/xarta/moon-lower-quality-256.png', moonLoaded);
+        }
+    }
+
+    getTheMoon();
+
+
+
+
 
 
     // water computationally HEAVY
