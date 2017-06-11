@@ -638,14 +638,7 @@ function init() {
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.set(6, 10, 50);
 
-
-    setTimeout(function() {
-        //controls = new THREE.OrbitControls(camera, renderer.domElement);  TODO: toggle on/off with menu <a> link
-    }, 12000);
-    
-
-
-    
+     
     // world
     var world = { scene: scene };
 
@@ -799,93 +792,94 @@ function init() {
             {
                 setTimeout(addShape, Math.floor(30000/window.fps)); 
 
-                var setColour = getRandomCol(colours);
-                console.log("Adding shape: " + i);
-                
-                if ( (i < 5) && (window.fps > 50) )
+                if(calmCylinders === false)
                 {
-                    switch(i)
+                    var setColour = getRandomCol(colours);
+                    console.log("Adding shape: " + i);
+                    
+                    if ( (i < 5) && (window.fps > 50) )
                     {
-                        case 0:
-                            cylinders[i] = getNewXartaCube( -10,5,-100, "XARTA", i, colours);
-                            break;
-                        case 1:
-                            cylinders[i] = getNewXartaCube(   0,5,-200, "ARTAX", i, colours);
-                            break;
-                        case 2:
-                            cylinders[i] = getNewXartaCube(  10,5,-300, "RTAXA", i, colours);
-                            break;
-                        case 3:
-                            cylinders[i] = getNewXartaCube(  20,5,-400, "TAXAR", i, colours);
-                            break;
-                        case 4:
-                            cylinders[i] = getNewXartaCube(  30,5,-400, "AXART", i, colours);
-                            break;
+                        switch(i)
+                        {
+                            case 0:
+                                cylinders[i] = getNewXartaCube( -10,5,-100, "XARTA", i, colours);
+                                break;
+                            case 1:
+                                cylinders[i] = getNewXartaCube(   0,5,-200, "ARTAX", i, colours);
+                                break;
+                            case 2:
+                                cylinders[i] = getNewXartaCube(  10,5,-300, "RTAXA", i, colours);
+                                break;
+                            case 3:
+                                cylinders[i] = getNewXartaCube(  20,5,-400, "TAXAR", i, colours);
+                                break;
+                            case 4:
+                                cylinders[i] = getNewXartaCube(  30,5,-400, "AXART", i, colours);
+                                break;
+                        }
+    
                     }
- 
-                }
-                else if ((window.fps + getRandomInt(0,20) > 36))
-                {
-                    if (i < num_cylinders/4)
+                    else if ((window.fps + getRandomInt(0,20) > 36))
                     {
-                        // separate for different colours though more compute?
-                        var geometrySimple = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
-                        var materialSimple = new THREE.MeshPhongMaterial({ 
-                        color: 0xffffff, 
-                        shading: THREE.FlatShading, 
-                        transparent: true,  opacity: 0 });
+                        if (i < num_cylinders/4)
+                        {
+                            // separate for different colours though more compute?
+                            var geometrySimple = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+                            var materialSimple = new THREE.MeshPhongMaterial({ 
+                            color: 0xffffff, 
+                            shading: THREE.FlatShading, 
+                            transparent: true,  opacity: 0 });
 
-                        cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
-                        cylinders[i].material.color.setHex(setColour);
-                    }
-                    else if (i < num_cylinders/2)
-                    {
-                        cylinders[i] = new THREE.Mesh(geometryComplex, materialComplex);
-                    }
-                    else if (i < num_cylinders*0.75)
-                    {
-                        var geometrySimple = new THREE.SphereGeometry( 10, 64, 64 );
-                        var materialSimple = new THREE.MeshPhongMaterial({ 
-                        color: 0xffffff, 
-                        shading: THREE.FlatShading, 
-                        transparent: true,  opacity: 0 });
+                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                            cylinders[i].material.color.setHex(setColour);
+                        }
+                        else if (i < num_cylinders/2)
+                        {
+                            cylinders[i] = new THREE.Mesh(geometryComplex, materialComplex);
+                        }
+                        else if (i < num_cylinders*0.75)
+                        {
+                            var geometrySimple = new THREE.SphereGeometry( 10, 64, 64 );
+                            var materialSimple = new THREE.MeshPhongMaterial({ 
+                            color: 0xffffff, 
+                            shading: THREE.FlatShading, 
+                            transparent: true,  opacity: 0 });
 
-                        cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
-                        cylinders[i].material.color.setHex(setColour);
+                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                            cylinders[i].material.color.setHex(setColour);
+                        }
+                        else
+                        {
+                            var geometrySimple = new THREE.BoxBufferGeometry( 50, 50, 50 );
+                            var materialSimple = new THREE.MeshPhongMaterial({ 
+                            color: 0xffffff, 
+                            shading: THREE.FlatShading, 
+                            transparent: true,  opacity: 0 });
+
+                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                            cylinders[i].material.color.setHex(setColour);
+                        }
                     }
                     else
                     {
-                        var geometrySimple = new THREE.BoxBufferGeometry( 50, 50, 50 );
-                        var materialSimple = new THREE.MeshPhongMaterial({ 
-                        color: 0xffffff, 
-                        shading: THREE.FlatShading, 
-                        transparent: true,  opacity: 0 });
-
-                        cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
-                        cylinders[i].material.color.setHex(setColour);
+                        cylinders[i] = new THREE.Mesh(geometryDefault, materialDefault);
                     }
-                }
-                else
-                {
-                    cylinders[i] = new THREE.Mesh(geometryDefault, materialDefault);
-                }
 
-                
-                
+                    
+                    
 
-                cylinders[i].position.x = (Math.random() - 0.5) * range_cylinders;
-                cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
-                cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
+                    cylinders[i].position.x = (Math.random() - 0.5) * range_cylinders;
+                    cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
+                    cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
 
-                cylinders[i].xartaDirx = (Math.random() - 0.5) * 15; // velocity
-                cylinders[i].xartaDiry = (Math.random() - 0.5) * 10;
-                cylinders[i].xartaDirz = (Math.random() - 0.5) * 20;
+                    cylinders[i].xartaDirx = (Math.random() - 0.5) * 15; // velocity
+                    cylinders[i].xartaDiry = (Math.random() - 0.5) * 10;
+                    cylinders[i].xartaDirz = (Math.random() - 0.5) * 20;
 
-                cylinders[i].updateMatrix();
-                cylinders[i].matrixAutoUpdate = false;
+                    cylinders[i].updateMatrix();
+                    cylinders[i].matrixAutoUpdate = false;
 
-                if(calmCylinders === false)
-                {
+
                     scene.add(cylinders[i]);
                     window.num_cylinders_so_far = i;
                     i++;
