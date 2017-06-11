@@ -378,7 +378,7 @@ function tumble(transformRate)
     }
 
     // TODO: Cylinder???  PYRAMID !!!  MUST HAVE BEEN MAD !!!!
-    // RANDOM CYLINDER MOVEMENT
+    // RANDOM CYLINDER MOVEMENT  (ACTUALLY NOW JUST "SHAPE")
     for (var i = 0; i < num_cylinders_so_far; i++) {
 
 
@@ -639,10 +639,9 @@ function init() {
 
 
 
-   // MOON
+    // MOON
     function getTheMoon()
     {
-
         var moonLoaded = function()
         {
             console.log("in moonLoaded");
@@ -660,7 +659,7 @@ function init() {
             // of perspective camera settings and how "near" we are to it
             window.moonMesh.position.x = -1 * 0.25 * window.innerWidth;
             window.moonMesh.position.y = 20;
-            window.moonMesh.position.z = moonz;
+            window.moonMesh.position.z = window.moonz;
             window.moonMesh.scale.set(13, 14,14); 
             window.moonMesh.material.depthTest = true;   // because transparent png
             window.moonMesh.material.depthWrite = true;
@@ -736,10 +735,12 @@ function init() {
     }
 
     // (I say cylinders ... I mean pyramids ... brain-dead moment early on)
+    // UPDATE: NOW SHAPES
     // CYLINDERS        TODO: Some patterned ones e.g. Bee colour stripes, 
     //                  with Doppler-shift buzz audio from camera position
     //                  nb: nice colour is yellow/gold: 0xafab5b
     var geometryDefault = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+    // ... ok ... three.js calls them cylinders.  Must be where I got it from!!!
 
     var materialDefault = new THREE.MeshPhongMaterial({ 
                     color: 0xafab5b, 
@@ -767,9 +768,7 @@ function init() {
             //face.color.set( color ); // this works, too; use one or the other
 
         }
-
         geometryComplex.merge( geo );
-
     }
 
     var materialComplex = new THREE.MeshPhongMaterial({ 
