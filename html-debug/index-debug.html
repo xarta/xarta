@@ -351,10 +351,18 @@
         navDrawer.addEventListener('mouseover', function(e){
             window.navDrawer.style.opacity = 1.0;
             window.calmCylinders = true;        // used in scene.js minified to homepage.js
+            if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
+            {
+                window.moonMesh.material.color.setHex( 0xff0000 );
+            }
             clearTimeout(dimDrawer);
             dimDrawer = setTimeout(function() {
                 window.navDrawer.style.opacity = 0.3;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
+                if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
+                {
+                    window.moonMesh.material.color.setHex( 0xffffff );
+                }
             }, 3000);
         }, false);
 
