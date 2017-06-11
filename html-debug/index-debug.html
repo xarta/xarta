@@ -191,8 +191,8 @@
         <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js"></script>
         <script src="js/homepage-min.js"></script>  <!-- concatenated and minified -->
 
-        <div id="orbitControls">
-            <a href="https://blog.xarta.co.uk/contact/" target="_self">
+        <div id="orbitControls" style="display:none">
+            <a id="orbClick" href="#" target="_self">
                 <i class="fa fa-street-view"></i>
                 <span>Controls</span>
             </a>
@@ -202,7 +202,8 @@
         <a href="javascript:history.go(0)" target="_self" title="Refresh">
 
             <svg onmouseenter= "el=this;el.classList.add('active');
-                 setTimeout(function(){el.classList.remove('active')},600);"
+                 setTimeout(function(){el.classList.remove('active')},600);
+                 new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);"
                  xmlns="http://www.w3.org/2000/svg"  viewBox="-14 -14 80 80">
 
             <g class="refresh-holder">
@@ -338,18 +339,15 @@
         }
 
         // https://github.com/luciferous/beepjs -------------------------------------------------------
-        // EXAMPLE (keep here for handy reference - will be minified out)
-
-        /*
+        
+        // only first note will play (as direct consequence of click/guester) on Android Chrome
         function play(keys) 
         {
             var key = keys.shift();
             if(typeof key == 'undefined') return; // song ended
             new Beep(22050).play(key[0], key[1], [Beep.utils.amplify(8000)], function() { play(keys); });
         }
-        play([[660, 0.1], [660, 0.1], [660, 0.1], [510, 0.1], [660, 0.1], [770, 0.1], [1, 0.1], [380, 0.1]]);
-        */
-
+        
         // ---------------------------------------------------------------------------------------------
 
 
@@ -400,6 +398,31 @@
             
         }, false);
 
+        document.getElementById("orbitControls").style.display="block";
+        var orbClick =document.getElementById("orbClick");
+        orbClick.onmouseover = function()
+        {
+            new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);
+        };
+        orbClick.onclick = function(){
+            var script = document.createElement("script");
+            script.src = 'https://xarta.co.uk/js/OrbitControls-min.js';
+
+            play([[392, 0.2], [440, 0.3], [349, 0.2], [175, 0.3], [262, 1]]);
+
+            document.getElementsByTagName('head')[0].appendChild(script);
+            
+            script.onload = function()
+            {
+                
+                console.log("OrbitControls-min.js loaded");
+                window.controls = new THREE.OrbitControls(camera, renderer.domElement);
+            };
+
+            document.getElementById("orbitControls").style.display="none";
+            return false;
+        };
+
         // experimenting with touch, for cancelling sticky flyout menu on double-tap
         // THIS IS DEPENDENT ON HACKY-WAY OF USING KNOWN INFORMATION ON OPACITY STATE
         var topListButton;
@@ -420,7 +443,7 @@
                 
                 // children[0] should be the <a> href link ... using that for touch detect
                 document.getElementById(topListButton).children[0].addEventListener('touchstart', function(e){
-                    var touchlist = e.touches
+                    var touchlist = e.touches;
                     //log(topListButton);
                     var alreadySelected = (window.getComputedStyle(document.getElementById(topListButton)).opacity > 0.9);
 
