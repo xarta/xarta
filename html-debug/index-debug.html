@@ -238,12 +238,6 @@
                                 z-index: 100; top: 5px; left: 20px; 
                                 background-color: white; width: 50vw; height: 75vh;">
         </div>
-        
-        <div id="sounds" style="display:none">
-            <audio id="whoop" preload="auto"    src="https://xarta.co.uk/sound/whoop.mp3" 
-                                                autostart="false" >
-            </audio><a onclick="playSound();"> Play</a>
-        </div>
 
         </div> <!-- end of container -->
     </body>
@@ -276,27 +270,83 @@
         var element = document.getElementById("xarta-no-js");
         element.parentNode.removeChild(element);
 
+        // do asap
+        var navDrawer = document.getElementsByClassName("drawer")[0];
+        var dimDrawer;
+        navDrawer.style.opacity = 0.4;
+        var NavHoverState = true; // will detect it for touch use
+
+        function hasClass(el, className)
+        {
+            if (el.classList)
+            {
+                //console.log("hasClass(): el.classList");
+                return el.classList.contains(className);
+            }
+            else
+            {
+                //console.log("hasClass(): new RegExp");
+                return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
+            }
+        }
+
+
+
+        // DEBUG - SHOW
         if (window.xartaDebug === true)
         {
             for (var i=0; i<document.getElementsByClassName("debug").length; i++)
             {
                 document.getElementsByClassName("debug")[i].style.display = "block";
             }
+
+            function log(msg) 
+            {
+                var p = document.getElementById('log');
+                p.innerHTML = msg + "<br>" + p.innerHTML;
+            }
+        }
+        else
+        {
+            function log(msg)
+            {
+                // do nothing
+            }
         }
 
-        function log(msg) {
-            var p = document.getElementById('log');
-            p.innerHTML = msg + "<br>" + p.innerHTML;
+
+        // Audio mp3's (won't play on mobile wihtout touch-interaction, normally)
+        var myAudio = document.createElement('audio');
+        if (myAudio.canPlayType('audio/mpeg')) 
+        {
+            var whoop = document.createElement('audio');
+            whoop.setAttribute('src','https://xarta.co.uk/sound/whoop.mp3');
+        }
+        else
+        {
+            var fnName = "play";
+            
+            var whoop;
+            whoop[play] = function() {console.log("Playing whoop sound")};
+
         }
 
-        function playSound(clip) {
-            var sound = document.getElementById(clip);
-            sound.play();
-        }
+        // https://github.com/luciferous/beepjs -------------------------------------------------------
+        // EXAMPLE (keep here for handy reference - will be minified out)
 
-        var navDrawer = document.getElementsByClassName("drawer")[0];
-        var dimDrawer;
-        navDrawer.style.opacity = 0.4;
+        /*
+        function play(keys) 
+        {
+            var key = keys.shift();
+            if(typeof key == 'undefined') return; // song ended
+            new Beep(22050).play(key[0], key[1], [Beep.utils.amplify(8000)], function() { play(keys); });
+        }
+        play([[660, 0.1], [660, 0.1], [660, 0.1], [510, 0.1], [660, 0.1], [770, 0.1], [1, 0.1], [380, 0.1]]);
+        */
+
+        // ---------------------------------------------------------------------------------------------
+
+
  
         navDrawer.addEventListener('mouseover', function(e){
             window.navDrawer.style.opacity = 1.0;
@@ -306,7 +356,6 @@
                 window.navDrawer.style.opacity = 0.3;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
             }, 3000);
-            playSound("whoop");
         }, false);
 
         navDrawer.addEventListener('touchstart', function(e){
@@ -317,12 +366,24 @@
                 window.navDrawer.style.opacity = 0.2;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
             }, 3000);
-            playSound("whoop");
         }, false);
 
+        navDrawer.addEventListener('click', function(e){
+
+            // true by default, changed by touchstart events only
+            if(window.NavHoverState === true)
+            {
+                new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);
+            }
+            else
+            {
+                new Beep(22050).play(500, 0.05, [Beep.utils.amplify(1000)]);
+            }
+            
+        }, false);
 
         // experimenting with touch, for cancelling sticky flyout menu on double-tap
-        // THIS IS DEPENDENT ON HACKY-WAY OF USING KNOW INFORMATION ON OPACITY
+        // THIS IS DEPENDENT ON HACKY-WAY OF USING KNOWN INFORMATION ON OPACITY STATE
         var topListButton;
         for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
         {
@@ -338,8 +399,8 @@
             */
 
             (function(topListButton) {
-
-
+                
+                // children[0] should be the <a> href link ... using that for touch detect
                 document.getElementById(topListButton).children[0].addEventListener('touchstart', function(e){
                     var touchlist = e.touches
                     //log(topListButton);
@@ -357,7 +418,17 @@
                     {
                         document.getElementById(topListButton).classList.add("has-hover");
                     }
-    
+
+                    if (hasClass( document.getElementById(topListButton), "has-hover"))
+                    {
+                        window.NavHoverState = true;
+                        //console.log("window.NavHOverState = true");
+                    }
+                    else
+                    {
+                        window.NavHoverState = false;
+                        //console.log("window.NavHOverState = false");
+                    }
                     
                 }, false);
             })(topListButton);

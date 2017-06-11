@@ -76,23 +76,26 @@ init(); // camera, water, moon, cylinders etc. etc. - add to scene
 
 var initscale = 8;                          // cube scaling
 var cubes = new Array();                    // 5 cubes ... X A R T A
+var cad = -800;                             // cube approach distance (lead)
+                                            // using this to sync whoop sound
+
 if (window.innerHeight > window.innerWidth) // portrait e.g. phones
 {
     // staggar z so fits camera "perspective" view
-    cubes[0] = getNewXartaCube( -8,5,-800, "XARTA", 0, colours);
-    cubes[1] = getNewXartaCube(  0,5,-820, "ARTAX", 1, colours);
-    cubes[2] = getNewXartaCube( 10,5,-840, "RTAXA", 2, colours);
-    cubes[3] = getNewXartaCube( 20,5,-860, "TAXAR", 3, colours);
-    cubes[4] = getNewXartaCube( 30,5,-880, "AXART", 4, colours);
+    cubes[0] = getNewXartaCube( -8,5, cad,      "XARTA", 0, colours);
+    cubes[1] = getNewXartaCube(  0,5, cad-20,   "ARTAX", 1, colours);
+    cubes[2] = getNewXartaCube( 10,5, cad-40,   "RTAXA", 2, colours);
+    cubes[3] = getNewXartaCube( 20,5, cad-60,   "TAXAR", 3, colours);
+    cubes[4] = getNewXartaCube( 30,5, cad-80,   "AXART", 4, colours);
 }
 else
 {
     // just in a row - camera zoom will always mean fitting (mostly)
-    cubes[0] = getNewXartaCube( -10,5,-800, "XARTA", 0, colours);
-    cubes[1] = getNewXartaCube(   0,5,-800, "ARTAX", 1, colours);
-    cubes[2] = getNewXartaCube(  10,5,-800, "RTAXA", 2, colours);
-    cubes[3] = getNewXartaCube(  20,5,-800, "TAXAR", 3, colours);
-    cubes[4] = getNewXartaCube(  30,5,-800, "AXART", 4, colours);
+    cubes[0] = getNewXartaCube( -10,5, cad, "XARTA", 0, colours);
+    cubes[1] = getNewXartaCube(   0,5, cad, "ARTAX", 1, colours);
+    cubes[2] = getNewXartaCube(  10,5, cad, "RTAXA", 2, colours);
+    cubes[3] = getNewXartaCube(  20,5, cad, "TAXAR", 3, colours);
+    cubes[4] = getNewXartaCube(  30,5, cad, "AXART", 4, colours);
 }
 
 
@@ -240,6 +243,9 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours)
 
 // this function should now be called
 // extended animate or something (more than a tumble - it evolved)
+
+// MISTAKE IN NAMING ON MY PART !!!
+// transformRate is clock Delta ... SMALLER transformRate for FASTER MACHINE
 var cubesToTumble = true;
 function tumble(transformRate)
 {
@@ -277,12 +283,30 @@ function tumble(transformRate)
     }
  
 
-    var approachRate = 200 * transformRate;
-    var fit =  ( (window.innerWidth / window.innerHeight) * 2 ) - approachRate ;
+    var approachRate = 200 * transformRate; // SMALLER VALUE ON FASTER MACHINE
+                                            // FINER GRAINED INCREMENTS
+    var fit =  ( (window.innerWidth / window.innerHeight) * 2 ) - approachRate ;   
+        // reasonably constant
+        // during animation
+
+        // using global var "cad"
+        // "cube approach distance"
+
+
+    var scalarCAD = fit-cad;                                    // total distance to travel for approach
+    var scalarCADsoFar = cubes[0].position.z - cad;             // always positive
+    var scalarCADsoFarFraction = scalarCADsoFar / scalarCAD;    // factional value less than 1
 
     if (phaseCubeApproach === true)
     {
-        
+        if (scalarCADsoFarFraction > 0.7 )
+        {
+            if (typeof whoop.play() == 'function') 
+            { 
+                whoop.play(); 
+            }
+        }
+
         // stop the approach of everything, possibly staggard,
         // once X (as in X A R T A) has reached our chosen z-axis
         if (cubes[0].position.z < fit )
@@ -934,6 +958,7 @@ function animate() {
     
 
     //console.log(delta);
+    // delta is smaller, the faster the machine
     tumble(delta);
     
     //console.log(fps);
