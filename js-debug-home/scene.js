@@ -23,6 +23,9 @@ var Element = function ( id, x, y, z, ry, screenID )
     div.style.zIndex = '13';     
     var iframe = document.createElement( 'iframe' );
     iframe.setAttribute("id", screenID);
+    iframe.setAttribute('allowFullScreen', true);
+    iframe.setAttribute('webkitallowfullscreen', true);
+    iframe.setAttribute('mozallowfullscreen', true);
     iframe.style.width = ytWidth.toString() + 'px';
     iframe.style.height = ytHeight.toString() + 'px';
     iframe.style.border = '0px';
@@ -75,10 +78,12 @@ function onYouTubeIframeAPIReady()
             'onStateChange': onPlayerStateChange
         }
     });
+    
 }
 
 function onPlayerReady(event) {
     event.target.playVideo();
+    //s1.requestFullscreen();
 }
 
 var YTdone = false;
@@ -89,9 +94,19 @@ function onPlayerStateChange(event) {
     }
 }
 
-function stopVideo(player) {
-    player.stopVideo();
+function stopVideo() {
+    //player.stopVideo();
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

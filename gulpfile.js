@@ -11,6 +11,8 @@
 // https://www.npmjs.com/package/gulp-rename
 // https://www.npmjs.com/package/gulp-replace
 
+// https://www.npmjs.com/package/gulp-babel  (GOING TO START USING ES6 !!! BIT LATE LOL)
+
 // https://github.com/OverZealous/run-sequence   (I want to concat, then compress)
 //                                               e.g. ['task1', 'task2'], 'task3', ['t4', 't5']
 //                                                      parallel       then series then parallel
@@ -33,6 +35,8 @@ var runSequence = require('run-sequence');
 var htmlmin = require('gulp-htmlmin');
 var rename = require('gulp-rename');
 var replace = require('gulp-replace');
+const babel = require('gulp-babel');
+const sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('minify-html', function() {
     return gulp.src("html-debug/*-debug.html")
@@ -105,12 +109,21 @@ gulp.task('minify-home-js', function() {
     .pipe(gulp.dest('js'))
 });
 
+
+// see: https://github.com/gulp-sourcemaps/gulp-sourcemaps
+// when I need to, use base e.g.
+// gulp.src(['src/test.js', 'src/testdir/test2.js'], { base: 'src' })
 gulp.task('concat-home-js', function() {
   return gulp.src([ './js-debug-home/CSS3DRenderer.js', 
                     './js-debug-home/beep.js', 
                     './js-debug-home/water.js',
                     './js-debug-home/scene.js'])
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+        presets: ['es2015']
+    }))
     .pipe(concat('homepage.js'))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('./js-debug-home/'));
 });
 
