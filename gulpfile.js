@@ -44,6 +44,17 @@ gulp.task('minify-html', function() {
         .pipe(gulp.dest('./'))
 });
 
+gulp.task('debug-js', function() {
+    return gulp.src("html-debug/*-debug.html")
+        .pipe (replace('js/homepage-min.js', 'js-debug-home/homepage.js'))
+        .pipe (replace('js/OrbitControls-min.js', 'js-debug-home/OrbitControls.js'))
+        .pipe (replace('https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js', 'js-debug-home/three.js'))
+        .pipe (rename(function (path) {
+            path.basename = path.basename.replace("-debug", "-d");
+        }))
+        .pipe(gulp.dest('./'))    
+});
+
 gulp.task('sass', function() {
     return gulp.src('css/css-debug/*.scss')
         .pipe(sass())
@@ -66,7 +77,7 @@ gulp.task('minify-home-js', function() {
             min:'-min.js'
         },
         exclude: ['tasks'],
-        ignoreFiles: ['.combo.js', '-min.js'],
+        ignoreFiles: ['.combo.js', '-min.js', 'three.js', 'three.module.js'],
         noSource: ['*.js']
     }))
     .pipe(gulp.dest('js'))
@@ -99,7 +110,7 @@ gulp.task('concat-minify-home-js', function() {
 gulp.task('xarta', function() {
     gulp.watch('css/css-debug/*.scss', ['sass']);
     gulp.watch('css/css-debug/*.css', ['minify-css']);
-    gulp.watch('html-debug/*.html', ['minify-html']);
+    gulp.watch('html-debug/*.html', ['minify-html', 'debug-js']);
     gulp.watch('js-debug-home/*.js', ['concat-minify-home-js']);
 });
 

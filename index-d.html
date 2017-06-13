@@ -14,7 +14,7 @@
     <!-- (XARTA): INITIAL FILEs / INSPIRATION FROM: https://jsfiddle.net/k313cwtx/4/ -->
 
     <!-- concatenated / minified - see my repo for source -->
-    <link rel="preload" href="js/homepage-min.js" as="script"> 
+    <link rel="preload" href="js-debug-home/homepage.js" as="script"> 
 
     <!-- links to original pics found on https://jsfiddle.net/k313cwtx/4/ -->
     <!--  but compressed further and moved -->
@@ -201,8 +201,8 @@
 
 
 
-        <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js"></script>
-        <script src="js/homepage-min.js"></script>  <!-- concatenated and minified -->
+        <script src="js-debug-home/three.js"></script>
+        <script src="js-debug-home/homepage.js"></script>  <!-- concatenated and minified -->
 
         <div id="orbitControls" style="display:none">
             <a id="orbClick" href="#" target="_self">
@@ -423,7 +423,7 @@
         };
         orbClick.onclick = function(){
             var script = document.createElement("script");
-            script.src = 'js/OrbitControls-min.js';
+            script.src = 'js-debug-home/OrbitControls.js';
 
             play([[392, 0.2], [440, 0.3], [349, 0.2], [175, 0.3], [262, 1]]);
 
