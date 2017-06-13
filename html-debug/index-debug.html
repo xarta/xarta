@@ -14,7 +14,7 @@
     <!-- (XARTA): INITIAL FILEs / INSPIRATION FROM: https://jsfiddle.net/k313cwtx/4/ -->
 
     <!-- concatenated / minified - see my repo for source -->
-    <link rel="preload" href="js/homepage-min.js" as="script"> 
+    <link rel="preload" href="js-debug-home/homepage.js" as="script"> 
 
     <!-- links to original pics found on https://jsfiddle.net/k313cwtx/4/ -->
     <!--  but compressed further and moved -->
@@ -93,13 +93,14 @@
 
     <body>
         <div id="container" class="no-js">
+        <div id="blocker"></div> <!-- for three.js controls when using YouTube Iframes -->
 
 
 
 
         <!-- <ul class="drawer">  -->
             <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
-        <ul class="drawer">
+        <ul id="navigation" class="drawer">
         <li id="li01" class="sticky has-hover">
             <a href="#?li01">
             <i class="fa fa-github"></i>
@@ -171,7 +172,7 @@
             </ul>
         </li>
         <li id="li03" class="sticky has-hover">
-            <a href="#?xarta?li03">
+            <a href="#?li03">
             <i class="fa fa-info-circle"></i>
             <span>Info</span>
             </a>
@@ -201,7 +202,7 @@
 
 
         <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js"></script>
-        <script src="js/homepage-min.js"></script>  <!-- concatenated and minified -->
+        <script src="js-debug-home/homepage.js"></script>  <!-- concatenated and minified -->
 
         <div id="orbitControls" style="display:none">
             <a id="orbClick" href="#" target="_self">
@@ -363,9 +364,10 @@
         // ---------------------------------------------------------------------------------------------
 
 
- 
+
         navDrawer.addEventListener('mouseover', function(e){
             window.navDrawer.style.opacity = 1.0;
+            rendererGL.domElement.style.zIndex = -1; // webGL behind CSS3D (YouTube controls accessible)
             window.calmCylinders = true;        // used in scene.js minified to homepage.js
             if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
             {
@@ -373,6 +375,7 @@
             }
             clearTimeout(dimDrawer);
             dimDrawer = setTimeout(function() {
+                rendererGL.domElement.style.zIndex = 1; // webGL in front of CSS3D (alpha transparent)
                 window.navDrawer.style.opacity = 0.3;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
                 if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
@@ -385,10 +388,12 @@
         navDrawer.addEventListener('touchstart', function(e){
             window.calmCylinders = true;        // used in scene.js minified to homepage.js
             window.navDrawer.style.opacity = 1.0;
+            rendererGL.domElement.style.zIndex = -1; // webGL behind CSS3D (YouTube controls accessible)
             clearTimeout(dimDrawer);
             dimDrawer = setTimeout(function() {
                 window.navDrawer.style.opacity = 0.2;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
+                rendererGL.domElement.style.zIndex = 1; // webGL in front of CSS3D (alpha transparent)
             }, 3000);
         }, false);
 
@@ -428,7 +433,7 @@
             {
                 
                 console.log("OrbitControls-min.js loaded");
-                window.controls = new THREE.OrbitControls(camera, renderer.domElement);
+                window.controls = new THREE.OrbitControls(camera, rendererCSS3D.domElement);
             };
 
             document.getElementById("orbitControls").style.display="none";

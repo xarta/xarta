@@ -1,3 +1,4 @@
+"use strict";
 // TODO: SASS TO JS TECHNIQUE TO READ THESE FROM .scss style sheet variables
 var colours = new Array();                  // multi-use incl. pyramids (cylinders sic)
 colours[0] = ["orange",     "#ff0000"];     // red background
@@ -6,8 +7,13 @@ colours[2] = ["green",      "#f7ec0e"];     // yellow background
 colours[3] = ["yellow",     "#106316"];     // green background
 colours[4] = ["purple",     "#f77c02"];     // orange background
 
-var camera, controls, scene, renderer, clock;   // water stuff
-                                                // xarta using as a foundation
+var camera, controls, sceneGL, rendererGL, clock;
+
+var rendererCSS3D, sceneCSS3D       // for YouTube iframes etc.
+var ytWidth     = 480;              // YouTube
+var ytHeight    = 360;
+
+var water = null;
 
 // animation sequences (calling them phases)
 var phaseCubeApproach = true;   // X A R T A cubes - approaching us
@@ -25,8 +31,8 @@ var moonz = -500;               // where we want the moon (has to be far away wi
                                 // will distort it too much, and also want it to look big
                                 // compared to pyramids that fly close to it ...
                                 // but not so far away that lighting becomes harder
-var moonMesh;                   // the mesh to add to the scene
-var starsMesh;                  // the mesh to add to the scene
+var moonMesh;                   // the mesh to add to the sceneGL
+var starsMesh;                  // the mesh to add to the sceneGL
 
 var num_cylinders = 0;
 var num_cylinders_so_far = 0;
@@ -72,7 +78,111 @@ var accDelta = 0;           // accumulative delta time (avoid divide by zero)
 
 
 
-init(); // camera, water, moon, cylinders etc. etc. - add to scene
+init(); // camera, water, moon, cylinders etc. etc. - add to sceneGL
+
+
+            var Element = function ( id, x, y, z, ry ) 
+            {
+                var div = document.createElement( 'div' );
+                div.style.width = ytWidth.toString() + 'px';
+                div.style.height = ytHeight.toString() + 'px';
+                div.style.backgroundColor = '#000';         
+                var iframe = document.createElement( 'iframe' );
+                iframe.style.width = ytWidth.toString() + 'px';
+                iframe.style.height = ytHeight.toString() + 'px';
+                iframe.style.border = '0px';
+                iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
+                div.appendChild( iframe );          
+                var object = new THREE.CSS3DObject( div );
+                object.position.set( x, y, z );
+                object.rotation.y = ry;         
+                return object;
+            };
+
+
+
+          
+                
+                var vidWall = new THREE.Group();
+                var x = 500;
+                var y = 0;
+                var z = -200;
+                var ry = -1 * (Math.PI / 2) ; // rotate about y axis
+
+                vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z, ry ) );
+                vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z+ytWidth, ry ) );
+                vidWall.add( new Element( 'DjLwd9Ih8V8', x, ytHeight, z, ry ) );
+                vidWall.add( new Element( 'DjLwd9Ih8V8', x, ytHeight, z+ytWidth, ry ) );               
+                //group.add( new Element( 'DjLwd9Ih8V8', 240, 0, 0, Math.PI / 2 ) );
+                sceneCSS3D.add( vidWall );
+
+                //camera.position.set( 500, 100, 0 ); // for YouTube ???
+                /*
+                var scriptTrackball = document.createElement("script");
+                scriptTrackball.src = 'https://xarta.co.uk/js/TrackballControls-min.js';
+                document.getElementsByTagName('head')[0].appendChild(scriptTrackball);
+                scriptTrackball.onload = function(){
+                    controls = new THREE.TrackballControls( camera );
+                    controls.rotateSpeed = 4;
+                };
+
+                */
+
+                /*
+
+                // Block iframe events when dragging camera
+
+                var blocker = document.getElementById( 'blocker' );
+                blocker.style.display = 'none';
+
+                document.addEventListener( 'mousedown', function () 
+                { 
+                    blocker.style.display = '';
+                    console.log("mousedown");
+                 } );
+                document.addEventListener( 'mouseup', function () 
+                { 
+                    blocker.style.display = 'none';
+                    console.log("mouseup");
+                } );
+
+                */
+            
+/*
+// create the video element
+	video = document.createElement( 'video' );
+	// video.id = 'video';
+	// video.type = ' video/ogg; codecs="theora, vorbis" ';
+    video.crossOrigin = "anonymous";
+    video.src = "https://res.cloudinary.com/xarta/video/upload/v1497265079/xarta/SampleVideo_720x480_1mb.mp4";
+	video.load(); // must call after setting/changing source
+	video.play();
+	
+	videoImage = document.createElement( 'canvas' );
+	videoImage.width = 480;
+	videoImage.height = 204;
+
+	videoImageContext = videoImage.getContext( '2d' );
+	// background color if no video present
+	videoImageContext.fillStyle = '#ffffff';
+	videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
+
+	videoTexture = new THREE.Texture( videoImage );
+	videoTexture.minFilter = THREE.LinearFilter;
+	videoTexture.magFilter = THREE.LinearFilter;
+	
+	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
+	// the geometry on which the movie will be displayed;
+	// 		movie image will be scaled to fit these dimensions.
+	var movieGeometry = new THREE.PlaneGeometry( 240, 100, 4, 4 );
+	var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
+	movieScreen.position.set(0,50,-100);
+	sceneGL.add(movieScreen);
+	
+	//camera.position.set(0,150,300);
+	//camera.lookAt(movieScreen.position);
+*/
+
 
 
 var initscale = 8;                          // cube scaling
@@ -101,6 +211,8 @@ else
 
 
 animate();  // kickstart the animation loop
+
+
 
 
 
@@ -206,7 +318,7 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours)
 	var texture = textureLoader.load( "v1497007069/xarta/2014-me-at-work256.jpg" ); // BACK
 
     // so we're making a cube e.g. 5 faces are letters X A R T A, and the backface is a pic of me lol ...
-    // and by using transparency, light from the rest of the dynamic scene will illuminate "me" sometimes through the transparent cube
+    // and by using transparency, light from the rest of the dynamic sceneGL will illuminate "me" sometimes through the transparent cube
 	var materials = [
 		RIGHTmesh,
 		LEFTmesh,
@@ -234,7 +346,7 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours)
 
     obj.xartaRot = 1; // used for initial object-axis rotation direction
 
-	scene.add( obj );
+	sceneGL.add( obj );
 
     return(obj);
 }
@@ -373,8 +485,7 @@ function tumble(transformRate)
         else
         {   
             phaseMoonApproach = false;
-            scene.add(starsMesh);   // "ping" stars on, after moon in place
-                                    // timing should synchronise with cubes
+            
         }
     }
 
@@ -414,7 +525,9 @@ function tumble(transformRate)
 
         cylinderMasterOpacity = cylinderOpacity;
         cylinders[i].material.opacity = cylinderOpacity;
-    
+        
+        var moveRate;
+
         if(calmCylinders === false)
         {
             moveRate = 90*transformRate;
@@ -598,30 +711,70 @@ function init() {
     // responosive sizes/quality ... big moon is high quality transparent png (over 300KB)
 
     
-    loadTime = Date.now() - timerStart;     // set timerStart on index.html - doing this instead of
+    var loadTime = Date.now() - timerStart;     // set timerStart on index.html - doing this instead of
                                             // window.performance as need before window is ready
 
-     clock = new THREE.Clock();
-
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.002);
-
-    renderer = new THREE.WebGLRenderer();   // Not using WebGL Detect yet ... TODO: look into whether I really should (statistically & target audience)
-    renderer.setClearColor(0x000000, 1); 
-    renderer.setClearColor(scene.fog.color);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.autoclear = true;              // TODO: NOT SURE ABOUT THIS, AND MANUAL CLEARING OF "STAGE BUFFER" - See water.js
-
-    var container = document.getElementById('container');
-    container.appendChild(renderer.domElement);
-
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+    clock = new THREE.Clock();
+    var camFarPlane = 3000;
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, camFarPlane);
     camera.position.set(6, 10, 50);
+    // camera.position.set( 500, 350, 750 ); // for YouTube ???
 
-     
+    sceneGL = new THREE.Scene();
+    sceneCSS3D = new THREE.Scene();
+
+    
+    var rendererglZ = 1;     // 1 or -1
+                            // -1 makes CSS3D YouTube controls accessible on top, but hides WebGL
+                            // ... and no point in having alpha background WebGL
+
+    rendererCSS3D = new THREE.CSS3DRenderer();
+    rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
+    rendererCSS3D.domElement.style.position = 'absolute';
+    rendererCSS3D.domElement.style.top = 0;
+    //rendererCSS3D.domElement.style.zIndex = 3;
+
+    if ( rendererglZ === -1)
+    {
+        console.log("CSS3D in front of WebGL e.g. YouTube controls accessible");
+        rendererGL = new THREE.WebGLRenderer();
+        rendererGL.setClearColor(0x000000, 1); 
+        sceneGL.fog = new THREE.FogExp2(0x000000, 0.002); // exponential, color, ex
+        rendererGL.setClearColor(sceneGL.fog.color);
+    }
+    else
+    {
+        // to blend with CSS3D
+        console.log("WebGL (transparent) in front of CSS3D");
+        rendererGL = new THREE.WebGLRenderer({alpha:true, antialias: true});
+        rendererGL.setClearColor(0x000000, 0.0);
+        sceneGL.fog = new THREE.Fog(0x000000, 800,900); // linear, color, near, far
+        //rendererGL.setClearColor(sceneGL.fog.color);
+    }
+
+
+    rendererGL.setPixelRatio(window.devicePixelRatio);
+    rendererGL.setSize(window.innerWidth, window.innerHeight);
+    
+    rendererGL.domElement.style.position = 'absolute';
+    rendererGL.domElement.style.zIndex = rendererglZ;    // -1 to make YouTube control access easy,
+                                                //  but behind webGL objects
+
+                                                // TODO TODO TODO TODO
+                                                // TEST IF CAN CHANGE DYNAMICALLY, LATER
+    rendererGL.domElement.style.top = 0;
+
+    rendererGL.autoclear = false;              // TODO: NOT SURE ABOUT THIS, AND MANUAL CLEARING OF "STAGE BUFFER" - See water.js
+
+    rendererCSS3D.domElement.appendChild(rendererGL.domElement);
+    
+    var container = document.getElementById('container');
+    //container.appendChild(rendererGL.domElement); // now going to append to CSS3D renderer
+    container.appendChild( rendererCSS3D.domElement );      
+
+
     // world
-    var world = { scene: scene };
+    var world = { scene: sceneGL };
 
 
 
@@ -633,16 +786,17 @@ function init() {
         }));
 
     starsMesh.position.x = -350;  
-    starsMesh.position.z = -600;            // behind moon - further back is too dark/blurry, but obscures things behind it
+    starsMesh.position.z = -820;            // behind moon - further back is too dark/blurry, but obscures things behind it
     starsMesh.scale.set(50, 50,10);
     //starsMesh.material.depthTest = true;    // no need
     //starsMesh.material.depthWrite = true;
 
-
+    sceneGL.add(starsMesh); 
 
     // MOON
     function getTheMoon()
     {
+        var theMoon;
         var moonLoaded = function()
         {
             console.log("in moonLoaded");
@@ -665,10 +819,10 @@ function init() {
             window.moonMesh.material.depthTest = true;   // because transparent png
             window.moonMesh.material.depthWrite = true;
 
-            scene.add(window.moonMesh);    
+            sceneGL.add(window.moonMesh);    
             window.moonMesh.material.color.setHex( 0xffffff );
             window.phaseMoonPushBack = true;
-            console.log("moon should be added to scene now");
+            console.log("moon should be added to sceneGL now");
 
         };
 
@@ -695,33 +849,33 @@ function init() {
 
 
 
-
+    
 
     // water computationally HEAVY
-    setTimeout(function() {
+    //setTimeout(function() {
 
-        if(window.fps > 7)
-        {
+      //  if(window.fps > 7)
+        //{
             // WATER
-            water = new Water(renderer, camera, world, {
+                water = new Water(rendererGL, camera, world, {
                 width: 210,
                 height: 200,
                 segments: 5,
                 lightDirection: new THREE.Vector3(0.7, 0.7, 0)
             });
 
-            water.position.set(-70, 1, 0);
+            water.position.set(0, 1, 0); // -70, 1, 0
             water.rotation.set(Math.PI * -0.5, 0, 0);
             water.updateMatrix();
             
-            setTimeout(function() {
-                scene.add(water);  
-            }, 200);
+            //setTimeout(function() {
+                sceneGL.add(water);  
+            //}, 200);
             
-        }
-    }, 3000);
+      //  }
+    //}, 3000);
 
-
+    
 
 
     function getRandomInt(min, max) 
@@ -891,7 +1045,7 @@ function init() {
                     cylinders[i].matrixAutoUpdate = false;
 
 
-                    scene.add(cylinders[i]);
+                    sceneGL.add(cylinders[i]);
                     window.num_cylinders_so_far = i;
                     i++;
                 }
@@ -906,9 +1060,9 @@ function init() {
 
     // lights (still experimenting)
 
-    light = new THREE.DirectionalLight(0xffffff, 3);
+    var light = new THREE.DirectionalLight(0xffffff, 3);
     light.position.set(250, -300, 500);
-    scene.add(light);
+    sceneGL.add(light);
 
     var spotLight = new THREE.SpotLight(0xffffff, 1, 200, 20, 10);
     spotLight.position.set( 0, 150, 0 );
@@ -917,8 +1071,8 @@ function init() {
     spotTarget.position.set(0, 0, 0);
     spotLight.target = spotTarget;
     
-    scene.add(spotLight);
-    // scene.add(new THREE.PointLightHelper(spotLight, 1));
+    sceneGL.add(spotLight);
+    // sceneGL.add(new THREE.PointLightHelper(spotLight, 1));
 
     window.addEventListener('resize', onWindowResize, false);
 
@@ -929,7 +1083,8 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    rendererGL.setSize(window.innerWidth, window.innerHeight);
+    rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
 
 }
 
@@ -957,10 +1112,20 @@ function animate() {
     var delta = clock.getDelta();
     calcFps(delta);
 
-    if ( !(typeof water === 'undefined' || water === null) ){
+
+    if ( (typeof water === 'undefined' || water === null ||
+          typeof delta === 'undefined' || delta === null ) )
+    {
+        // do nothing
+    }
+    else
+    {
+        //delta = 0.0001;
         water.update(delta);
     }
     
+
+
 
     //console.log(delta);
     // delta is smaller, the faster the machine
@@ -968,6 +1133,9 @@ function animate() {
     
     //console.log(fps);
 
+    if ( !(typeof controls === 'undefined' || controls === null) ){
+        controls.update();
+    }
 
     render();
 
@@ -975,9 +1143,36 @@ function animate() {
 
 
 
-function render() {
+function render() 
+{
+    if ( (typeof video === 'undefined' || video === null) ){
+        // do nothing (see if this fixes minify issue)
+    }
+    else
+    {
+        if ( video.readyState === video.HAVE_ENOUGH_DATA ) 
+        {
+            videoImageContext.drawImage( video, 0, 0 );
+            if ( videoTexture ) 
+                videoTexture.needsUpdate = true;
+        }
+    }
 
-    renderer.render(scene, camera);
+
+
+    rendererGL.render(sceneGL, camera);
+
+    if ( (typeof rendererCSS3D === 'undefined' || rendererCSS3D === null) )
+    {
+        // do nothing    
+    }
+    else
+    {
+        rendererCSS3D.render(sceneCSS3D, camera);
+    }
+    
         
 
 }
+
+

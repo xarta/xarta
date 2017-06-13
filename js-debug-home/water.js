@@ -1098,7 +1098,7 @@
     // var THREE = require( "three" );
 
     // module.exports
-    WaterShader = {
+    var WaterShader = {
 
         uniforms : {
 

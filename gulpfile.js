@@ -73,8 +73,9 @@ gulp.task('minify-home-js', function() {
 });
 
 gulp.task('concat-home-js', function() {
-  return gulp.src([ './js-debug-home/water.js', 
+  return gulp.src([ './js-debug-home/CSS3DRenderer.js', 
                     './js-debug-home/beep.js', 
+                    './js-debug-home/water.js',
                     './js-debug-home/scene.js'])
     .pipe(concat('homepage.js'))
     .pipe(gulp.dest('./js-debug-home/'));
