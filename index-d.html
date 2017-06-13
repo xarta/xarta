@@ -13,6 +13,8 @@
     <!-- https://github.com/xarta/xarta -->
     <!-- (XARTA): INITIAL FILEs / INSPIRATION FROM: https://jsfiddle.net/k313cwtx/4/ -->
 
+    <!-- NOT TESTED ON APPLE DEVICES AS I DON'T HAVE ANY !!! -->
+
     <!-- concatenated / minified - see my repo for source -->
     <link rel="preload" href="js-debug-home/homepage.js" as="script"> 
 
@@ -94,11 +96,12 @@
     <body>
         <div id="container" class="no-js">
         <div id="blocker"></div> <!-- for three.js controls when using YouTube Iframes -->
+                                 <!-- might not be using blocker now ... leaving for mo -->
+        <div id="cameraPos"></div>
 
 
 
-
-        <!-- <ul class="drawer">  -->
+        <!-- <ul class="drawer">  --> <!-- TODO: Aria or similar roles / more semantic mark-up -->
             <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
         <ul id="navigation" class="drawer">
         <li id="li01" class="sticky has-hover">
@@ -174,7 +177,7 @@
         <li id="li03" class="sticky has-hover">
             <a href="#?li03">
             <i class="fa fa-info-circle"></i>
-            <span>Info</span>
+            <span>Dave</span>
             </a>
             <ul>
             <li>
@@ -183,10 +186,10 @@
                 <span>Contact</span>
                 </a>
             </li>
-            <li>
-                <a href="#" target="_self">
+            <li> <!-- TODO: ADD NO-JS HREF AS FALLBACK (CAN CHANGE IN JS) -->
+                <a id="YouTubeLink" href="#" target="_self">
                 <i class="fa fa-video-camera"></i>
-                <span>Pennine Way Walk</span>
+                <span>YouTube</span>
                 </a>
             </li>
             <li>
@@ -363,11 +366,14 @@
         
         // ---------------------------------------------------------------------------------------------
 
-
+        const YOUTUBEINFRONT = -1; // WebGL z-index ... -1 puts it behind CSS3D render for YouTube
+        const YOUTUBEBEHIND = 11;
+        var YouTubeDefault =YOUTUBEBEHIND;  // change if touch detected else tricky to control
+                                            // TODO: custom gui controls for YouTube
 
         navDrawer.addEventListener('mouseover', function(e){
             window.navDrawer.style.opacity = 1.0;
-            rendererGL.domElement.style.zIndex = -1; // webGL behind CSS3D (YouTube controls accessible)
+            rendererGL.domElement.style.zIndex = YOUTUBEINFRONT;
             window.calmCylinders = true;        // used in scene.js minified to homepage.js
             if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
             {
@@ -375,25 +381,74 @@
             }
             clearTimeout(dimDrawer);
             dimDrawer = setTimeout(function() {
-                rendererGL.domElement.style.zIndex = 1; // webGL in front of CSS3D (alpha transparent)
+                rendererGL.domElement.style.zIndex = YouTubeDefault;
                 window.navDrawer.style.opacity = 0.3;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
                 if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
                 {
                     window.moonMesh.material.color.setHex( 0xffffff );
                 }
+                if (window.controls !== null)
+                {
+                    setTimeout(function() 
+                    {
+                        document.getElementById('controlsFocus').focus();
+
+                        var path = window.location.pathname;
+                        var page = path.split("/").pop();
+
+                        if (!(page === "index-d.html"))
+                        {
+                            document.getElementById("cameraPos").style.display="block";
+                            setTimeout(function() 
+                            {
+                                document.getElementById('controlsFocus').focus();
+                                setTimeout(function() {
+                                    document.getElementById("cameraPos").style.display="none";
+                                }, 50);
+                            }, 20);  
+                        }
+                        console.log("focusing on element to get OrbitControls back");
+                    }, 20);
+                }
             }, 3000);
         }, false);
 
         navDrawer.addEventListener('touchstart', function(e){
+            YouTubeDefault =YOUTUBEINFRONT;
             window.calmCylinders = true;        // used in scene.js minified to homepage.js
             window.navDrawer.style.opacity = 1.0;
-            rendererGL.domElement.style.zIndex = -1; // webGL behind CSS3D (YouTube controls accessible)
+            rendererGL.domElement.style.zIndex = YOUTUBEINFRONT;
             clearTimeout(dimDrawer);
-            dimDrawer = setTimeout(function() {
+            dimDrawer = setTimeout(function() 
+            {
                 window.navDrawer.style.opacity = 0.2;
                 window.calmCylinders = false;   // used in scene.js minified to homepage.js
-                rendererGL.domElement.style.zIndex = 1; // webGL in front of CSS3D (alpha transparent)
+                rendererGL.domElement.style.zIndex = YouTubeDefault;
+
+                if (window.controls !== null)
+                {
+                    setTimeout(function() 
+                    {
+                        document.getElementById('controlsFocus').focus();
+
+                        var path = window.location.pathname;
+                        var page = path.split("/").pop();
+
+                        if (!(page === "index-d.html"))
+                        {
+                            document.getElementById("cameraPos").style.display="block";
+                            setTimeout(function() 
+                            {
+                                document.getElementById('controlsFocus').focus();
+                                setTimeout(function() {
+                                    document.getElementById("cameraPos").style.display="none";
+                                }, 50);
+                            }, 20);  
+                        }
+                        console.log("focusing on element to get OrbitControls back");
+                    }, 20);
+                }
             }, 3000);
         }, false);
 
@@ -412,6 +467,7 @@
                 }
                 new Beep(22050).play(500, 0.05, [Beep.utils.amplify(1000)]);
             }
+
             
         }, false);
 
@@ -421,22 +477,49 @@
         {
             new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);
         };
-        orbClick.onclick = function(){
-            var script = document.createElement("script");
-            script.src = 'js-debug-home/OrbitControls.js';
+        orbClick.onclick = loadOrbitControls;
 
-            play([[392, 0.2], [440, 0.3], [349, 0.2], [175, 0.3], [262, 1]]);
-
-            document.getElementsByTagName('head')[0].appendChild(script);
-            
-            script.onload = function()
+        function loadOrbitControls() {
+            if (window.controls !== null)
             {
-                
-                console.log("OrbitControls-min.js loaded");
-                window.controls = new THREE.OrbitControls(camera, rendererCSS3D.domElement);
-            };
+                var script = document.createElement("script");
+                script.src = 'js-debug-home/OrbitControls.js';
 
-            document.getElementById("orbitControls").style.display="none";
+                play([[392, 0.2], [440, 0.3], [349, 0.2], [175, 0.3], [262, 1]]);
+
+                document.getElementsByTagName('head')[0].appendChild(script);
+                
+                script.onload = function()
+                {
+                    
+                    console.log("OrbitControls-min.js loaded");
+                    window.controls = new THREE.OrbitControls(camera, rendererGL.domElement);
+                };
+
+                var path = window.location.pathname;
+                var page = path.split("/").pop();
+                //console.log( page );
+                if (page === "index-d.html")
+                {
+                    document.getElementById("cameraPos").style.display="block";  
+                }
+                
+                document.getElementById("orbitControls").style.display="none";
+            }
+            return false;
+        }
+
+
+        var YouTubeLink =document.getElementById("YouTubeLink");
+
+        YouTubeLink.addEventListener('touchstart', function(e){
+            document.getElementById("li03").classList.toggle("has-hover");
+        }, false);
+
+        YouTubeLink.onclick = function(){
+            
+            loadOrbitControls();
+            YouTubeVidWall();
             return false;
         };
 

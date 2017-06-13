@@ -9,9 +9,91 @@ colours[4] = ["purple",     "#f77c02"];     // orange background
 
 var camera, controls, sceneGL, rendererGL, clock;
 
-var rendererCSS3D, sceneCSS3D       // for YouTube iframes etc.
+var rendererCSS3D, sceneCSS3D;       // for YouTube iframes etc.
 var ytWidth     = 480;              // YouTube
 var ytHeight    = 360;
+var vidWall     = null;
+// For YouTube
+var Element = function ( id, x, y, z, ry, screenID ) 
+{
+    var div = document.createElement( 'div' );
+    div.style.width = ytWidth.toString() + 'px';
+    div.style.height = ytHeight.toString() + 'px';
+    div.style.backgroundColor = '#000';    
+    div.style.zIndex = '13';     
+    var iframe = document.createElement( 'iframe' );
+    iframe.setAttribute("id", screenID);
+    iframe.style.width = ytWidth.toString() + 'px';
+    iframe.style.height = ytHeight.toString() + 'px';
+    iframe.style.border = '0px';
+    //iframe.src="https://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=https://xarta.co.uk";
+    iframe.src = [ 'https://www.youtube.com/embed/', id, '?enablejsapi=1&origin=https://xarta.co.uk' ].join( '' );
+    //iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
+    div.appendChild( iframe );          
+    var object = new THREE.CSS3DObject( div );
+    object.position.set( x, y, z );
+    object.rotation.y = ry;         
+    return object;
+};
+
+var s1; // YouTube screen1 (iframe)
+var s2; // YouTube screen2
+var s3; // YouTube screen3
+var s4; // YouTube screen4
+
+function onYouTubeIframeAPIReady() 
+{
+    s1 = new YT.Player('s1', 
+    {
+    events:
+        {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+    s2 = new YT.Player('s2', 
+    {
+    events:
+        {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+    s3 = new YT.Player('s3', 
+    {
+    events:
+        {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+    s4 = new YT.Player('s4', 
+    {
+    events:
+        {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerReady(event) {
+    event.target.playVideo();
+}
+
+var YTdone = false;
+function onPlayerStateChange(event) {
+    if (event.data == YT.PlayerState.PLAYING && !YTdone) {
+        setTimeout(stopVideo, 6000);
+        YTdone = true;
+    }
+}
+
+function stopVideo(player) {
+    player.stopVideo();
+}
+
+
 
 var water = null;
 
@@ -77,76 +159,50 @@ var accDelta = 0;           // accumulative delta time (avoid divide by zero)
                             // and, year 2009 Core 2 Duo laptop with separate graphics card (gets warm)
 
 
+function YouTubeVidWall()
+{
+    if (vidWall === null)
+    {
+        // DO ONCE
+        // TODO: ADD GUI CONTROLS TO CONTROL YOUTUBE VIA IFRAME API
+        // HOPEFULLY WILL BE ABLE TO DYNAMICALLY CHANGE CONTENT TOO
+
+        // LOAD YOUTUBE IFRAME PLAYER API -----------------------------
+        // 2. This code loads the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        // It will look for global function: onYouTubeIframeAPIReady()
+        //  ------------------------------------------------------------
+
+        vidWall = new THREE.Group();
+        var x = 500;
+        var y = -ytHeight;
+        var z = -200;
+        var ry = -1 * (Math.PI / 2) ; // rotate about so 90deg on the right
+
+        vidWall.add( new Element( 'M7lc1UVf-VE', x, y, z, ry, 's1' ) );
+        vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z+ytWidth, ry, 's2' ) );
+        vidWall.add( new Element( 'DjLwd9Ih8V8', x, y+ytHeight, z, ry, 's3' ) );
+        vidWall.add( new Element( 'DjLwd9Ih8V8', x, y+ytHeight, z+ytWidth, ry, 's4' ) );               
+        //group.add( new Element( 'DjLwd9Ih8V8', 240, 0, 0, Math.PI / 2 ) );
+        sceneCSS3D.add( vidWall );
+    }
+ 
+    camera.position.set( -498, 20, 45 );
+    // TODO: LOOK AT DOLLY OPTIONS E.G.
+    // https://github.com/amelierosser/threejs-camera-dolly/blob/master/index.html
+
+
+}
 
 init(); // camera, water, moon, cylinders etc. etc. - add to sceneGL
 
+  
 
-            var Element = function ( id, x, y, z, ry ) 
-            {
-                var div = document.createElement( 'div' );
-                div.style.width = ytWidth.toString() + 'px';
-                div.style.height = ytHeight.toString() + 'px';
-                div.style.backgroundColor = '#000';         
-                var iframe = document.createElement( 'iframe' );
-                iframe.style.width = ytWidth.toString() + 'px';
-                iframe.style.height = ytHeight.toString() + 'px';
-                iframe.style.border = '0px';
-                iframe.src = [ 'https://www.youtube.com/embed/', id, '?rel=0' ].join( '' );
-                div.appendChild( iframe );          
-                var object = new THREE.CSS3DObject( div );
-                object.position.set( x, y, z );
-                object.rotation.y = ry;         
-                return object;
-            };
-
-
-
-          
                 
-                var vidWall = new THREE.Group();
-                var x = 500;
-                var y = 0;
-                var z = -200;
-                var ry = -1 * (Math.PI / 2) ; // rotate about y axis
-
-                vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z, ry ) );
-                vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z+ytWidth, ry ) );
-                vidWall.add( new Element( 'DjLwd9Ih8V8', x, ytHeight, z, ry ) );
-                vidWall.add( new Element( 'DjLwd9Ih8V8', x, ytHeight, z+ytWidth, ry ) );               
-                //group.add( new Element( 'DjLwd9Ih8V8', 240, 0, 0, Math.PI / 2 ) );
-                sceneCSS3D.add( vidWall );
-
-                //camera.position.set( 500, 100, 0 ); // for YouTube ???
-                /*
-                var scriptTrackball = document.createElement("script");
-                scriptTrackball.src = 'https://xarta.co.uk/js/TrackballControls-min.js';
-                document.getElementsByTagName('head')[0].appendChild(scriptTrackball);
-                scriptTrackball.onload = function(){
-                    controls = new THREE.TrackballControls( camera );
-                    controls.rotateSpeed = 4;
-                };
-
-                */
-
-                /*
-
-                // Block iframe events when dragging camera
-
-                var blocker = document.getElementById( 'blocker' );
-                blocker.style.display = 'none';
-
-                document.addEventListener( 'mousedown', function () 
-                { 
-                    blocker.style.display = '';
-                    console.log("mousedown");
-                 } );
-                document.addEventListener( 'mouseup', function () 
-                { 
-                    blocker.style.display = 'none';
-                    console.log("mouseup");
-                } );
-
-                */
             
 /*
 // create the video element
@@ -219,21 +275,6 @@ animate();  // kickstart the animation loop
 function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours) 
 {
 	console.log('getNewXartaCube('+xPos+', '+yPos+', '+zPos+', '+word+', '+colourStartIndex+')');
-
-
-
-/*
-    console.log(colours[(colourStartIndex + 0) % 5][1])
-    console.log(colours[(colourStartIndex + 0) % 5][0]);
-    console.log(colours[(colourStartIndex + 1) % 5][1])
-    console.log(colours[(colourStartIndex + 1) % 5][0]);
-    console.log(colours[(colourStartIndex + 2) % 5][1])
-    console.log(colours[(colourStartIndex + 2) % 5][0]);
-    console.log(colours[(colourStartIndex + 3) % 5][1])
-    console.log(colours[(colourStartIndex + 3) % 5][0]);
-    console.log(colours[(colourStartIndex + 4) % 5][1])
-    console.log(colours[(colourStartIndex + 4) % 5][0]);
-*/
 
     var RIGHT = document.createElement("canvas");
     var RIGHTcontext = RIGHT.getContext("2d");
@@ -479,11 +520,21 @@ function tumble(transformRate)
     {
         if (moonz < -500)
         {
+            if(window.moonMesh.material.opacity < 1)
+            {
+                moonMesh.material.opacity += 0.1;
+            }
+            else
+            {
+                moonMesh.material.opacity = 1;
+            }
+            
             moonz += (50*transformRate);
             moonMesh.position.z = moonz;
         }
         else
         {   
+            moonMesh.material.opacity = 1;
             phaseMoonApproach = false;
             
         }
@@ -718,7 +769,7 @@ function init() {
     var camFarPlane = 3000;
     camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, camFarPlane);
     camera.position.set(6, 10, 50);
-    // camera.position.set( 500, 350, 750 ); // for YouTube ???
+
 
     sceneGL = new THREE.Scene();
     sceneCSS3D = new THREE.Scene();
@@ -732,7 +783,7 @@ function init() {
     rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
     rendererCSS3D.domElement.style.position = 'absolute';
     rendererCSS3D.domElement.style.top = 0;
-    //rendererCSS3D.domElement.style.zIndex = 3;
+    rendererCSS3D.domElement.style.zIndex = 10;
 
     if ( rendererglZ === -1)
     {
@@ -806,7 +857,7 @@ function init() {
                     {
                         map: theMoon, 
                         transparent: true, 
-                        opacity: 1.0, color: 0xff0000
+                        opacity: 0.0, color: 0xff0000
                     })
                 );   
             // keep size in portrait mode, but shift partly offscreen to left
@@ -1103,6 +1154,13 @@ function calcFps(delta)
     }
 
 }
+function displayCamPos() {
+    var p = document.getElementById('cameraPos');
+    p.innerHTML =   ( Math.round( (camera.position.x  + 0.00001) * 100) / 100 ) + ", " + 
+                    ( Math.round( (camera.position.y  + 0.00001) * 100) / 100 ) + ", " + 
+                    ( Math.round( (camera.position.z  + 0.00001) * 100) / 100 ) +
+                    '<input type="text" id="controlsFocus" value="Control Focus">';
+}
 
 
 function animate() {
@@ -1125,7 +1183,7 @@ function animate() {
     }
     
 
-
+    displayCamPos();
 
     //console.log(delta);
     // delta is smaller, the faster the machine

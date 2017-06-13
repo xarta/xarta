@@ -58,14 +58,25 @@ body {
     background: black;
 }
 
+#cameraPos {
+    position: absolute;
+    z-index: 12;
+    top: 0;
+    left: 0;
+    background: white;
+    color: black;
+    height: 1.5 rem;
+    display: none;
+}
+
 /* outer <ul> */
 .drawer {
   width: auto;
   position: absolute;
-  z-index: 10;
+  z-index: 12;
   top: $drawerTop;
   right: 5px;
-  height: 100%;
+  height: auto;
   padding: .4em 0;
   color: $textColor;
   text-align: center;
