@@ -701,7 +701,7 @@ function init() {
     // GET LOADING GOING NOW, STRAIGHT-AWAY
 
     // Load the background texture  STARS (from NASA galleries)
-    var stars = loader.load( 'v1496587567/xarta/spiral-galaxy.jpg' );               
+    var stars = loader.load( 'v1497350431/xarta/spiral-galaxy.jpg' );               
     
     
     // Load the background texture MOON (found with Google ... oops - forgot attribution)

@@ -44,16 +44,38 @@ gulp.task('minify-html', function() {
         .pipe(gulp.dest('./'))
 });
 
+//                                           ************
+// MAKE DEBUG VERSION OF index.html ... i.e. index-d.html
+//                                           ************
+// as well as debugging js (i.e. don't have to prettify all the time when stepping)
+// ... wanted to reduce bandwidth use on my account on cloudinary.com
 gulp.task('debug-js', function() {
     return gulp.src("html-debug/*-debug.html")
         .pipe (replace('js/homepage-min.js', 'js-debug-home/homepage.js'))
         .pipe (replace('js/OrbitControls-min.js', 'js-debug-home/OrbitControls.js'))
         .pipe (replace('https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js', 'js-debug-home/three.js'))
+        .pipe (replace('https://res.cloudinary.com/xarta/image/upload/','images/'))
+        .pipe (replace(/v\d{10}\/xarta\//g, ''))
         .pipe (rename(function (path) {
             path.basename = path.basename.replace("-debug", "-d");
         }))
         .pipe(gulp.dest('./'))    
 });
+
+
+// change cloudinary (CDN) paths in homepage.js (not homepage-min.js)
+// for debugging (so only effects homepage.js which is generated every time)
+// - reduce bandwidth use on Cloudinary account when debugging
+gulp.task('homepage-js-cloudinary', function() {
+    return gulp.src("js-debug-home/homepage.js")
+        .pipe (replace("setPath('https://res.cloudinary.com/xarta/image/upload/'", "setPath('https://xarta.co.uk/images/'"))
+        .pipe (replace('https://res.cloudinary.com/xarta/image/upload/','images/'))
+        .pipe (replace(/v\d{10}\/xarta\//g, ''))
+        .pipe(gulp.dest(function(f) {
+            return f.base;
+        })) 
+});
+
 
 gulp.task('sass', function() {
     return gulp.src('css/css-debug/*.scss')
@@ -102,7 +124,7 @@ gulp.task('sass-minify', function() {
 // to one (but also separates for three stuff, for other pages)
 gulp.task('concat-minify-home-js', function() {
     runSequence(
-        'concat-home-js', 'minify-home-js'
+        'concat-home-js', 'minify-home-js', 'homepage-js-cloudinary'
     );
 });
 
@@ -111,6 +133,6 @@ gulp.task('xarta', function() {
     gulp.watch('css/css-debug/*.scss', ['sass']);
     gulp.watch('css/css-debug/*.css', ['minify-css']);
     gulp.watch('html-debug/*.html', ['minify-html', 'debug-js']);
-    gulp.watch('js-debug-home/*.js', ['concat-minify-home-js']);
+    gulp.watch(['js-debug-home/*.js', '!js-debug-home/homepage.js'], ['concat-minify-home-js']);
 });
 
