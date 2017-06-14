@@ -117,7 +117,7 @@ gulp.task('concat-home-js', function() {
   return gulp.src([ './js-debug-home/CSS3DRenderer.js', 
                     './js-debug-home/beep.js', 
                     './js-debug-home/water.js',
-                    './js-debug-home/scene.js'])
+                    './js-debug-home/scene.js'], {base: './'})
     .pipe(sourcemaps.init())
     .pipe(babel({
         presets: ['es2015']
