@@ -14,65 +14,36 @@
     <!-- (XARTA): INITIAL FILEs / INSPIRATION FROM: https://jsfiddle.net/k313cwtx/4/ -->
 
     <!-- NOT TESTED ON APPLE DEVICES AS I DON'T HAVE ANY !!! -->
+    <!-- FOCUSSING ON CHROME/WINDOWS/ANDROID ... USING "preload" (nopush) 
+    IN SERVER HEADER ... WILL LOOK AT FALL-BACKS FOR OTHER BROWSERS LATER -->
 
-    <!-- concatenated / minified - see my repo for source -->
-    <link rel="preload" href="js-debug-home/homepage.js" as="script"> 
-
-    <!-- links to original pics found on https://jsfiddle.net/k313cwtx/4/ -->
-    <!--  but compressed further and moved -->
-    <link rel="prefetch" href=
-        "images/Eu0MQrk.png">
-    <link rel="prefetch" href=
-        "images/KmwuMPu.jpg">
-    <link rel="prefetch" href=
-        "images/8pUBeuw.jpg">
-    <link rel="prefetch" href=
-        "images/fB9BaJJ.jpg">
-
-
-    <link rel="prefetch" href=
-        "images/2014-me-at-work256.jpg">
-    <link rel="prefetch" href=
-        "images/spiral-galaxy.jpg">
-
-    <script type="text/javascript">
+    <script>
         var timerStart = Date.now();    // will use later - e.g. decide on page load speed
                                         // - if quick enough, will load higher quality moon etc.
         //** ******************
         var xartaDebug = false;
         //** ******************
-
     </script>
 
-    <script>/*
-    <!-- BOOTSTRAP -->
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href=
-        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
-        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
-        crossorigin="anonymous">
+    <!-- THIS PAGE DEPENDS ON THREE.JS - GET IT LOADING ASAP -->
+    <link rel="preload" href="js-debug-home/three.js" as="script">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href=
-        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" 
-        integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" 
-        crossorigin="anonymous">
-    */</script>
-    <!--
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous">
+    <!-- concatenated / minified - see my repo for source -->
+    <link rel="preload" href="js-debug-home/homepage.js" as="script"> 
+
+    <script async>
+        var preloadWhoop = document.createElement("link");
+        preloadWhoop.href = "/sound/whoop.mp3";
+        preloadWhoop.rel = "preload";
+        preloadWhoop.as = "audio";
     </script>
-    -->
-    <!-- Latest compiled and minified JavaScript -->
-    <!--
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
-        crossorigin="anonymous"></script>
-    -->
 
-    <link rel="stylesheet" href=
+
+    <link rel="stylesheet" crossorigin href=
         "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- chrome supports woff2 as well as preload ... using "type" 
+    so won't download to browsers that don't support it -->
+    <link rel="preload" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/fonts/fontawesome-webfont.woff2?v=4.7.0" as="font" type="font/woff2" crossorigin>
 
 
 
@@ -202,11 +173,6 @@
         </li>
         </ul>
 
-
-
-        <script src="js-debug-home/three.js"></script>
-        <script src="js-debug-home/homepage.js"></script>  <!-- concatenated and minified -->
-
         <div id="orbitControls" style="display:none">
             <a id="orbClick" href="#" target="_self">
                 <i class="fa fa-street-view"></i>
@@ -263,9 +229,13 @@
         </div>
 
         </div> <!-- end of container -->
+        
     </body>
 
 <footer>
+    <script src="js-debug-home/three.js" defer></script>
+    <script src="js-debug-home/homepage.js" defer></script>  <!-- concatenated and minified -->
+
     <script>
         document.getElementById("container").classList.remove("no-js");
 
@@ -299,6 +269,9 @@
         navDrawer.style.opacity = 0.4;
         var NavHoverState = true; // will detect it for touch use
 
+    </script>
+
+    <script defer>
         function hasClass(el, className)
         {
             if (el.classList)

@@ -361,24 +361,24 @@ init(); // camera, water, moon, cylinders etc. etc. - add to sceneGL
             
 /*
 // create the video element
-	video = document.createElement( 'video' );
+	var video = document.createElement( 'video' );
 	// video.id = 'video';
 	// video.type = ' video/ogg; codecs="theora, vorbis" ';
     video.crossOrigin = "anonymous";
-    video.src = "https://res.cloudinary.com/xarta/video/upload/v1497265079/xarta/SampleVideo_720x480_1mb.mp4";
+    video.src = "https://xarta.co.uk/videos/sintel.ogv";
 	video.load(); // must call after setting/changing source
 	video.play();
 	
-	videoImage = document.createElement( 'canvas' );
+	var videoImage = document.createElement( 'canvas' );
 	videoImage.width = 480;
 	videoImage.height = 204;
 
-	videoImageContext = videoImage.getContext( '2d' );
+	var videoImageContext = videoImage.getContext( '2d' );
 	// background color if no video present
 	videoImageContext.fillStyle = '#ffffff';
 	videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
 
-	videoTexture = new THREE.Texture( videoImage );
+	var videoTexture = new THREE.Texture( videoImage );
 	videoTexture.minFilter = THREE.LinearFilter;
 	videoTexture.magFilter = THREE.LinearFilter;
 	
@@ -390,8 +390,8 @@ init(); // camera, water, moon, cylinders etc. etc. - add to sceneGL
 	movieScreen.position.set(0,50,-100);
 	sceneGL.add(movieScreen);
 	
-	//camera.position.set(0,150,300);
-	//camera.lookAt(movieScreen.position);
+	camera.position.set(0,150,300);
+	camera.lookAt(movieScreen.position);
 */
 
 
@@ -509,7 +509,8 @@ function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours)
 
 
     // cross origin so I can use cloudinary, and 256 pixels width & height
-	var textureLoader = new THREE.TextureLoader().setCrossOrigin(true);
+	var textureLoader = new THREE.TextureLoader().setCrossOrigin('');
+    // loader.crossOrigin = '';
     textureLoader.setPath('https://res.cloudinary.com/xarta/image/upload/');
 	var texture = textureLoader.load( "v1497007069/xarta/2014-me-at-work256.jpg" ); // BACK
 
@@ -902,7 +903,7 @@ function tumble(transformRate)
 
 function init() {
 
-    var loader = new THREE.TextureLoader().setCrossOrigin(true);    // Use same cross-origin loader for all assets
+    var loader = new THREE.TextureLoader().setCrossOrigin('');    // Use same cross-origin loader for all assets
     loader.setPath('https://res.cloudinary.com/xarta/image/upload/');
     // GET LOADING GOING NOW, STRAIGHT-AWAY
 
@@ -1036,18 +1037,28 @@ function init() {
         // even with cached resources. Resorting to lower quality only if compute/load time is
         // excessive, to help a little ... different between 47KB and over 300KB images
         // (The lowest quality is quite apparent on a Note 4)
-        if ( (window.innerWidth > 768) || (loadTime < 2500) || window.fps > 5 )
-        {
+
+        // *******
+        // UPDATE:
+        /**
+         * looking at the waterfall in Chrome, looks like any javascript that loads more resources
+         * doesn't kick-in until after about 500ms even if async and other pre-loaded stuff is async
+         * ... so now deciding to have one moon ... the highest quality one, and preload it using
+         * ... link rel="preload" ... more efficient - do while threejs (min) is downloading from
+         * ... elsewhere etc.
+         */ 
+        //if ( (window.innerWidth > 768) || (loadTime < 2500) || window.fps > 5 || window.bigMoonReady == true )
+        //{
             theMoon = loader.load( 'v1496588500/xarta/moon.png', moonLoaded );
-        }
-        else if ( (window.innerWidth > 512) || (loadTime < 3000) )
-        {
-            theMoon = loader.load( 'v1496576988/xarta/moon-lower-quality-512.png', moonLoaded );
-        }
-        else
-        {
-            theMoon = loader.load( 'v1496586463/xarta/moon-lower-quality-256.png', moonLoaded);
-        }
+        //}
+        //else if ( (window.innerWidth > 512) || (loadTime < 3000) || window.moon512Ready == true)
+        //{
+        //    theMoon = loader.load( 'v1496576988/xarta/moon-lower-quality-512.png', moonLoaded );
+        //}
+        //else
+        //{
+        //    theMoon = loader.load( 'v1496586463/xarta/moon-lower-quality-256.png', moonLoaded);
+        //}
     }
 
     getTheMoon();

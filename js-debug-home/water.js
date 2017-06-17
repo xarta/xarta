@@ -1588,14 +1588,14 @@
         this._halfCycle = this.cycle * 0.5;
         
         // load flow and noise map
-        var flowMap = new THREE.TextureLoader().setCrossOrigin(true).load( "https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/Eu0MQrk.png" );
-        var noiseMap = new THREE.TextureLoader().setCrossOrigin(true).load( "https://res.cloudinary.com/xarta/image/upload/v1497350431/xarta/KmwuMPu.jpg" );
+        var flowMap = new THREE.TextureLoader().setCrossOrigin('').load( "https://res.cloudinary.com/xarta/image/upload/v1496407928/xarta/Eu0MQrk.png" );
+        var noiseMap = new THREE.TextureLoader().setCrossOrigin('').load( "https://res.cloudinary.com/xarta/image/upload/v1497350431/xarta/KmwuMPu.jpg" );
         
         // load normal maps
-        var normalMap0 = new THREE.TextureLoader().setCrossOrigin(true).load( "https://res.cloudinary.com/xarta/image/upload/v1497350431/xarta/8pUBeuw.jpg" );
+        var normalMap0 = new THREE.TextureLoader().setCrossOrigin('').load( "https://res.cloudinary.com/xarta/image/upload/v1497350431/xarta/8pUBeuw.jpg" );
         normalMap0.wrapS = normalMap0.wrapT = THREE.RepeatWrapping;
         
-        var normalMap1 = new THREE.TextureLoader().setCrossOrigin(true).load( "https://res.cloudinary.com/xarta/image/upload/v1497350431/xarta/fB9BaJJ.jpg" );
+        var normalMap1 = new THREE.TextureLoader().setCrossOrigin('').load( "https://res.cloudinary.com/xarta/image/upload/v1497350431/xarta/fB9BaJJ.jpg" );
         normalMap1.wrapS = normalMap1.wrapT = THREE.RepeatWrapping;
             
         // set reflection and refraction map
