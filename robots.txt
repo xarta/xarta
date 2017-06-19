@@ -1,0 +1,18 @@
+User-agent: *
+
+Disallow: /html-debug/
+Disallow: /node_modules/
+Disallow: /css/
+Disallow: /js
+Disallow: /js-debug-home/
+Disallow: /sound/
+Disallow: /photos/
+Disallow: /videos/
+Disallow: /.gitattributes
+Disallow: /.gitignore
+Disallow: /browserconfig.xml
+Disallow: /manfiest.json
+Disallow: /gulpfile.js
+Disallow: /package.json
+Disallow: /index-d.html
+Disallow: /web.config
