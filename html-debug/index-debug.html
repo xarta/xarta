@@ -1,6 +1,5 @@
 <!doctype html>
-
-<html lang="en">
+<html lang="en-GB">
 <head>
     <meta charset="utf-8">
 
@@ -15,29 +14,76 @@
 
     <!-- NOT TESTED ON APPLE DEVICES AS I DON'T HAVE ANY !!! -->
     <!-- FOCUSSING ON CHROME/WINDOWS/ANDROID ... USING "preload" (nopush) 
-    IN SERVER HEADER ... WILL LOOK AT FALL-BACKS FOR OTHER BROWSERS LATER -->
+    IN SERVER HEADER ... WILL LOOK AT FALL-BACKS FOR OTHER BROWSERS LATER
+    PROBLEM? AFTER TIME (EXPIRES) PAGE REFRESH LOADS FROM MEMORY !AND! DISK CACHE???  -->
 
+    <!-- htmlmin:ignore -->
     <script>
-        var timerStart = Date.now();    // will use later - e.g. decide on page load speed
-                                        // - if quick enough, will load higher quality moon etc.
+        var timerStart = Date.now();    
+        // will use later - e.g. decide on page load speed
+        // - if quick enough, will load higher quality moon etc.
+
+        // NOT USING YET ... WILL DO WHEN REFACTOR
         //** ******************
         var xartaDebug = false;
         //** ******************
     </script>
+    <!-- htmlmin:ignore -->
 
     <!-- THIS PAGE DEPENDS ON THREE.JS - GET IT LOADING ASAP -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js" as="script">
+    <link rel="preload" href="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js" as="script" crossorigin>
 
     <!-- concatenated / minified - see my repo for source -->
     <link rel="preload" href="js/homepage-min.js" as="script"> 
 
+    <!-- htmlmin:ignore -->
     <script async>
-        var preloadWhoop = document.createElement("link");
-        preloadWhoop.href = "/sound/whoop.mp3";
-        preloadWhoop.rel = "preload";
-        preloadWhoop.as = "audio";
+        // Audio mp3's (won't play on mobile wihtout touch-interaction, normally)
+        var myAudio = document.createElement('audio');
+        if (myAudio.canPlayType('audio/mpeg')) 
+        {
+            var whoop = document.createElement('audio');
+            whoop.setAttribute('src','sound/whoop.mp3');
+            whoop.setAttribute('type', 'audio/mpeg');
+            whoop.setAttribute('preload','auto');
+        }
+        else
+        {
+            var whoop;
+            whoop[play] = function() {console.log("Playing whoop sound")};
+        }
     </script>
+    <!-- htmlmin:ignore -->
+    <script>
+        // on Chrome three.min.js should preload fast anyway using the preload link
+        // and maybe on Firefox, and hopefully not too far in the future, Edge
 
+        // if this javascript starts downloading three.min.js here, hopefully Chrome
+        // will be smart enough to know if the preload is already happening
+        // and on other browsers, will be good to start downloading it now anyway
+    </script>
+    <!-- htmlmin:ignore -->
+    <script>
+        console.log("About to preloadThreeScript");
+        var preloadThreehead = document.getElementsByTagName('head')[0];
+        var preloadThreescript = document.createElement('script');
+        preloadThreescript.type = 'text/javascript';
+        preloadThreescript.charset = 'utf-8';
+        preloadThreescript.crossOrigin = 'anonymous';
+        preloadThreescript.src = 'https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js';
+        preloadThreehead.appendChild(preloadThreescript);
+
+        preloadThreescript.onload = function() {
+                console.log ("About to preload home page script");
+               // var preloadThreehead = document.getElementsByTagName('head')[0];
+                var preloadHomePagescript = document.createElement('script');
+                preloadHomePagescript.type = 'text/javascript';
+                preloadHomePagescript.charset = 'utf-8';
+                preloadHomePagescript.src = 'js/homepage-min.js';
+                preloadThreehead.appendChild(preloadHomePagescript);
+        }
+    </script>
+    <!-- htmlmin:ignore -->
 
     <link rel="stylesheet" crossorigin href=
         "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -66,12 +112,51 @@
 </head>
 
     <body>
-        <div id="container" class="no-js">
-        <div id="blocker"></div> <!-- for three.js controls when using YouTube Iframes -->
-                                 <!-- might not be using blocker now ... leaving for mo -->
-        <div id="cameraPos"></div>
-
-
+        <div id="container" >
+        <div id="blocker"></div>    <!-- for three.js controls when using YouTube Iframes -->
+                                    <!-- might not be using blocker now ... leaving for mo -->
+        <div id="cameraPos"></div>  <!-- just for when debugging - see three.js camera position -->
+        
+        <!-- htmlmin:ignore -->
+        <noscript class="no-js">
+            <h1>Welcome to Xarta (just my cool domain name)</h1>
+            <p>This is my first attempt at a website from scratch in about 10-years. 
+                It's a work in progress. I apologise for the current lack of accessibility. 
+                That's something I hope to address when I have a job again and can prioritise 
+                more ethically than I can right now.
+            </p>
+            <p> I wanted to build on my three.js knowledge and incorporate audio/video. 
+                My JavaScript knowledge is pretty old and underdeveloped - around a&nbsp;partial 
+                ES3 level. While building this site I learned/implemented better practices 
+                around using NPM/Gulp for my development, and learning more about ES2015 
+                (using Bable).
+            </p>
+            <p> Also the code has completely gotten away from me and is messy. My next steps 
+                in that regard are to learn how to use jspm and SystemJS, and refactor into 
+                suitable modules. And also to take advantage of ES2015 to simplify/decompose 
+                the code structure, using objects/classes in a more idiomatic way
+            </p>
+            <p> Since my employer&amp;apos;s insolvency at the end of August 2016, I've spent 
+                considerable time learning .Net / C# in depth, cross-platform technology, IoT etc. 
+                and went on to devise and install &amp; implement advanced networking/server 
+                configuration at home using pfSense and smart switches as the backbone. At the 
+                same time, I revisited WordPress, updating my existing sites a little, and making 
+                headway learning some PHP as I made my own WordPress plugin. Along the way I've 
+                not been able to avoid JavaScript, and hope to advance it to a basic working 
+                understanding of ES2015.
+            </p>
+            <p> This is a simple indexing/links page supporting some WebGL bling for effect. I'm 
+                using it as a vehicle to advance &amp; demonstrate some of my skills. Once stable, 
+                and once I've ticked-off technical good practices, I'll look at implementing 
+                better accessibility also. Prolonged lack of income and a wide investment in skill 
+                learning is constraining my efforts with this website to the visuals, 
+                security/good-practice and technical metrics e.g. load speed etc. For now. I'm learning!
+            </p>
+            <br />
+            <p>Kind regards,
+            <p>Dave
+        </noscript>
+        <!-- htmlmin:ignore -->
 
         <!-- <ul class="drawer">  --> <!-- TODO: Aria or similar roles / more semantic mark-up -->
             <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
@@ -173,22 +258,28 @@
             </ul>
         </li>
         </ul>
-
+        <!-- htmlmin:ignore -->
+        <script>
+            (function() {
+                // only do (asap) if script supported
+                var navDrawer = document.getElementsByClassName("drawer")[0];
+                navDrawer.style.opacity = 0.4;
+            })();
+        </script>
+        <!-- htmlmin:ignore -->
         <div id="orbitControls" style="display:none">
             <a id="orbClick" href="#" target="_self">
                 <i class="fa fa-street-view"></i>
                 <span>Controls</span>
             </a>
         </div>
+        <!-- htmlmin:ignore -->
         <div class="restart-page">
-        
         <a href="javascript:history.go(0)" target="_self" title="Refresh">
-
             <svg onmouseenter= "el=this;el.classList.add('active');
                  setTimeout(function(){el.classList.remove('active')},600);
                  new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);"
                  xmlns="http://www.w3.org/2000/svg"  viewBox="-14 -14 80 80">
-
             <g class="refresh-holder">
                 <path class="refresh" d=    
                     "M61.063-6.444c-3.155,3.74-6.231,7.583-9.375,11.339c-0.152,
@@ -218,11 +309,10 @@
                 3.646,1.973,5.884c0.762,1.578,1.785,2.824,1.379,3.681L31.482,41.8c-0.422,
                 0.888-1.979-1.479-3.822-3.776l-3.216-4.009l-3.565,5.014c-1.961,2.757-3.792,4.998-4.068,
                 4.981C16.533,43.992,13.34,38.677,13.34,38.108z"/>
-
             </svg>
         </a>
         </div> <!-- end of refresh-page discreet icon -->
-
+        <!-- htmlmin:ignore -->
         
         <div id="log" class = "debug" style="position: absolute; display: none;
                                 z-index: 100; top: 5px; left: 20px; 
@@ -234,375 +324,46 @@
     </body>
 
 <footer>
-    <script src="https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js" defer></script>
-    <script src="js/homepage-min.js" defer></script>  <!-- concatenated and minified -->
+<!-- htmlmin:ignore -->
+<script>
+    // NOTE TO SELF: TODO: make sure this passes through Bable too
+    const TOUCHNOTLIKELY = false;
+    const TOUCHLIKELY = true;
+    var usingTouchDevice = TOUCHNOTLIKELY;
 
-    <script>
-        document.getElementById("container").classList.remove("no-js");
+    const YOUTUBEINFRONT = -1; // WebGL z-index ... -1 puts it behind CSS3D render for YouTube
+    const YOUTUBEBEHIND = 11;
+    const YOUTUBECLICKED = true;
+    const YOUTUBENOTCLICKED = false;
+    var YouTubeClickedYet =YOUTUBENOTCLICKED;
+    var YouTubeDefault =YOUTUBEBEHIND;  // change if touch detected else tricky to control
+                                        // TODO: custom gui controls for YouTube
+    var navDrawer = document.getElementsByClassName("drawer")[0];
+    var dimDrawer;
+    var NavHoverState = true; // will detect it for touch use
 
-        window.onload = function(e)
-        { 
-            console.log("window.onload", e, Date.now());
+    // controls clickable activation link at bottom of screen
+    document.getElementById("orbitControls").style.display="block";
+    var orbClick = document.getElementById("orbClick");
 
+    var YouTubeLink = document.getElementById("YouTubeLink");
 
+    window.onload = function(e)
+    { 
+        console.log("window.onload", e, Date.now());
 
-        }
+        console.log("about to load defer.js");
+        var preloadDeferFooter = document.getElementsByTagName('footer')[0];
+        var preloadDeferscript = document.createElement('script');
+        preloadDeferscript.type = 'text/javascript';
+        preloadDeferscript.charset = 'utf-8';
+        //preloadDeferscript.crossOrigin = 'anonymous';
+        preloadDeferscript.src = 'js/defer-min.js';
+        preloadDeferFooter.appendChild(preloadDeferscript);
 
-    </script>
-    <div id="xarta-no-js">
-        <style>
-            /* TODO: @media for no-js, and more functionality */
-            .no-js
-            {
-                background-image: url("https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg");
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
-        </style>
-    </div>
-    <script>
-        var element = document.getElementById("xarta-no-js");
-        element.parentNode.removeChild(element);
-
-        // do asap
-        var navDrawer = document.getElementsByClassName("drawer")[0];
-        var dimDrawer;
-        navDrawer.style.opacity = 0.4;
-        var NavHoverState = true; // will detect it for touch use
-
-    </script>
-
-    <script defer>
-        function hasClass(el, className)
-        {
-            if (el.classList)
-            {
-                //console.log("hasClass(): el.classList");
-                return el.classList.contains(className);
-            }
-            else
-            {
-                //console.log("hasClass(): new RegExp");
-                return new RegExp('(^| )' + className + '( |$)', 'gi').test(el.className);
-            }
-        }
-
-
-
-        // DEBUG - SHOW
-        if (window.xartaDebug === true)
-        {
-            for (var i=0; i<document.getElementsByClassName("debug").length; i++)
-            {
-                document.getElementsByClassName("debug")[i].style.display = "block";
-            }
-
-            function log(msg) 
-            {
-                var p = document.getElementById('log');
-                p.innerHTML = msg + "<br>" + p.innerHTML;
-            }
-        }
-        else
-        {
-            function log(msg)
-            {
-                // do nothing
-            }
-        }
-
-
-        // Audio mp3's (won't play on mobile wihtout touch-interaction, normally)
-        var myAudio = document.createElement('audio');
-        if (myAudio.canPlayType('audio/mpeg')) 
-        {
-            var whoop = document.createElement('audio');
-            whoop.setAttribute('src','sound/whoop.mp3');
-        }
-        else
-        {
-            var fnName = "play";
-            
-            var whoop;
-            whoop[play] = function() {console.log("Playing whoop sound")};
-
-        }
-
-        // https://github.com/luciferous/beepjs -------------------------------------------------------
-        
-        // only first note will play (as direct consequence of click/guester) on Android Chrome
-        function play(keys) 
-        {
-            var key = keys.shift();
-            if(typeof key == 'undefined') return; // song ended
-            new Beep(22050).play(key[0], key[1], [Beep.utils.amplify(8000)], function() { play(keys); });
-        }
-        
-        // ---------------------------------------------------------------------------------------------
-
-        const TOUCHNOTLIKELY = false;
-        const TOUCHLIKELY = true;
-        var usingTouchDevice = TOUCHNOTLIKELY;
-
-        const YOUTUBEINFRONT = -1; // WebGL z-index ... -1 puts it behind CSS3D render for YouTube
-        const YOUTUBEBEHIND = 11;
-        const YOUTUBECLICKED = true;
-        const YOUTUBENOTCLICKED = false;
-        var YouTubeClickedYet =YOUTUBENOTCLICKED;
-        var YouTubeDefault =YOUTUBEBEHIND;  // change if touch detected else tricky to control
-                                            // TODO: custom gui controls for YouTube
-
-        navDrawer.addEventListener('mouseover', function(e){
-            window.navDrawer.style.opacity = 1.0;
-            rendererGL.domElement.style.zIndex = YOUTUBEINFRONT;
-            window.calmCylinders = true;        // used in scene.js minified to homepage.js
-            if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
-            {
-                window.moonMesh.material.color.setHex( 0xff0000 );
-            }
-            clearTimeout(dimDrawer);
-            dimDrawer = setTimeout(function() {
-                rendererGL.domElement.style.zIndex = YouTubeDefault;
-                window.navDrawer.style.opacity = 0.3;
-                window.calmCylinders = false;   // used in scene.js minified to homepage.js
-                if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
-                {
-                    window.moonMesh.material.color.setHex( 0xffffff );
-                }
-                if (window.controls !== null)
-                {
-                    setTimeout(function() 
-                    {
-                        document.getElementById('controlsFocus').focus();
-
-                        var path = window.location.pathname;
-                        var page = path.split("/").pop();
-
-                        if (!(page === "index-d.html"))
-                        {
-                            document.getElementById("cameraPos").style.display="block";
-                            setTimeout(function() 
-                            {
-                                document.getElementById('controlsFocus').focus();
-                                setTimeout(function() {
-                                    document.getElementById("cameraPos").style.display="none";
-                                }, 50);
-                            }, 20);  
-                        }
-                        console.log("focusing on element to get OrbitControls back");
-                    }, 20);
-                }
-            }, 3000);
-        }, false);
-
-        navDrawer.addEventListener('touchstart', function(e){
-            usingTouchDevice = TOUCHLIKELY;
-            YouTubeDefault = YOUTUBEINFRONT;
-            window.calmCylinders = true;        // used in scene.js minified to homepage.js
-            window.navDrawer.style.opacity = 1.0;
-            rendererGL.domElement.style.zIndex = YOUTUBEINFRONT;
-            clearTimeout(dimDrawer);
-            dimDrawer = setTimeout(function() 
-            {
-                window.navDrawer.style.opacity = 0.2;
-                window.calmCylinders = false;   // used in scene.js minified to homepage.js
-                rendererGL.domElement.style.zIndex = YouTubeDefault;
-
-                if (window.controls !== null)
-                {
-                    setTimeout(function() 
-                    {
-                        document.getElementById('controlsFocus').focus();
-
-                        var path = window.location.pathname;
-                        var page = path.split("/").pop();
-
-                        if (!(page === "index-d.html"))
-                        {
-                            document.getElementById("cameraPos").style.display="block";
-                            setTimeout(function() 
-                            {
-                                document.getElementById('controlsFocus').focus();
-                                setTimeout(function() {
-                                    document.getElementById("cameraPos").style.display="none";
-                                }, 50);
-                            }, 20);  
-                        }
-                        console.log("focusing on element to get OrbitControls back");
-                    }, 20);
-                }
-            }, 3000);
-        }, false);
-
-        navDrawer.addEventListener('click', function(e){
-
-            // true by default, changed by touchstart events only
-            if(window.NavHoverState === true)
-            {
-                new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);
-            }
-            else
-            {
-                if ( !(typeof window.moonMesh === 'undefined' || window.moonMesh === null) ) 
-                {
-                    window.moonMesh.material.color.setHex( 0xffffff );
-                }
-                new Beep(22050).play(500, 0.05, [Beep.utils.amplify(1000)]);
-            }
-
-            
-        }, false);
-
-        // controls clickable activation link at bottom of screen
-        document.getElementById("orbitControls").style.display="block";
-        var orbClick =document.getElementById("orbClick");
-        orbClick.onmouseover = function()
-        {
-            new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);
-        };
-        orbClick.onclick = loadOrbitControls;
-
-        function loadOrbitControls() {
-            console.log("enter loadOrbitControls");
-            if (typeof window.controls === 'undefined' || window.controls === null ) 
-                {
-                    console.log("controls are undefinied or null - so will download script and create");
-                    var script = document.createElement("script");
-                    script.src = 'js/OrbitControls-min.js';
-
-                    play([[392, 0.2], [440, 0.3], [349, 0.2], [175, 0.3], [262, 1]]);
-
-                    document.getElementsByTagName('head')[0].appendChild(script);
-                    
-                    script.onload = function()
-                    {
-                        
-                        console.log("OrbitControls-min.js loaded");
-                        window.controls = new THREE.OrbitControls(camera, rendererGL.domElement);
-                    };
-
-                    var path = window.location.pathname;
-                    var page = path.split("/").pop();
-                    //console.log( page );
-                    if (page === "index-d.html")
-                    {
-                        document.getElementById("cameraPos").style.display="block";  
-                    }
-                    
-                    // don't want to press the button again
-                    document.getElementById("orbitControls").style.display="none";
-                }
-                else
-                {
-                    console.log("Apparently controls already exist");
-                    
-                    //window.controls.dispose();
-                    if(YouTubeDefault == YOUTUBEINFRONT)
-                    {
-                        console.log("window.controls.enabled=false");
-                        window.controls.enabled=false;
-                    }
-                    else
-                    {
-                        console.log("window.controls.enabled=true");
-                        window.controls.enabled=true;
-                    }
-
-                }
-            return false;
-        }
-
-
-        var YouTubeLink = document.getElementById("YouTubeLink");
-
-        YouTubeLink.addEventListener('touchstart', function(e){
-            document.getElementById("li03").classList.toggle("has-hover");
-        }, false);
-
-        YouTubeLink.onclick = function(){
-            // toggle z-index of CSS3D renderer (with YouTube)
-            // to make controls accssible
-            if(YouTubeClickedYet == YOUTUBECLICKED)
-            {
-                controls.saveState();
-                if(usingTouchDevice == TOUCHNOTLIKELY)
-                {
-                    if(YouTubeDefault == YOUTUBEBEHIND)
-                    {
-                        YouTubeDefault = YOUTUBEINFRONT;
-                    }
-                    else
-                    {
-                        YouTubeDefault = YOUTUBEBEHIND;
-                    }
-                }
-                else
-                {
-                    screenFullSize("s1"); // ASSUMPTION - SMALL SCREEN IS TOUCH DEVICE - JUST ONE EMBED
-                }
-
-            }
-            YouTubeClickedYet = YOUTUBECLICKED;
-            loadOrbitControls();    // also toggles enabled if already loaded, depending on z-index
-            YouTubeVidWall();       // will only add the videos once
-            return false;
-        };
-
-        // experimenting with touch, for cancelling sticky flyout menu on repeated-tap
-        // THIS IS DEPENDENT ON HACKY-WAY OF USING KNOWN INFORMATION ON OPACITY STATE
-        var topListButton;
-        for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
-        {
-            topListButton = document.getElementsByClassName("sticky")[i].id;
-            /*
-            log("Adding event listener for " + topListButton);
-            log("children length: " + document.getElementsByClassName("sticky")[i].children.length);
-
-            for (var k=0; k<document.getElementById(topListButton).children.length; k++)
-            {
-                log(k + ": " + document.getElementById(topListButton).children[k].innerHTML);
-            }
-            */
-
-            (function(topListButton) {
-                
-                // children[0] should be the <a> href link ... using that for touch detect
-                document.getElementById(topListButton).children[0].addEventListener('touchstart', function(e){
-                    var touchlist = e.touches;
-                    //log(topListButton);
-                    var alreadySelected = (window.getComputedStyle(document.getElementById(topListButton)).opacity > 0.9);
-
-                    window.navDrawer.style.opacity = 1.0;
-
-                    //log(topListButton + ": " + alreadySelected);
-
-                    if (alreadySelected)
-                    {
-                        document.getElementById(topListButton).classList.toggle("has-hover");
-                    }
-                    else
-                    {
-                        document.getElementById(topListButton).classList.add("has-hover");
-                    }
-
-                    if (hasClass( document.getElementById(topListButton), "has-hover"))
-                    {
-                        window.NavHoverState = true;
-                        //console.log("window.NavHOverState = true");
-                    }
-                    else
-                    {
-                        window.NavHoverState = false;
-                        //console.log("window.NavHOverState = false");
-                    }
-                    
-                }, false);
-            })(topListButton);
-        }
-
-        
-    </script>
-
+    }
+</script>
+<!-- htmlmin:ignore -->
 </footer>
 
 </html>

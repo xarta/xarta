@@ -38,9 +38,11 @@ var replace = require('gulp-replace');
 const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
 
+// minifyJS and minifyCSS (as options) break my page at the moment
+// need to learn how to pass options to minifyJS here
 gulp.task('minify-html', function() {
     return gulp.src("html-debug/*-debug.html")
-        .pipe (htmlmin({collapseWhitespace: true, conservativeCollapse: true, caseSensitive: true, minifyJS: true, removeComments: true, removeEmptyElements: false }))
+        .pipe (htmlmin({collapseWhitespace: true, conservativeCollapse: true, caseSensitive: true, minifyJS: true, minifyCSS: false, removeComments: true, removeEmptyElements: false }))
         .pipe (replace('<script></script>', ''))
         .pipe (rename(function (path) {
             path.basename = path.basename.replace("-debug", "");

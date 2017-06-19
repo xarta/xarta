@@ -58,6 +58,13 @@ body {
     background: black;
 }
 
+.no-js
+{
+    background-image: url('https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 #cameraPos {
     position: absolute;
     z-index: 12;
