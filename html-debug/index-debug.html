@@ -28,8 +28,7 @@
     <!-- htmlmin:ignore -->
     <script>
         var timerStart = Date.now();    
-        // will use later - e.g. decide on page load speed
-        // - if quick enough, will load higher quality moon etc.
+        // will use later - e.g. decisions based on page load speed
 
         //** ******************
         var xartaDebug = false;
@@ -105,9 +104,6 @@
     <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
     <![endif]-->
-
-    <!-- For IE 9 and below. ICO should be 32x32 pixels in size -->
-    <!--[if IE]><link rel="shortcut icon" href="favicon-32x32.png"><![endif]-->
 
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -337,6 +333,7 @@
 <!-- htmlmin:ignore -->
 <script>
     // NOTE TO SELF: TODO: make sure this passes through Bable too
+    // (const not supported by older browsers, or fully by all newer popular browsers)
     const TOUCHNOTLIKELY = false;
     const TOUCHLIKELY = true;
     var usingTouchDevice = TOUCHNOTLIKELY;
