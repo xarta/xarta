@@ -189,11 +189,11 @@ document.getElementById("li02").addEventListener("keydown", function (event) {
       // Do something for "right arrow" key press.
       break;
     case "Tab":
-      console.log("li01: TAB pressed");
+      console.log("li02: TAB pressed");
       break;
     case "Enter":
       // Do something for "enter" or "return" key press.
-      console.log("li01: ENTER pressed");
+      console.log("li02: ENTER pressed");
       break;
     case "Escape":
       // Do something for "esc" key press.
@@ -224,11 +224,11 @@ document.getElementById("li03").addEventListener("keydown", function (event) {
       // Do something for "right arrow" key press.
       break;
     case "Tab":
-      console.log("li01: TAB pressed");
+      console.log("li03: TAB pressed");
       break;
     case "Enter":
       // Do something for "enter" or "return" key press.
-      console.log("li01: ENTER pressed");
+      console.log("li03: ENTER pressed");
       break;
     case "Escape":
       // Do something for "esc" key press.
