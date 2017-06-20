@@ -33,7 +33,7 @@ $highlightSpeed: .3s;
 $drawerTop: 10px;
 
 
-html, #container
+html, #container, .no-js
 {
     position: absolute;
     overflow: hidden;
@@ -44,6 +44,18 @@ html, #container
     margin: 0 auto;
 }
 
+.no-js h1, .no-js h2, .no-js p {
+    font-size: 0;
+    width: 1px;
+    height: 1px;
+    display: inline-block;
+    overflow: hidden;
+    position: absolute!important;
+    border: 0!important;
+    padding: 0!important;
+    margin: 0!important;
+    clip: rect(1px,1px,1px,1px);
+} 
 
 
 /* Resets */
@@ -58,12 +70,7 @@ body {
     background: black;
 }
 
-.no-js
-{
-    background-image: url('https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-}
+
 
 #cameraPos {
     position: absolute;

@@ -7,7 +7,7 @@
     <title>xarta</title>
     <meta name="description" content="Xarta - David Bayliss's cool self-hosted domain name. Links to work on GitHub, other websites, and, pending, videos">
     <meta name="author" content="David Bayliss">
-    <meta name="keywords" content="Xarta, David Bayliss, three.js, programming, Stockport">
+    <meta name="keywords" content="Xarta, David Bayliss, three.js, programming, technology, Stockport">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta property="og:title" content="Xarta" />
@@ -120,19 +120,61 @@
                                     <!-- might not be using blocker now ... leaving for mo -->
         <div id="cameraPos"></div>  <!-- just for when debugging - see three.js camera position -->
         
+        
+        <noscript>
+        <style>
+            .no-js {
+                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(50, 50, 50, 0.7) 100%),
+                         url('https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg');
+                background-repeat: no-repeat;
+                background-size: cover;
+                padding: 1rem!important;
+                width: 85vw;
+                height: 120%;
+                display: block;
+            }
+            .no-js h1, .no-js h2, .no-js p {
+                overflow: auto;
+                color: wheat;
+                clip: auto;
+            }
+            .no-js h1, .no-js h2, .no-js p {
+                position: relative!important;
+                margin: inherit!important;
+                padding: inherit!important;
+                display: inline-block;
+                width: auto;
+                height: auto;
+            }
+            .no-js h1 {
+                font-size: 2rem;
+            }
+            .no-js h2 {
+                font-size: 1.6rem;
+            }
+            .no-js p {
+                font-size: 1.4rem;
+                width: 95%;
+            }
+        </style>
+        </noscript>
+
         <!-- htmlmin:ignore -->
-        <noscript class="no-js">
-            <h1>Welcome to Xarta (just my cool domain name)</h1>
-            <h2>My recent exploits with programming and technology</h2>
+        <!-- want this accessible to bots and screenreaders -->
+        <!-- but don't want it to impact three.js WebGL visuals -->
+        <!-- need to add skip to navigation, and keyboard tabs etc. -->
+        <div class="no-js">
+            <h1>Welcome to Xarta<br>David Bayliss's cool domain name</h1>
+            <h2>Recent exploits with programming and technology</h2>
             <p>This is my first attempt at a website from scratch in about 10-years. 
                 It's a work in progress. I apologise for the current lack of accessibility. 
                 That's something I hope to address when I have a job again and can prioritise 
-                more ethically than I can right now.
+                more ethically than I can right now with severe priority competition.
             </p>
             <p> I wanted to build on my three.js knowledge and incorporate audio/video. 
                 My JavaScript knowledge is pretty old and underdeveloped - around a&nbsp;partial 
                 ES3 level. While building this site I learned/implemented better practices 
-                around using NPM/Gulp for my development, and learning more about ES2015 
+                around using NPM/Gulp for my development, and am learning more about ES2015 
                 (using Bable).
             </p>
             <p> Also the code has completely gotten away from me and is messy. My next steps 
@@ -140,7 +182,7 @@
                 suitable modules. And also to take advantage of ES2015 to simplify/decompose 
                 the code structure, using objects/classes in a more idiomatic way
             </p>
-            <p> Since my employer&amp;apos;s insolvency at the end of August 2016, I've spent 
+            <p> Since my employer's insolvency at the end of August 2016, I've spent 
                 considerable time learning .Net / C# in depth, cross-platform technology, IoT etc. 
                 and went on to devise and install &amp; implement advanced networking/server 
                 configuration at home using pfSense and smart switches as the backbone. At the 
@@ -161,12 +203,13 @@
             <br />
             <p>Kind regards,
             <p>Dave
-        </noscript>
+        </div>
         <!-- htmlmin:ignore -->
 
         <!-- <ul class="drawer">  --> <!-- TODO: Aria or similar roles / more semantic mark-up -->
+        <!-- keyboard focus will force unwanted overflow - e.g. when menu to right - need to address -->
             <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
-        <ul id="navigation" class="drawer">
+        <ul id="navigation" role="menubar" class="drawer">
         <li id="li01" class="sticky has-hover">
             <a href="#?li01">
             <i class="fa fa-github"></i>
