@@ -1069,7 +1069,7 @@ function calcFps(delta)
     if(accDelta > 1) // every second
     {
         window.fps = frames;
-
+        accDelta = 0;
         secondsCount += 1;
         //console.log("Enqueing " + frames + " frames for fps average calculation");
         fpsAverageQueue.enqueue(frames);
@@ -1092,8 +1092,6 @@ function calcFps(delta)
             minutesCount += 1;
             secondsCount = 0;
         }
-
-        accDelta = 0;
         frames = 1;
     }
 
