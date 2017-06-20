@@ -3,7 +3,7 @@ images/ignore
 js
 js-debug-home/homepage.js
 js-debug-home/beep.js
-css/styles.css
+css/*.css
 css/css-debug/styles.css
 index.html
 sound

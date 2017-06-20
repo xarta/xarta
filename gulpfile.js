@@ -27,6 +27,7 @@
 */
 
 var gulp = require('gulp');             // look for gulp in package node-modules
+const gutil = require('gulp-util');
 var sass = require('gulp-sass');
 var minify = require('gulp-minify');
 var cleanCSS = require('gulp-clean-css');
@@ -37,6 +38,48 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 const babel = require('gulp-babel');
 const sourcemaps = require('gulp-sourcemaps');
+const fs = require('fs');   // https://nodejs.org/api/fs.html#fs_file_system
+
+// my own attempt at cache busting (don't want to use Gulp(rev) ... not more requires
+// and complexity !!! ... Keep It Simple :)  ) BUT REMEMBER: only call this when
+// my sources change ... not intermediates.
+// Just using date time (to hex to keep it shorter) ... not a hash per se
+// saving to file so if I save the index again, it can use the correct time value
+// (using global var with runsequence so I don't have to mess-about with promises
+// or vinyl or streams or whatnot ... really am keeping things simple and using
+// resources I've already required)
+var cachebustHex = null;
+gulp.task('setDateTimeHash', function(){
+    cachebustHex = ( (new Date()).getTime()  ).toString(16);
+    return gulp.src("cacheBustingHashSrc.txt")
+        .pipe (replace('NothingHere', cachebustHex))
+        .pipe (rename(function (path) {
+            path.basename = path.basename.replace("Src", "Dst");
+        }))
+        .pipe(gulp.dest('./'))
+});
+
+gulp.task('cachebust-html', function(){
+    fs.readFile("cacheBustingHashDst.txt", "utf-8", function(err, _data) {
+            cachebustHex = _data;
+            gutil.log(cachebustHex);
+            gulp.start('minify-html');
+            gulp.start('cachebust-web-config');
+    })
+    return true;
+});
+
+gulp.task('cachebust-web-config', function(){
+    return gulp.src("web.config")
+        .pipe (replace('styles.css', 'styles-' + cachebustHex + '.css'))
+        .pipe(gulp.dest(function(f) {
+            return f.base;
+        })) 
+});
+
+gulp.task('TEST', function(){
+    gutil.log('In gulp.task TEST: ' + cachebustHex);
+});
 
 // minifyJS and minifyCSS (as options) break my page at the moment
 // need to learn how to pass options to minifyJS here
@@ -44,6 +87,9 @@ gulp.task('minify-html', function() {
     return gulp.src("html-debug/*-debug.html")
         .pipe (htmlmin({collapseWhitespace: true, conservativeCollapse: true, caseSensitive: true, minifyJS: true, minifyCSS: false, removeComments: true, removeEmptyElements: false }))
         .pipe (replace('<script></script>', ''))
+        .pipe (replace('homepage-min.js', 'homepage-' + cachebustHex + '.js'))
+        .pipe (replace('defer-min.js', 'defer-' + cachebustHex + '.js'))
+        .pipe (replace('styles.css', 'styles-' + cachebustHex + '.css'))
         .pipe (rename(function (path) {
             path.basename = path.basename.replace("-debug", "");
         }))
@@ -97,6 +143,33 @@ gulp.task('minify-css', function() {
     .pipe(gulp.dest('css'));
 });
 
+
+gulp.task('cachebust-homepage-min', function() {
+  return gulp.src('js/homepage-min.js')
+    .pipe (rename(function (path) {
+        path.basename = path.basename.replace("min", cachebustHex);
+    }))
+    .pipe(gulp.dest('js'))   
+});
+
+gulp.task('cachebust-defer-min', function() {
+  return gulp.src('js/defer-min.js')
+    .pipe (rename(function (path) {
+        path.basename = path.basename.replace("min", cachebustHex);
+    }))
+    .pipe(gulp.dest('js'))   
+});
+
+gulp.task('cachebust-styles-css', function() {
+  return gulp.src('css/styles.css')
+    .pipe (rename(function (path) {
+        path.basename = path.basename.replace("styles", 'styles-' + cachebustHex);
+    }))
+    .pipe(gulp.dest('css'));
+});
+
+
+
 gulp.task('minify-home-js', function() {
   return gulp.src('js-debug-home/*.js')
     .pipe(minify({
@@ -129,25 +202,21 @@ gulp.task('concat-home-js', function() {
     .pipe(gulp.dest('./js-debug-home/'));
 });
 
-gulp.task('sass-minify', function() {
-    runSequence(
-        'sass', 'minify-css'
-    );
-});
 
 // want the homepage to be fast so concatenate & compress all js files
 // to one (but also separates for three stuff, for other pages)
-gulp.task('concat-minify-home-js', function() {
+gulp.task('concat-minify-home-js-css', function() {
     runSequence(
-        'concat-home-js', 'minify-home-js', 'homepage-js-cloudinary'
+        'setDateTimeHash', 'concat-home-js', 'minify-home-js', 'homepage-js-cloudinary', 'cachebust-homepage-min',
+        'cachebust-defer-min', 'minify-css', 'cachebust-styles-css', 'cachebust-html'
     );
 });
 
 
 gulp.task('xarta', function() {
     gulp.watch('css/css-debug/*.scss', ['sass']);
-    gulp.watch('css/css-debug/*.css', ['minify-css']);
-    gulp.watch('html-debug/*.html', ['minify-html', 'debug-js']);
-    gulp.watch(['js-debug-home/*.js', '!js-debug-home/homepage.js'], ['concat-minify-home-js']);
+    gulp.watch('css/css-debug/*.css', ['concat-minify-home-js-css']);
+    gulp.watch('html-debug/*.html', ['cachebust-html', 'debug-js']);
+    gulp.watch(['js-debug-home/*.js', '!js-debug-home/homepage.js'], ['concat-minify-home-js-css']);
 });
 
