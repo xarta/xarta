@@ -97,6 +97,8 @@ navDrawer.addEventListener('touchstart', function(e){
     }, 3000);
 }, false);
 
+
+
 navDrawer.addEventListener("keydown", function (event) {
   if (event.defaultPrevented) {
     return; // Do nothing if the event was already processed
@@ -115,6 +117,9 @@ navDrawer.addEventListener("keydown", function (event) {
     case "ArrowRight":
       // Do something for "right arrow" key press.
       break;
+    case "Tab":
+      console.log("Navigation: TAB pressed");
+      break;
     case "Enter":
       // Do something for "enter" or "return" key press.
       console.log("Navigation: ENTER pressed");
@@ -125,7 +130,112 @@ navDrawer.addEventListener("keydown", function (event) {
     default:
       return; // Quit when this doesn't handle the key event.
   }
+  // Cancel the default action to avoid it being handled twice
+  //event.preventDefault();
+}, true);
 
+
+document.getElementById("li01").addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+
+  switch (event.key) {
+    case "ArrowDown":
+      // Do something for "down arrow" key press.
+      break;
+    case "ArrowUp":
+      // Do something for "up arrow" key press.
+      break;
+    case "ArrowLeft":
+      // Do something for "left arrow" key press.
+      break;
+    case "ArrowRight":
+      // Do something for "right arrow" key press.
+      break;
+    case "Tab":
+      console.log("li01: TAB pressed");
+      break;
+    case "Enter":
+      // Do something for "enter" or "return" key press.
+      console.log("li01: ENTER pressed");
+      break;
+    case "Escape":
+      // Do something for "esc" key press.
+      break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
+  // Cancel the default action to avoid it being handled twice
+  event.preventDefault();
+}, true);
+
+document.getElementById("li02").addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+
+  switch (event.key) {
+    case "ArrowDown":
+      // Do something for "down arrow" key press.
+      break;
+    case "ArrowUp":
+      // Do something for "up arrow" key press.
+      break;
+    case "ArrowLeft":
+      // Do something for "left arrow" key press.
+      break;
+    case "ArrowRight":
+      // Do something for "right arrow" key press.
+      break;
+    case "Tab":
+      console.log("li01: TAB pressed");
+      break;
+    case "Enter":
+      // Do something for "enter" or "return" key press.
+      console.log("li01: ENTER pressed");
+      break;
+    case "Escape":
+      // Do something for "esc" key press.
+      break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
+  // Cancel the default action to avoid it being handled twice
+  event.preventDefault();
+}, true);
+
+document.getElementById("li03").addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+
+  switch (event.key) {
+    case "ArrowDown":
+      // Do something for "down arrow" key press.
+      break;
+    case "ArrowUp":
+      // Do something for "up arrow" key press.
+      break;
+    case "ArrowLeft":
+      // Do something for "left arrow" key press.
+      break;
+    case "ArrowRight":
+      // Do something for "right arrow" key press.
+      break;
+    case "Tab":
+      console.log("li01: TAB pressed");
+      break;
+    case "Enter":
+      // Do something for "enter" or "return" key press.
+      console.log("li01: ENTER pressed");
+      break;
+    case "Escape":
+      // Do something for "esc" key press.
+      break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
   // Cancel the default action to avoid it being handled twice
   event.preventDefault();
 }, true);
