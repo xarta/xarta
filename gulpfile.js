@@ -71,9 +71,9 @@ gulp.task('cachebust-html', function(){
 
 gulp.task('cachebust-web-config', function(){
     return gulp.src("web.config")
-        .pipe (replace('styles.css', 'styles-' + cachebustHex + '.css'))
+        .pipe (replace(/styles-[0-9a-fA-F]+.css/g, 'styles-' + cachebustHex + '.css'))
         .pipe(gulp.dest(function(f) {
-            gutil.log('DONE');
+            gutil.log('NEARLY DONE');
             return f.base;
         })) 
 });
