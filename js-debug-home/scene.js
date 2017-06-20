@@ -33,7 +33,6 @@ var moonz = -500;               // where we want the moon (has to be far away wi
                                 // compared to pyramids that fly close to it ...
                                 // but not so far away that lighting becomes harder
 var moonMesh;                   // the mesh to add to the sceneGL
-var starsMesh;                  // the mesh to add to the sceneGL
 
 var num_cylinders = 0;
 var num_cylinders_so_far = 0;
@@ -53,7 +52,13 @@ var saveCycles = NO;        // monostable delay after calmCyclinders set to true
                             // reset with calmCylinders = false
 
 
+var secondsCount = 0;                   // to reset every minute
+var minutesCount = 0;                   // to accumulate
+var fpsAverageQueue = new queueFps();   // update every second (max-int seconds?)
+                                        // queue (upto) last 60 seconds
+
 var fps = 1;                // calculate from frames/accDelta etc.
+var fpsAverage = 1;         // calculate average for last (rolling) minute
 var frames = 0;             // count frames in accumalative-delta-time
 var accDelta = 0;           // accumulative delta time (avoid divide by zero)
 
@@ -168,22 +173,26 @@ function init() {
 
 
     // STARS
-    starsMesh = new THREE.Mesh( 
-        new THREE.PlaneGeometry(45, 45,1, 1),
-        new THREE.MeshBasicMaterial({
-            map: stars
-        }));
+    (function()
+    {
+        var starsMesh = new THREE.Mesh( 
+            new THREE.PlaneGeometry(45, 45,1, 1),
+            new THREE.MeshBasicMaterial({
+                map: stars
+            }));
 
-    starsMesh.position.x = -350;  
-    starsMesh.position.z = -820;            // behind moon - further back is too dark/blurry, but obscures things behind it
-    starsMesh.scale.set(50, 50,10);
-    //starsMesh.material.depthTest = true;    // no need
-    //starsMesh.material.depthWrite = true;
+        starsMesh.position.x = -350;  
+        starsMesh.position.z = -820;            // behind moon - further back is too dark/blurry, but obscures things behind it
+        starsMesh.scale.set(50, 50,10);
+        //starsMesh.material.depthTest = true;    // no need
+        //starsMesh.material.depthWrite = true;
 
-    sceneGL.add(starsMesh); 
+        sceneGL.add(starsMesh); 
+    })();
+
 
     // MOON
-    function getTheMoon()
+    (function()
     {
         var theMoon;
         var moonLoaded = function()
@@ -241,40 +250,47 @@ function init() {
         //{
         //    theMoon = loader.load( 'v1496586463/xarta/moon-lower-quality-256.png', moonLoaded);
         //}
-    }
-
-    getTheMoon();
+    })();
 
 
+    // WATER
+    //var addWaterToScene;
+    (function waitForGoodFPS(fpsAverage, numAttemptsRemaining)
+    {
+        if ( (typeof addWaterToScene === 'undefined' || addWaterToScene === null) )
+        {
+            var addWaterToScene;
+        }
 
+        //console.log("In function waitForGoodFPS()");
+        //console.log("numAttemptsRemaining: " + numAttemptsRemaining);
+        clearTimeout(addWaterToScene);
+        addWaterToScene = setTimeout(function() 
+        {
+            if(numAttemptsRemaining > 0)
+            {
+                if(fpsAverage > 30)
+                {
+                    console.log("fpsAverage now OK for WATER: " + fpsAverage);
+                    water = new Water(rendererGL, camera, world, 
+                        {width: 210, height: 200, segments: 5,
+                        lightDirection: new THREE.Vector3(0.7, 0.7, 0)});
 
-    
-
-    // water computationally HEAVY
-    //setTimeout(function() {
-
-      //  if(window.fps > 7)
-        //{
-            // WATER
-                water = new Water(rendererGL, camera, world, {
-                width: 210,
-                height: 200,
-                segments: 5,
-                lightDirection: new THREE.Vector3(0.7, 0.7, 0)
-            });
-
-            water.position.set(0, 1, 0); // -70, 1, 0
-            water.rotation.set(Math.PI * -0.5, 0, 0);
-            water.updateMatrix();
+                    water.position.set(0, 1, 0); // -70, 1, 0
+                    water.rotation.set(Math.PI * -0.5, 0, 0);
+                    water.updateMatrix();
             
-            //setTimeout(function() {
-                sceneGL.add(water);  
-            //}, 200);
-            
-      //  }
-    //}, 3000);
-
-    
+                    sceneGL.add(water);  
+                }
+                else
+                {
+                    console.log("fpsAverage NOT good enough yet for water: " + fpsAverage);
+                    console.log("numAttemptsRemaining = " + (numAttemptsRemaining -1));
+                    waitForGoodFPS(window.fpsAverage, numAttemptsRemaining - 1);
+                }
+            }
+        }, 100);
+    })(fpsAverage, 30);
 
 
     function getRandomInt(min, max) 
@@ -332,9 +348,25 @@ function init() {
                     transparent: true,  opacity: 0 });
 
     setTimeout(function() {
-        if (window.fps < 60)
+        if (window.fpsAverage < 10)
         {
-            num_cylinders = window.fps;
+            num_cylinders = 2;  // keep low for slower devices
+        }
+        else if (window.fpsAverage < 20)
+        {
+            num_cylinders = 5;
+        }
+        else if (window.fpsAverage < 30)
+        {
+            num_cylinders = 10;
+        }
+        else if (window.fpsAverage < 40)
+        {
+            num_cylinders = 15; 
+        }
+        else if (window.fpsAverage < 60)
+        {
+            num_cylinders = window.fpsAverage;
         }
         else
         {
@@ -981,6 +1013,48 @@ function onWindowResize() {
 
 }
 
+// https://code.tutsplus.com/articles/data-structures-with-javascript-stack-and-queue--cms-23348
+// note indexes will increment every second with an eventual 60-second offset
+// not sure of number limits ... but assumption is more than enough seconds for normal use :)
+function queueFps() {
+    this._oldestIndex = 1;
+    this._newestIndex = 1;
+    this._storage = {};
+}
+queueFps.prototype.size = function() {
+    return this._newestIndex - this._oldestIndex;
+};
+queueFps.prototype.enqueue = function(data) {
+    this._storage[this._newestIndex] = data;
+    this._newestIndex++;
+};
+queueFps.prototype.dequeue = function() {
+    var oldestIndex = this._oldestIndex,
+        newestIndex = this._newestIndex,
+        deletedData;
+ 
+    if (oldestIndex !== newestIndex) {
+        deletedData = this._storage[oldestIndex];
+        delete this._storage[oldestIndex];
+        this._oldestIndex++;
+ 
+        return deletedData;
+    }
+};
+queueFps.prototype.average = function() {
+    var fpsAcc = 0;
+    if (this._oldestIndex !== this._newestIndex)
+    {
+        for(let [index, fpsValue] of Object.entries(this._storage)){
+            fpsAcc += fpsValue;
+        }
+        return Math.floor(fpsAcc / (this._newestIndex - this._oldestIndex));
+    }
+    else
+    {
+        return 1;
+    }
+}
 
 
 function calcFps(delta)
@@ -988,9 +1062,33 @@ function calcFps(delta)
     frames += 1;
     accDelta += delta;
 
-    if(accDelta > 1)
+    if(accDelta > 1) // every second
     {
         window.fps = frames;
+
+        secondsCount += 1;
+        //console.log("Enqueing " + frames + " frames for fps average calculation");
+        fpsAverageQueue.enqueue(frames);
+        if (minutesCount > 0)
+        {
+            //console.log("Dequeing last frame for fps average calculation");
+            fpsAverageQueue.dequeue();
+        }
+
+        // rolling/moving average
+        fpsAverage = fpsAverageQueue.average();
+        if (minutesCount < 3)
+        {
+            console.log("Moving average FPS = " + fpsAverage);
+            //console.log("fpsAverageQueue.size():" + fpsAverageQueue.size());
+        }
+        
+        if (secondsCount >= 59)
+        {
+            minutesCount += 1;
+            secondsCount = 0;
+        }
+
         accDelta = 0;
         frames = 1;
     }
