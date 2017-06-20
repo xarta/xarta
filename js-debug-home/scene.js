@@ -10,215 +10,9 @@ colours[4] = ["purple",     "#f77c02"];     // orange background
 var camera, controls, sceneGL, rendererGL, clock;
 controls = null; // being explicit
 
-var rendererCSS3D, sceneCSS3D;       // for YouTube iframes etc.
-var ytWidth     = 480;              // YouTube
-var ytHeight    = 360;
-var vidWall     = null;
-// For YouTube
-var Element = function ( id, x, y, z, ry, screenID ) 
-{
-    var div = document.createElement( 'div' );
-    div.setAttribute("id", "vidElementDiv_" +screenID);
-    div.style.width = ytWidth.toString() + 'px';
-    div.style.height = ytHeight.toString() + 'px';
-    div.style.backgroundColor = '#000';    
-    div.style.zIndex = '13';  
-    
-    var divPause = document.createElement( 'div' );
-    divPause.setAttribute("id","pause_"+screenID);
-    divPause.style.width = ytWidth.toString() + 'px';
-    divPause.style.height = (ytHeight-50).toString() + 'px';
-    divPause.style.backgroundColor = '#fff';  
-    divPause.style.opacity = 0;     // set higher to debug  
-    divPause.style.zIndex = '-1';   // relative to iframe
-    divPause.style.position = 'relative';
-    divPause.style.top = (-ytHeight).toString() + 'px';
-    divPause.onclick = function() {
-        pauseXartaVideo(screenID);
-    }
-
-    var iframe = document.createElement( 'iframe' );
-    iframe.setAttribute("id", screenID);
-    iframe.setAttribute('allowFullScreen', true);
-    iframe.setAttribute('webkitallowfullscreen', true);
-    iframe.setAttribute('mozallowfullscreen', true);
-    iframe.style.width = ytWidth.toString() + 'px';
-    iframe.style.height = ytHeight.toString() + 'px';
-    iframe.style.border = '0px';
-    iframe.style.zIndex = 0; // just to be clear (bom bom)
-    iframe.src = [ 'https://www.youtube.com/embed/', id, '?enablejsapi=1&rel=0&origin=https://xarta.co.uk' ].join( '' );
-    div.appendChild( iframe );  
-    div.appendChild( divPause );        
-    var object = new THREE.CSS3DObject( div );
-    
-    object.position.set( x, y, z );
-    object.rotation.y = ry;         
-    return object;
-};
-
-var YtUnderConstruction = function ( x, y, z, ry, elID ) 
-{
-    var div = document.createElement( 'div' );
-    div.setAttribute("id", elID);
-    div.setAttribute("class", "aboveYT");
-
-    div.style.height = (ytHeight *0.8).toString() + 'px';
-    div.style.backgroundColor = '#fff';    
-    div.style.zIndex = '13';  
-
-    //var button = document.createElement('button');
-    
-       div.style.fontSize = '1.3rem';
-        div.innerHTML=
-            "<style>.aboveYT{padding: 5px;} " +
-            "." + elID + "{list-style-type: square; list-style-position: inside;" +
-            "text-indent: -40px; padding-left: 40px; margin-left: 0;}</style>" +
-            "<h1>Under Construction:</h1><ul class='ytuc'>" + 
-            "<li>Videos still to be added. Placeholder video: my [partial] Pennine Way walk, 2012.</li>" +
-            "<li>I'm planning on making a custom video loading GUI</li>";
-    
-    // set in index-debug.html
-    if(window.YouTubeDefault == YOUTUBEBEHIND)
-    {
-        div.style.width = (ytWidth *2).toString() + 'px';
-        div.innerHTML+=
-            "</ul><p>Press the Dave => YouTube menu item again to toggle controls access</p>";
-        /*
-        var btnText = document.createTextNode('YouTube in front');
-        button.onclick = function()
-        {
-            alert('I was clicked');
-        }
-        */
-    }
-    else
-    {
-        div.style.width = ytWidth.toString() + 'px';
-        div.innerHTML+=
-            "</ul><p>Press the Dave => YouTube menu item again to make screen1 go fullscreen</p>";
-       
-        /* var btnText = document.createTextNode('FULL SCREEN');
-        button.onclick = function()
-        {
-            screenFullSize("s1");
-        }
-        */
-    }
-    //button.appendChild( btnText );
-    //div.appendChild( button );  
-
-    var object = new THREE.CSS3DObject( div );
-    
-    object.position.set( x, y, z );
-    object.rotation.y = ry;         
-    return object;
-};
-
-function screenFullSize(screenID)
-{
-    fullScreen(document.getElementById(screenID));
-    //screen.orientation.lock('landscape');
-}
-
-
-var screens = {s1: null, s2: null, s3: null, s4: null};
-
-function onYouTubeIframeAPIReady() 
-{
-
-    screens["s1"] = new YT.Player('s1', 
-    {
-    events:
-        {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    }); 
-    
-    if( (window.usingTouchDevice !== TOUCHLIKELY) )
-    {
-        screens["s2"] = new YT.Player('s2', 
-        {
-        events:
-            {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-        screens["s3"] = new YT.Player('s3', 
-        {
-        events:
-            {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-        screens["s4"] = new YT.Player('s4', 
-        {
-        events:
-            {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    }
-
-    
-}
-
-//helper function
-function fullScreen(element) {
-  if(element.requestFullScreen) {
-    element.requestFullScreen();
-  } else if(element.webkitRequestFullScreen ) {
-    element.webkitRequestFullScreen();
-  } else if(element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
-  }
-}
-
-function onPlayerReady(event) {
-    //event.target.playVideo();
-
-    
-
-}
-
-function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING) {
-
-        // see index-debug.html
-        if(window.YouTubeDefault === YOUTUBEINFRONT)
-        {
-            document.getElementById("ytuc").style.display = "none";
-        }
-        //alert("pause_" + event.target.getIframe().id);
-        //document.getElementById("pause_" + event.target.getIframe().id).style.opacity = 1;
-        document.getElementById("pause_" + event.target.getIframe().id).style.zIndex = 1;
-
-    }
-}
-
-function stopVideo() {
-    //player.stopVideo();
-}
-
-function pauseXartaVideo(screenID) {
-    screens[screenID].pauseVideo();
-    document.getElementById("pause_" + screenID).style.zIndex = -1;
-}
-
-
-
-
-
-
-
-
-
-
-
-
+                                    // ************************
+var rendererCSS3D, sceneCSS3D;      // for YouTube iframes etc.
+                                    // ************************
 
 var water = null;
 
@@ -248,18 +42,11 @@ var range_cylinders = 499;  // keep within 3D bounds {x, y, z} -> 499 etc.
 var cylinders;              // Array()
 var calmCylinders = false;  // want cylinders to scurry off screen - stop distracting
                             // when video player or photo slider displayed etc.
-        /*
-        // TEST
-        setTimeout(function() {
-            window.calmCylinders = true;
-        }, 15000);
-        */
 
-                            // ***********************************************************
-const YES = 2;              // NB: Choice NOT TO SUPPORT IExplr EARLIER THAN 11 (ES2015)
-const NO = 0;               // ... the target audience for my personal website is 
-const PENDING = 1;          // ... likely to have a more recent browser (technology ppl)
-                            // ***********************************************************
+const YES = 2;              // const ... using bable for ES2015
+const NO = 0;               
+const PENDING = 1;          
+                            
 
 var saveCycles = NO;        // monostable delay after calmCyclinders set to true
                             // - use to toggle whether cylinder matrix updates with changes
@@ -284,148 +71,431 @@ var accDelta = 0;           // accumulative delta time (avoid divide by zero)
                             // and, year 2009 Core 2 Duo laptop with separate graphics card (gets warm)
 
 
-function YouTubeVidWall()
-{
-    if (vidWall === null)
-    {
-        // DO ONCE
-        // TODO: ADD GUI CONTROLS TO CONTROL YOUTUBE VIA IFRAME API
-        // HOPEFULLY WILL BE ABLE TO DYNAMICALLY CHANGE CONTENT TOO
-
-        // LOAD YOUTUBE IFRAME PLAYER API -----------------------------
-        // 2. This code loads the IFrame Player API code asynchronously.
-        var tag = document.createElement('script');
-
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        // It will look for global function: onYouTubeIframeAPIReady()
-        //  ------------------------------------------------------------
-
-        vidWall = new THREE.Group();
-        var x = 500;
-        var y = -ytHeight;
-
-        var ry = -1 * (Math.PI / 2) ; // rotate about so 90deg on the right
-
-        if( (window.usingTouchDevice == TOUCHLIKELY) )
-        {
-            var z = -100;
-            vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z, ry, 's1' ) );
-            vidWall.add( new YtUnderConstruction(x, y+ytHeight, z, ry, 'ytuc'));
-            sceneCSS3D.add( vidWall );
-        }
-        else
-        {
-            var z = -200;
-            vidWall.add( new Element( 'M7lc1UVf-VE', x, y, z, ry, 's1' ) );
-            vidWall.add( new Element( 'DjLwd9Ih8V8', x, y, z+ytWidth, ry, 's2' ) );
-            vidWall.add( new Element( 'DjLwd9Ih8V8', x, y+ytHeight, z, ry, 's3' ) );
-            vidWall.add( new Element( 'DjLwd9Ih8V8', x, y+ytHeight, z+ytWidth, ry, 's4' ) ); 
-            vidWall.add( new YtUnderConstruction(x, y+(2*ytHeight), z+(0.5*ytWidth), ry, 'ytuc'));
-            sceneCSS3D.add( vidWall );
-        }
-        
-        if(window.YouTubeDefault == YOUTUBEINFRONT)
-        {
-            //camera.position.set( -358, 74, 41 );
-            // camera.position.set(-170, -217, -72); // hmmm
-            camera.position.set(-273,58.43, 57);
-        }
-        else
-        {
-            camera.position.set( -498, 20, 45 );
-        }
-        
-        /*
-        sceneCSS3D.add(new Element( 'M7lc1UVf-VE', x, y, z, ry, 's1' ) );
-        sceneCSS3D.add(new Element( 'DjLwd9Ih8V8', x, y, z+ytWidth, ry, 's2' ) );
-        sceneCSS3D.add(new Element( 'DjLwd9Ih8V8', x, y+ytHeight, z, ry, 's3' ) );
-        sceneCSS3D.add(new Element( 'DjLwd9Ih8V8', x, y+ytHeight, z+ytWidth, ry, 's4' ) );
-        */
-    }
- 
-
-        
-    // TODO: LOOK AT DOLLY OPTIONS E.G.
-    // https://github.com/amelierosser/threejs-camera-dolly/blob/master/index.html
-
-
-}
-
-init(); // camera, water, moon, cylinders etc. etc. - add to sceneGL
-
-  
-
-                
-            
-/*
-// create the video element
-	var video = document.createElement( 'video' );
-	// video.id = 'video';
-	// video.type = ' video/ogg; codecs="theora, vorbis" ';
-    video.crossOrigin = "anonymous";
-    video.src = "https://xarta.co.uk/videos/sintel.ogv";
-	video.load(); // must call after setting/changing source
-	video.play();
-	
-	var videoImage = document.createElement( 'canvas' );
-	videoImage.width = 480;
-	videoImage.height = 204;
-
-	var videoImageContext = videoImage.getContext( '2d' );
-	// background color if no video present
-	videoImageContext.fillStyle = '#ffffff';
-	videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
-
-	var videoTexture = new THREE.Texture( videoImage );
-	videoTexture.minFilter = THREE.LinearFilter;
-	videoTexture.magFilter = THREE.LinearFilter;
-	
-	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
-	// the geometry on which the movie will be displayed;
-	// 		movie image will be scaled to fit these dimensions.
-	var movieGeometry = new THREE.PlaneGeometry( 240, 100, 4, 4 );
-	var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
-	movieScreen.position.set(0,50,-100);
-	sceneGL.add(movieScreen);
-	
-	camera.position.set(0,150,300);
-	camera.lookAt(movieScreen.position);
-*/
-
-
-
+// CUBES WITH LETTERS (FONT)
 var initscale = 8;                          // cube scaling
 var cubes = new Array();                    // 5 cubes ... X A R T A
 var cad = -800;                             // cube approach distance (lead)
                                             // using this to sync whoop sound
 
-if (window.innerHeight > window.innerWidth) // portrait e.g. phones
-{
-    // staggar z so fits camera "perspective" view
-    cubes[0] = getNewXartaCube( -8,5, cad,      "XARTA", 0, colours);
-    cubes[1] = getNewXartaCube(  0,5, cad-20,   "ARTAX", 1, colours);
-    cubes[2] = getNewXartaCube( 10,5, cad-40,   "RTAXA", 2, colours);
-    cubes[3] = getNewXartaCube( 20,5, cad-60,   "TAXAR", 3, colours);
-    cubes[4] = getNewXartaCube( 30,5, cad-80,   "AXART", 4, colours);
+init();             // camera, water, moon, cylinders etc. etc. - add to sceneGL
+getNewXartaCubes(); // add X A R T A transparent cubes
+animate();          // kickstart the animation loop
+
+function init() {
+    
+    var loader = new THREE.TextureLoader().setCrossOrigin('');    
+    // Use same cross-origin loader for all assets
+
+    loader.setPath('https://res.cloudinary.com/xarta/image/upload/');
+    // GET LOADING GOING NOW, STRAIGHT-AWAY
+
+    // Load the background texture  STARS (from NASA galleries)
+    var stars = loader.load( 'v1497350431/xarta/spiral-galaxy.jpg' );               
+    
+    
+    // Load the background texture MOON (found with Google ... oops - forgot attribution)
+    //                                  ... was a jpg, but wanted a circular cropped transparent png
+    //                                  ... it's not perfect even with the feathering ... but is ok
+
+    // responosive sizes/quality ... big moon is high quality transparent png (over 300KB)
+
+    
+    var loadTime = Date.now() - timerStart;     // set timerStart on index.html - doing this instead of
+                                            // window.performance as need before window is ready
+
+    clock = new THREE.Clock();
+    var camFarPlane = 3000;
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, camFarPlane);
+    camera.position.set(6, 10, 50);
+
+
+    sceneGL = new THREE.Scene();
+    sceneCSS3D = new THREE.Scene(); // used for YouTube iframe etc.
+
+    
+    var rendererglZ = 1;    // 1 or -1
+                            // -1 makes CSS3D YouTube controls accessible on top, but hides WebGL
+                            // ... and no point in having alpha background WebGL
+
+    rendererCSS3D = new THREE.CSS3DRenderer();
+    rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
+    rendererCSS3D.domElement.style.position = 'absolute';
+    rendererCSS3D.domElement.style.top = 0;
+    rendererCSS3D.domElement.style.zIndex = 10;
+
+    if ( rendererglZ === -1)
+    {
+        console.log("CSS3D in front of WebGL e.g. YouTube controls accessible");
+        rendererGL = new THREE.WebGLRenderer();
+        rendererGL.setClearColor(0x000000, 1); 
+        sceneGL.fog = new THREE.FogExp2(0x000000, 0.002); // exponential, color, ex
+        rendererGL.setClearColor(sceneGL.fog.color);
+    }
+    else
+    {
+        // to blend with CSS3D
+        console.log("WebGL (transparent) in front of CSS3D");
+        rendererGL = new THREE.WebGLRenderer({alpha:true, antialias: true});
+        rendererGL.setClearColor(0x000000, 0.0);
+        sceneGL.fog = new THREE.Fog(0x000000, 800,900); // linear, color, near, far
+        //rendererGL.setClearColor(sceneGL.fog.color);
+    }
+
+
+    rendererGL.setPixelRatio(window.devicePixelRatio);
+    rendererGL.setSize(window.innerWidth, window.innerHeight);
+    
+    rendererGL.domElement.style.position = 'absolute';
+    rendererGL.domElement.style.zIndex = rendererglZ;    // -1 to make YouTube control access easy,
+                                                //  but behind webGL objects
+
+                                                // TODO TODO TODO TODO
+                                                // TEST IF CAN CHANGE DYNAMICALLY, LATER
+    rendererGL.domElement.style.top = 0;
+
+    rendererGL.autoclear = false;              // TODO: NOT SURE ABOUT THIS, AND MANUAL CLEARING OF "STAGE BUFFER" - See water.js
+
+    rendererCSS3D.domElement.appendChild(rendererGL.domElement);
+    
+    var container = document.getElementById('container');
+    //container.appendChild(rendererGL.domElement); // now going to append to CSS3D renderer
+    container.appendChild( rendererCSS3D.domElement );      
+
+
+    // world
+    var world = { scene: sceneGL };
+
+
+
+    // STARS
+    starsMesh = new THREE.Mesh( 
+        new THREE.PlaneGeometry(45, 45,1, 1),
+        new THREE.MeshBasicMaterial({
+            map: stars
+        }));
+
+    starsMesh.position.x = -350;  
+    starsMesh.position.z = -820;            // behind moon - further back is too dark/blurry, but obscures things behind it
+    starsMesh.scale.set(50, 50,10);
+    //starsMesh.material.depthTest = true;    // no need
+    //starsMesh.material.depthWrite = true;
+
+    sceneGL.add(starsMesh); 
+
+    // MOON
+    function getTheMoon()
+    {
+        var theMoon;
+        var moonLoaded = function()
+        {
+            console.log("in moonLoaded");
+            window.moonMesh = new THREE.Mesh( 
+                new THREE.PlaneGeometry(45, 45,1, 1),
+                new THREE.MeshBasicMaterial(
+                    {
+                        map: theMoon, 
+                        transparent: true, 
+                        opacity: 0.0, color: 0xff0000
+                    })
+                );   
+            // keep size in portrait mode, but shift partly offscreen to left
+            // nb will appear bigger with bigger height to width ratio, because
+            // of perspective camera settings and how "near" we are to it
+            window.moonMesh.position.x = -1 * 0.25 * window.innerWidth;
+            window.moonMesh.position.y = 20;
+            window.moonMesh.position.z = window.moonz;
+            window.moonMesh.scale.set(13, 14,14); 
+            window.moonMesh.material.depthTest = true;   // because transparent png
+            window.moonMesh.material.depthWrite = true;
+
+            sceneGL.add(window.moonMesh);    
+            window.moonMesh.material.color.setHex( 0xffffff );
+            window.phaseMoonPushBack = true;
+            console.log("moon should be added to sceneGL now");
+
+        };
+
+        // the compute times in devices might vary considerably each time the page is refreshed,
+        // even with cached resources. Resorting to lower quality only if compute/load time is
+        // excessive, to help a little ... different between 47KB and over 300KB images
+        // (The lowest quality is quite apparent on a Note 4)
+
+        // *******
+        // UPDATE:
+        /**
+         * looking at the waterfall in Chrome, looks like any javascript that loads more resources
+         * doesn't kick-in until after about 500ms even if async and other pre-loaded stuff is async
+         * ... so now deciding to have one moon ... the highest quality one, and preload it using
+         * ... link rel="preload" ... more efficient - do while threejs (min) is downloading from
+         * ... elsewhere etc.
+         */ 
+        //if ( (window.innerWidth > 768) || (loadTime < 2500) || window.fps > 5 || window.bigMoonReady == true )
+        //{
+            theMoon = loader.load( 'v1496588500/xarta/moon.png', moonLoaded );
+        //}
+        //else if ( (window.innerWidth > 512) || (loadTime < 3000) || window.moon512Ready == true)
+        //{
+        //    theMoon = loader.load( 'v1496576988/xarta/moon-lower-quality-512.png', moonLoaded );
+        //}
+        //else
+        //{
+        //    theMoon = loader.load( 'v1496586463/xarta/moon-lower-quality-256.png', moonLoaded);
+        //}
+    }
+
+    getTheMoon();
+
+
+
+
+    
+
+    // water computationally HEAVY
+    //setTimeout(function() {
+
+      //  if(window.fps > 7)
+        //{
+            // WATER
+                water = new Water(rendererGL, camera, world, {
+                width: 210,
+                height: 200,
+                segments: 5,
+                lightDirection: new THREE.Vector3(0.7, 0.7, 0)
+            });
+
+            water.position.set(0, 1, 0); // -70, 1, 0
+            water.rotation.set(Math.PI * -0.5, 0, 0);
+            water.updateMatrix();
+            
+            //setTimeout(function() {
+                sceneGL.add(water);  
+            //}, 200);
+            
+      //  }
+    //}, 3000);
+
+    
+
+
+    function getRandomInt(min, max) 
+    {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function getRandomCol(colours)
+    {
+        var randColour = getRandomInt(0,colours.length-1);
+        return colours[randColour][1].replace("#","0x");
+    }
+
+    // (I say cylinders ... I mean pyramids ... brain-dead moment early on)
+    // UPDATE: NOW SHAPES
+    // CYLINDERS        TODO: Some patterned ones e.g. Bee colour stripes, 
+    //                  with Doppler-shift buzz audio from camera position
+    //                  nb: nice colour is yellow/gold: 0xafab5b
+    var geometryDefault = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+    // ... ok ... three.js calls them cylinders.  Must be where I got it from!!!
+
+    var materialDefault = new THREE.MeshPhongMaterial({ 
+                    color: 0xafab5b, 
+                    shading: THREE.FlatShading, 
+                    transparent: true,  opacity: 0 });
+
+    var geometrySphere = new THREE.SphereGeometry( 5, 32, 32 );
+
+    var geometryComplex = new THREE.Geometry();
+
+    for ( var count = 0; count < 10; count ++ ) 
+    {
+
+        var geo = new THREE.BoxGeometry( 5, 5, 5 );
+
+        geo.translate( THREE.Math.randFloat( - 5, 5 ), THREE.Math.randFloat( - 5, 5 ), THREE.Math.randFloat( - 5, 5 ) );
+
+        var color = new THREE.Color().setHex(getRandomCol(colours));
+
+        for ( var i = 0; i < geo.faces.length; i ++ ) 
+        {
+
+            var face = geo.faces[ i ];
+            face.vertexColors.push( color, color, color ); // all the same in this case
+            //face.color.set( color ); // this works, too; use one or the other
+
+        }
+        geometryComplex.merge( geo );
+    }
+
+    var materialComplex = new THREE.MeshPhongMaterial({ 
+                    color: 0xffffff, 
+                    vertexColors: THREE.VertexColors,
+                    shading: THREE.FlatShading, 
+                    transparent: true,  opacity: 0 });
+
+    setTimeout(function() {
+        if (window.fps < 60)
+        {
+            num_cylinders = window.fps;
+        }
+        else
+        {
+            num_cylinders = 60; // plenty!!!
+        }
+        
+        console.log("Number of cylinders: "+ num_cylinders);
+        cylinders = new Array(num_cylinders);
+
+
+        let i = 0;
+
+        let start = Date.now();
+
+        function addShape() 
+        {
+
+            if (i < num_cylinders) 
+            {
+                setTimeout(addShape, Math.floor(30000/window.fps)); 
+
+                if(calmCylinders === false)
+                {
+                    var setColour = getRandomCol(colours);
+                    console.log("Adding shape: " + i);
+                    
+                    if ( (i < 5) && (window.fps > 50) )
+                    {
+                        switch(i)
+                        {
+                            case 0:
+                                cylinders[i] = getNewXartaCube( -10,5,-100, "XARTA", i, colours);
+                                break;
+                            case 1:
+                                cylinders[i] = getNewXartaCube(   0,5,-200, "ARTAX", i, colours);
+                                break;
+                            case 2:
+                                cylinders[i] = getNewXartaCube(  10,5,-300, "RTAXA", i, colours);
+                                break;
+                            case 3:
+                                cylinders[i] = getNewXartaCube(  20,5,-400, "TAXAR", i, colours);
+                                break;
+                            case 4:
+                                cylinders[i] = getNewXartaCube(  30,5,-400, "AXART", i, colours);
+                                break;
+                        }
+    
+                    }
+                    else if ((window.fps + getRandomInt(0,20) > 36))
+                    {
+                        if (i < num_cylinders/4)
+                        {
+                            // separate for different colours though more compute?
+                            var geometrySimple = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
+                            var materialSimple = new THREE.MeshPhongMaterial({ 
+                            color: 0xffffff, 
+                            shading: THREE.FlatShading, 
+                            transparent: true,  opacity: 0 });
+
+                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                            cylinders[i].material.color.setHex(setColour);
+                        }
+                        else if (i < num_cylinders/2)
+                        {
+                            cylinders[i] = new THREE.Mesh(geometryComplex, materialComplex);
+                        }
+                        else if (i < num_cylinders*0.75)
+                        {
+                            var geometrySimple = new THREE.SphereGeometry( 10, 64, 64 );
+                            var materialSimple = new THREE.MeshPhongMaterial({ 
+                            color: 0xffffff, 
+                            shading: THREE.FlatShading, 
+                            transparent: true,  opacity: 0 });
+
+                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                            cylinders[i].material.color.setHex(setColour);
+                        }
+                        else
+                        {
+                            var geometrySimple = new THREE.BoxBufferGeometry( 50, 50, 50 );
+                            var materialSimple = new THREE.MeshPhongMaterial({ 
+                            color: 0xffffff, 
+                            shading: THREE.FlatShading, 
+                            transparent: true,  opacity: 0 });
+
+                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
+                            cylinders[i].material.color.setHex(setColour);
+                        }
+                    }
+                    else
+                    {
+                        cylinders[i] = new THREE.Mesh(geometryDefault, materialDefault);
+                    }
+
+                    
+                    
+
+                    cylinders[i].position.x = (Math.random() - 0.5) * range_cylinders;
+                    cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
+                    cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
+
+                    cylinders[i].xartaDirx = (Math.random() - 0.5) * 15; // velocity
+                    cylinders[i].xartaDiry = (Math.random() - 0.5) * 10;
+                    cylinders[i].xartaDirz = (Math.random() - 0.5) * 20;
+
+                    cylinders[i].updateMatrix();
+                    cylinders[i].matrixAutoUpdate = false;
+
+
+                    sceneGL.add(cylinders[i]);
+                    window.num_cylinders_so_far = i;
+                    i++;
+                }
+            }
+        }
+        addShape();
+             
+    },6000);
+
+
+    // lights (still experimenting)
+
+    var light = new THREE.DirectionalLight(0xffffff, 3);
+    light.position.set(250, -300, 500);
+    sceneGL.add(light);
+
+    var spotLight = new THREE.SpotLight(0xffffff, 1, 200, 20, 10);
+    spotLight.position.set( 0, 150, 0 );
+    
+    var spotTarget = new THREE.Object3D();
+    spotTarget.position.set(0, 0, 0);
+    spotLight.target = spotTarget;
+    
+    sceneGL.add(spotLight);
+    // sceneGL.add(new THREE.PointLightHelper(spotLight, 1));
+
+    window.addEventListener('resize', onWindowResize, false);
+
 }
-else
+
+function getNewXartaCubes()
 {
-    // just in a row - camera zoom will always mean fitting (mostly)
-    cubes[0] = getNewXartaCube( -10,5, cad, "XARTA", 0, colours);
-    cubes[1] = getNewXartaCube(   0,5, cad, "ARTAX", 1, colours);
-    cubes[2] = getNewXartaCube(  10,5, cad, "RTAXA", 2, colours);
-    cubes[3] = getNewXartaCube(  20,5, cad, "TAXAR", 3, colours);
-    cubes[4] = getNewXartaCube(  30,5, cad, "AXART", 4, colours);
+    if (window.innerHeight > window.innerWidth) // portrait e.g. phones
+    {
+        // staggar z so fits camera "perspective" view
+        cubes[0] = getNewXartaCube( -8,5, cad,      "XARTA", 0, colours);
+        cubes[1] = getNewXartaCube(  0,5, cad-20,   "ARTAX", 1, colours);
+        cubes[2] = getNewXartaCube( 10,5, cad-40,   "RTAXA", 2, colours);
+        cubes[3] = getNewXartaCube( 20,5, cad-60,   "TAXAR", 3, colours);
+        cubes[4] = getNewXartaCube( 30,5, cad-80,   "AXART", 4, colours);
+    }
+    else
+    {
+        // just in a row - camera zoom will always mean fitting (mostly)
+        cubes[0] = getNewXartaCube( -10,5, cad, "XARTA", 0, colours);
+        cubes[1] = getNewXartaCube(   0,5, cad, "ARTAX", 1, colours);
+        cubes[2] = getNewXartaCube(  10,5, cad, "RTAXA", 2, colours);
+        cubes[3] = getNewXartaCube(  20,5, cad, "TAXAR", 3, colours);
+        cubes[4] = getNewXartaCube(  30,5, cad, "AXART", 4, colours);
+    }
 }
-
-
-animate();  // kickstart the animation loop
-
-
-
-
 
 function getNewXartaCube(xPos, yPos, zPos, word, colourStartIndex, colours) 
 {
@@ -899,400 +969,6 @@ function tumble(transformRate)
 
 
     }
-}
-
-function init() {
-
-    var loader = new THREE.TextureLoader().setCrossOrigin('');    // Use same cross-origin loader for all assets
-    loader.setPath('https://res.cloudinary.com/xarta/image/upload/');
-    // GET LOADING GOING NOW, STRAIGHT-AWAY
-
-    // Load the background texture  STARS (from NASA galleries)
-    var stars = loader.load( 'v1497350431/xarta/spiral-galaxy.jpg' );               
-    
-    
-    // Load the background texture MOON (found with Google ... oops - forgot attribution)
-    //                                  ... was a jpg, but wanted a circular cropped transparent png
-    //                                  ... it's not perfect even with the feathering ... but is ok
-
-    // responosive sizes/quality ... big moon is high quality transparent png (over 300KB)
-
-    
-    var loadTime = Date.now() - timerStart;     // set timerStart on index.html - doing this instead of
-                                            // window.performance as need before window is ready
-
-    clock = new THREE.Clock();
-    var camFarPlane = 3000;
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, camFarPlane);
-    camera.position.set(6, 10, 50);
-
-
-    sceneGL = new THREE.Scene();
-    sceneCSS3D = new THREE.Scene();
-
-    
-    var rendererglZ = 1;     // 1 or -1
-                            // -1 makes CSS3D YouTube controls accessible on top, but hides WebGL
-                            // ... and no point in having alpha background WebGL
-
-    rendererCSS3D = new THREE.CSS3DRenderer();
-    rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
-    rendererCSS3D.domElement.style.position = 'absolute';
-    rendererCSS3D.domElement.style.top = 0;
-    rendererCSS3D.domElement.style.zIndex = 10;
-
-    if ( rendererglZ === -1)
-    {
-        console.log("CSS3D in front of WebGL e.g. YouTube controls accessible");
-        rendererGL = new THREE.WebGLRenderer();
-        rendererGL.setClearColor(0x000000, 1); 
-        sceneGL.fog = new THREE.FogExp2(0x000000, 0.002); // exponential, color, ex
-        rendererGL.setClearColor(sceneGL.fog.color);
-    }
-    else
-    {
-        // to blend with CSS3D
-        console.log("WebGL (transparent) in front of CSS3D");
-        rendererGL = new THREE.WebGLRenderer({alpha:true, antialias: true});
-        rendererGL.setClearColor(0x000000, 0.0);
-        sceneGL.fog = new THREE.Fog(0x000000, 800,900); // linear, color, near, far
-        //rendererGL.setClearColor(sceneGL.fog.color);
-    }
-
-
-    rendererGL.setPixelRatio(window.devicePixelRatio);
-    rendererGL.setSize(window.innerWidth, window.innerHeight);
-    
-    rendererGL.domElement.style.position = 'absolute';
-    rendererGL.domElement.style.zIndex = rendererglZ;    // -1 to make YouTube control access easy,
-                                                //  but behind webGL objects
-
-                                                // TODO TODO TODO TODO
-                                                // TEST IF CAN CHANGE DYNAMICALLY, LATER
-    rendererGL.domElement.style.top = 0;
-
-    rendererGL.autoclear = false;              // TODO: NOT SURE ABOUT THIS, AND MANUAL CLEARING OF "STAGE BUFFER" - See water.js
-
-    rendererCSS3D.domElement.appendChild(rendererGL.domElement);
-    
-    var container = document.getElementById('container');
-    //container.appendChild(rendererGL.domElement); // now going to append to CSS3D renderer
-    container.appendChild( rendererCSS3D.domElement );      
-
-
-    // world
-    var world = { scene: sceneGL };
-
-
-
-    // STARS
-    starsMesh = new THREE.Mesh( 
-        new THREE.PlaneGeometry(45, 45,1, 1),
-        new THREE.MeshBasicMaterial({
-            map: stars
-        }));
-
-    starsMesh.position.x = -350;  
-    starsMesh.position.z = -820;            // behind moon - further back is too dark/blurry, but obscures things behind it
-    starsMesh.scale.set(50, 50,10);
-    //starsMesh.material.depthTest = true;    // no need
-    //starsMesh.material.depthWrite = true;
-
-    sceneGL.add(starsMesh); 
-
-    // MOON
-    function getTheMoon()
-    {
-        var theMoon;
-        var moonLoaded = function()
-        {
-            console.log("in moonLoaded");
-            window.moonMesh = new THREE.Mesh( 
-                new THREE.PlaneGeometry(45, 45,1, 1),
-                new THREE.MeshBasicMaterial(
-                    {
-                        map: theMoon, 
-                        transparent: true, 
-                        opacity: 0.0, color: 0xff0000
-                    })
-                );   
-            // keep size in portrait mode, but shift partly offscreen to left
-            // nb will appear bigger with bigger height to width ratio, because
-            // of perspective camera settings and how "near" we are to it
-            window.moonMesh.position.x = -1 * 0.25 * window.innerWidth;
-            window.moonMesh.position.y = 20;
-            window.moonMesh.position.z = window.moonz;
-            window.moonMesh.scale.set(13, 14,14); 
-            window.moonMesh.material.depthTest = true;   // because transparent png
-            window.moonMesh.material.depthWrite = true;
-
-            sceneGL.add(window.moonMesh);    
-            window.moonMesh.material.color.setHex( 0xffffff );
-            window.phaseMoonPushBack = true;
-            console.log("moon should be added to sceneGL now");
-
-        };
-
-        // the compute times in devices might vary considerably each time the page is refreshed,
-        // even with cached resources. Resorting to lower quality only if compute/load time is
-        // excessive, to help a little ... different between 47KB and over 300KB images
-        // (The lowest quality is quite apparent on a Note 4)
-
-        // *******
-        // UPDATE:
-        /**
-         * looking at the waterfall in Chrome, looks like any javascript that loads more resources
-         * doesn't kick-in until after about 500ms even if async and other pre-loaded stuff is async
-         * ... so now deciding to have one moon ... the highest quality one, and preload it using
-         * ... link rel="preload" ... more efficient - do while threejs (min) is downloading from
-         * ... elsewhere etc.
-         */ 
-        //if ( (window.innerWidth > 768) || (loadTime < 2500) || window.fps > 5 || window.bigMoonReady == true )
-        //{
-            theMoon = loader.load( 'v1496588500/xarta/moon.png', moonLoaded );
-        //}
-        //else if ( (window.innerWidth > 512) || (loadTime < 3000) || window.moon512Ready == true)
-        //{
-        //    theMoon = loader.load( 'v1496576988/xarta/moon-lower-quality-512.png', moonLoaded );
-        //}
-        //else
-        //{
-        //    theMoon = loader.load( 'v1496586463/xarta/moon-lower-quality-256.png', moonLoaded);
-        //}
-    }
-
-    getTheMoon();
-
-
-
-
-    
-
-    // water computationally HEAVY
-    //setTimeout(function() {
-
-      //  if(window.fps > 7)
-        //{
-            // WATER
-                water = new Water(rendererGL, camera, world, {
-                width: 210,
-                height: 200,
-                segments: 5,
-                lightDirection: new THREE.Vector3(0.7, 0.7, 0)
-            });
-
-            water.position.set(0, 1, 0); // -70, 1, 0
-            water.rotation.set(Math.PI * -0.5, 0, 0);
-            water.updateMatrix();
-            
-            //setTimeout(function() {
-                sceneGL.add(water);  
-            //}, 200);
-            
-      //  }
-    //}, 3000);
-
-    
-
-
-    function getRandomInt(min, max) 
-    {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function getRandomCol(colours)
-    {
-        var randColour = getRandomInt(0,colours.length-1);
-        return colours[randColour][1].replace("#","0x");
-    }
-
-    // (I say cylinders ... I mean pyramids ... brain-dead moment early on)
-    // UPDATE: NOW SHAPES
-    // CYLINDERS        TODO: Some patterned ones e.g. Bee colour stripes, 
-    //                  with Doppler-shift buzz audio from camera position
-    //                  nb: nice colour is yellow/gold: 0xafab5b
-    var geometryDefault = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
-    // ... ok ... three.js calls them cylinders.  Must be where I got it from!!!
-
-    var materialDefault = new THREE.MeshPhongMaterial({ 
-                    color: 0xafab5b, 
-                    shading: THREE.FlatShading, 
-                    transparent: true,  opacity: 0 });
-
-    var geometrySphere = new THREE.SphereGeometry( 5, 32, 32 );
-
-    var geometryComplex = new THREE.Geometry();
-
-    for ( var count = 0; count < 10; count ++ ) 
-    {
-
-        var geo = new THREE.BoxGeometry( 5, 5, 5 );
-
-        geo.translate( THREE.Math.randFloat( - 5, 5 ), THREE.Math.randFloat( - 5, 5 ), THREE.Math.randFloat( - 5, 5 ) );
-
-        var color = new THREE.Color().setHex(getRandomCol(colours));
-
-        for ( var i = 0; i < geo.faces.length; i ++ ) 
-        {
-
-            var face = geo.faces[ i ];
-            face.vertexColors.push( color, color, color ); // all the same in this case
-            //face.color.set( color ); // this works, too; use one or the other
-
-        }
-        geometryComplex.merge( geo );
-    }
-
-    var materialComplex = new THREE.MeshPhongMaterial({ 
-                    color: 0xffffff, 
-                    vertexColors: THREE.VertexColors,
-                    shading: THREE.FlatShading, 
-                    transparent: true,  opacity: 0 });
-
-    setTimeout(function() {
-        if (window.fps < 60)
-        {
-            num_cylinders = window.fps;
-        }
-        else
-        {
-            num_cylinders = 60; // plenty!!!
-        }
-        
-        console.log("Number of cylinders: "+ num_cylinders);
-        cylinders = new Array(num_cylinders);
-
-
-        let i = 0;
-
-        let start = Date.now();
-
-        function addShape() 
-        {
-
-            if (i < num_cylinders) 
-            {
-                setTimeout(addShape, Math.floor(30000/window.fps)); 
-
-                if(calmCylinders === false)
-                {
-                    var setColour = getRandomCol(colours);
-                    console.log("Adding shape: " + i);
-                    
-                    if ( (i < 5) && (window.fps > 50) )
-                    {
-                        switch(i)
-                        {
-                            case 0:
-                                cylinders[i] = getNewXartaCube( -10,5,-100, "XARTA", i, colours);
-                                break;
-                            case 1:
-                                cylinders[i] = getNewXartaCube(   0,5,-200, "ARTAX", i, colours);
-                                break;
-                            case 2:
-                                cylinders[i] = getNewXartaCube(  10,5,-300, "RTAXA", i, colours);
-                                break;
-                            case 3:
-                                cylinders[i] = getNewXartaCube(  20,5,-400, "TAXAR", i, colours);
-                                break;
-                            case 4:
-                                cylinders[i] = getNewXartaCube(  30,5,-400, "AXART", i, colours);
-                                break;
-                        }
-    
-                    }
-                    else if ((window.fps + getRandomInt(0,20) > 36))
-                    {
-                        if (i < num_cylinders/4)
-                        {
-                            // separate for different colours though more compute?
-                            var geometrySimple = new THREE.CylinderGeometry(0, 10, 30, 4, 1);
-                            var materialSimple = new THREE.MeshPhongMaterial({ 
-                            color: 0xffffff, 
-                            shading: THREE.FlatShading, 
-                            transparent: true,  opacity: 0 });
-
-                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
-                            cylinders[i].material.color.setHex(setColour);
-                        }
-                        else if (i < num_cylinders/2)
-                        {
-                            cylinders[i] = new THREE.Mesh(geometryComplex, materialComplex);
-                        }
-                        else if (i < num_cylinders*0.75)
-                        {
-                            var geometrySimple = new THREE.SphereGeometry( 10, 64, 64 );
-                            var materialSimple = new THREE.MeshPhongMaterial({ 
-                            color: 0xffffff, 
-                            shading: THREE.FlatShading, 
-                            transparent: true,  opacity: 0 });
-
-                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
-                            cylinders[i].material.color.setHex(setColour);
-                        }
-                        else
-                        {
-                            var geometrySimple = new THREE.BoxBufferGeometry( 50, 50, 50 );
-                            var materialSimple = new THREE.MeshPhongMaterial({ 
-                            color: 0xffffff, 
-                            shading: THREE.FlatShading, 
-                            transparent: true,  opacity: 0 });
-
-                            cylinders[i] = new THREE.Mesh(geometrySimple, materialSimple);
-                            cylinders[i].material.color.setHex(setColour);
-                        }
-                    }
-                    else
-                    {
-                        cylinders[i] = new THREE.Mesh(geometryDefault, materialDefault);
-                    }
-
-                    
-                    
-
-                    cylinders[i].position.x = (Math.random() - 0.5) * range_cylinders;
-                    cylinders[i].position.y = (Math.random() - 0.5) * range_cylinders;
-                    cylinders[i].position.z = (Math.random() - 0.5) * range_cylinders;
-
-                    cylinders[i].xartaDirx = (Math.random() - 0.5) * 15; // velocity
-                    cylinders[i].xartaDiry = (Math.random() - 0.5) * 10;
-                    cylinders[i].xartaDirz = (Math.random() - 0.5) * 20;
-
-                    cylinders[i].updateMatrix();
-                    cylinders[i].matrixAutoUpdate = false;
-
-
-                    sceneGL.add(cylinders[i]);
-                    window.num_cylinders_so_far = i;
-                    i++;
-                }
-            }
-        }
-        addShape();
-             
-    },6000);
-
-
-
-
-    // lights (still experimenting)
-
-    var light = new THREE.DirectionalLight(0xffffff, 3);
-    light.position.set(250, -300, 500);
-    sceneGL.add(light);
-
-    var spotLight = new THREE.SpotLight(0xffffff, 1, 200, 20, 10);
-    spotLight.position.set( 0, 150, 0 );
-    
-    var spotTarget = new THREE.Object3D();
-    spotTarget.position.set(0, 0, 0);
-    spotLight.target = spotTarget;
-    
-    sceneGL.add(spotLight);
-    // sceneGL.add(new THREE.PointLightHelper(spotLight, 1));
-
-    window.addEventListener('resize', onWindowResize, false);
-
 }
 
 function onWindowResize() {
