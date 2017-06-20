@@ -118,9 +118,11 @@ function init() {
     sceneCSS3D = new THREE.Scene(); // used for YouTube iframe etc.
 
     
-    var rendererglZ = 1;    // 1 or -1
-                            // -1 makes CSS3D YouTube controls accessible on top, but hides WebGL
-                            // ... and no point in having alpha background WebGL
+    // window.YouTubeDefault    // IF -1
+                                // -1 makes CSS3D YouTube controls accessible
+                                // on top, but hides WebGL, so no point in having
+                                // alpha background WebGL (to see through - to CSS3D
+                                // if IT WAS behind WebGL)
 
     rendererCSS3D = new THREE.CSS3DRenderer();
     rendererCSS3D.setSize( window.innerWidth, window.innerHeight );
@@ -128,13 +130,15 @@ function init() {
     rendererCSS3D.domElement.style.top = 0;
     rendererCSS3D.domElement.style.zIndex = 10;
 
-    if ( rendererglZ === -1)
+    if ( window.YouTubeDefault == -1)
     {
         console.log("CSS3D in front of WebGL e.g. YouTube controls accessible");
         rendererGL = new THREE.WebGLRenderer();
         rendererGL.setClearColor(0x000000, 1); 
         sceneGL.fog = new THREE.FogExp2(0x000000, 0.002); // exponential, color, ex
         rendererGL.setClearColor(sceneGL.fog.color);
+
+        rendererGL.domElement.style.zIndex = -1;
     }
     else
     {
@@ -144,6 +148,8 @@ function init() {
         rendererGL.setClearColor(0x000000, 0.0);
         sceneGL.fog = new THREE.Fog(0x000000, 800,900); // linear, color, near, far
         //rendererGL.setClearColor(sceneGL.fog.color);
+
+        rendererGL.domElement.style.zIndex = 1;
     }
 
 
@@ -151,8 +157,7 @@ function init() {
     rendererGL.setSize(window.innerWidth, window.innerHeight);
     
     rendererGL.domElement.style.position = 'absolute';
-    rendererGL.domElement.style.zIndex = rendererglZ;    // -1 to make YouTube control access easy,
-                                                //  but behind webGL objects
+
 
                                                 // TODO TODO TODO TODO
                                                 // TEST IF CAN CHANGE DYNAMICALLY, LATER
@@ -254,7 +259,6 @@ function init() {
 
 
     // WATER
-    //var addWaterToScene;
     (function waitForGoodFPS(fpsAverage, numAttemptsRemaining)
     {
         if ( (typeof addWaterToScene === 'undefined' || addWaterToScene === null) )
@@ -269,7 +273,7 @@ function init() {
         {
             if(numAttemptsRemaining > 0)
             {
-                if(fpsAverage > 30)
+                if(fpsAverage > 35)
                 {
                     console.log("fpsAverage now OK for WATER: " + fpsAverage);
                     water = new Water(rendererGL, camera, world, 
