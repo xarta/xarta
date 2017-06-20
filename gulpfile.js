@@ -62,7 +62,7 @@ gulp.task('setDateTimeHash', function(){
 gulp.task('cachebust-html', function(){
     fs.readFile("cacheBustingHashDst.txt", "utf-8", function(err, _data) {
             cachebustHex = _data;
-            gutil.log(cachebustHex);
+            gutil.log('This cachebuster datetime stamp is: ' + cachebustHex);
             gulp.start('minify-html');
             gulp.start('cachebust-web-config');
     })
@@ -73,6 +73,7 @@ gulp.task('cachebust-web-config', function(){
     return gulp.src("web.config")
         .pipe (replace('styles.css', 'styles-' + cachebustHex + '.css'))
         .pipe(gulp.dest(function(f) {
+            gutil.log('DONE');
             return f.base;
         })) 
 });

@@ -109,6 +109,9 @@ function getOrbitControlsFocus()
         document.getElementById("cameraPos").style.display="block";
         setTimeout(function() 
         {
+            // consider how this effects keyboard access - then again Orbitcontrols!
+            // but, also, look at tabindex = -1. Need to provide way to menu from
+            // keyboard, when in OrbitControls ... TODO: look-up exit key combo
             document.getElementById('controlsFocus').focus();
             setTimeout(function() {
                 document.getElementById("cameraPos").style.display="none";
@@ -254,6 +257,7 @@ for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
             {
                 //var touchlist = e.touches;
                 
+                // check out pseudo focus: ... see if can use instead
                 var alreadySelected = (window.getComputedStyle(document.getElementById(topListButtonID)).opacity > 0.9);
                 window.navDrawer.style.opacity = 1.0;
 
