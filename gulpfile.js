@@ -203,12 +203,24 @@ gulp.task('concat-home-js', function() {
     .pipe(gulp.dest('./js-debug-home/'));
 });
 
+gulp.task('concat-defer-js', function() {
+  return gulp.src([ './js-debug-home/cookie-consent.js', 
+                    './js-debug-home/defer-xarta.js'], {base: './'})
+    .pipe(sourcemaps.init())
+    .pipe(babel({
+        presets: ['es2015']
+    }))
+    .pipe(concat('defer.js'))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('./js-debug-home/'));
+});
+
 
 // want the homepage to be fast so concatenate & compress all js files
 // to one (but also separates for three stuff, for other pages)
 gulp.task('concat-minify-home-js-css', function() {
     runSequence(
-        'setDateTimeHash', 'concat-home-js', 'minify-home-js', 'homepage-js-cloudinary', 'cachebust-homepage-min',
+        'setDateTimeHash', 'concat-home-js', 'concat-defer-js', 'minify-home-js', 'homepage-js-cloudinary', 'cachebust-homepage-min',
         'cachebust-defer-min', 'minify-css', 'cachebust-styles-css', 'cachebust-html'
     );
 });
@@ -218,6 +230,6 @@ gulp.task('xarta', function() {
     gulp.watch('css/css-debug/*.scss', ['sass']);
     gulp.watch('css/css-debug/*.css', ['concat-minify-home-js-css']);
     gulp.watch('html-debug/*.html', ['cachebust-html', 'debug-js']);
-    gulp.watch(['js-debug-home/*.js', '!js-debug-home/homepage.js'], ['concat-minify-home-js-css']);
+    gulp.watch(['js-debug-home/*.js', '!js-debug-home/homepage.js', '!js-debug-home/defer.js'], ['concat-minify-home-js-css']);
 });
 
