@@ -195,8 +195,9 @@ gulp.task("minify-home-js", function() {
 /* pollyfill.js ... from: http://babeljs.io/docs/usage/polyfill/
  *              ... installed using NPM, and copied from module dist folder
  *              ... needed to fix non ES2015 compatibility in Edge (for of)
- *              ... gave error: Object doesn't support property or method 'ToString'
- */
+ *              ... gave error: Object doesn't support property or method "ToString"
+*/
+
 gulp.task("concat-home-js", function() {
   return gulp.src([ "./js-debug-home/polyfill.js",
                     "./js-debug-home/CSS3DRenderer.js",
