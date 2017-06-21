@@ -32,7 +32,6 @@ $highlightSpeed: .3s;
 
 $drawerTop: 10px;
 
-
 html, #container, .no-js
 {
     position: absolute;
@@ -114,7 +113,7 @@ body {
     opacity: 0.7;
   }
 
-  li:hover {
+  li:hover, li.has-kbrd-hover {
       opacity: 1.0;
   }
 
@@ -157,7 +156,7 @@ body {
 
   /* ------------------------- */
     
-  li.has-hover:hover ul {
+  li.has-hover:hover ul, li.has-kbrd-hover ul {
     /* --------------------- */
     /* Open the fly-out menu */
     /* --------------------- */

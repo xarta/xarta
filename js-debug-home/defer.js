@@ -54,6 +54,10 @@ function play(keys)
 
 
 navDrawer.addEventListener('mouseover', function(e){
+    for (let navLi of document.querySelectorAll(".sticky"))
+    {
+        navLi.classList.remove("has-kbrd-hover");
+    } 
     window.navDrawer.style.opacity = 1.0;
     rendererGL.domElement.style.zIndex = YOUTUBEINFRONT;
     window.calmCylinders = true;        // used in scene.js minified to homepage.js
@@ -78,6 +82,10 @@ navDrawer.addEventListener('mouseover', function(e){
 }, false);
 
 navDrawer.addEventListener('touchstart', function(e){
+    for (let navLi of document.querySelectorAll(".sticky"))
+    {
+        navLi.classList.remove("has-kbrd-hover");
+    } 
     usingTouchDevice = TOUCHLIKELY;
     YouTubeDefault = YOUTUBEINFRONT;
     window.calmCylinders = true;        // used in scene.js minified to homepage.js
@@ -103,6 +111,22 @@ navDrawer.addEventListener("keydown", function (event) {
   if (event.defaultPrevented) {
     return; // Do nothing if the event was already processed
   }
+
+    window.calmCylinders = true;        // used in scene.js minified to homepage.js
+    window.navDrawer.style.opacity = 1.0;
+    rendererGL.domElement.style.zIndex = YOUTUBEINFRONT;
+    clearTimeout(dimDrawer);
+    dimDrawer = setTimeout(function() 
+    {
+        window.navDrawer.style.opacity = 0.2;
+        window.calmCylinders = false;   // used in scene.js minified to homepage.js
+        rendererGL.domElement.style.zIndex = YouTubeDefault;
+
+        if (window.controls !== null)
+        {
+            setTimeout(getOrbitControlsFocus(), 20);
+        }
+    }, 3000);
 
   switch (event.key) {
     case "ArrowDown":
@@ -134,111 +158,61 @@ navDrawer.addEventListener("keydown", function (event) {
   //event.preventDefault();
 }, true);
 
+for (let navLi of document.querySelectorAll("#li01, #li02, #li03")) 
+{
+    navLi.addEventListener("keydown", function (event) 
+    {
+        if (event.defaultPrevented) 
+        {
+            return; // Do nothing if the event was already processed
+        }
+        
+        let focusedhref = document.querySelectorAll('.sticky :focus');
+        let focusedLi = focusedhref[0].parentNode;
+        let focusedLiID = focusedLi.id;
+        let focusedLiNum = focusedLiID.substr(3,1);
 
-document.getElementById("li01").addEventListener("keydown", function (event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
+        console.log("focusedLiID = " + focusedLiID);
+        console.log("focusedLiNum = " + focusedLiNum);
+        
+        switch (event.key) {
+            case "ArrowDown":
+                let newLiNumDown = (focusedLiNum) %3 + 1;
+                document.querySelector("#li0" + newLiNumDown + " a").focus();
+            break;
+            case "ArrowUp":
+                let newLiNumUp = (focusedLiNum + 4) %3 + 1;
+                document.querySelector("#li0" + newLiNumUp + " a").focus();
+            break;
+            case "ArrowLeft":
+                document.querySelector("#li0" + focusedLiNum + " li > a").focus();
+                // TODO - navigate children of li01, li02, li03 etc.
+            break;
+            case "ArrowRight":
+                // TODO - navigate children of li01, li02, li03 etc.
+            break;
+            case "Tab":
+                event.preventDefault();
+            break;
+            case "Enter":
+                for (let navLi of document.querySelectorAll(".sticky:not(#" + focusedLiID + ")"))
+                {
+                    navLi.classList.remove("has-kbrd-hover");
+                } 
 
-  switch (event.key) {
-    case "ArrowDown":
-      // Do something for "down arrow" key press.
-      break;
-    case "ArrowUp":
-      // Do something for "up arrow" key press.
-      break;
-    case "ArrowLeft":
-      // Do something for "left arrow" key press.
-      break;
-    case "ArrowRight":
-      // Do something for "right arrow" key press.
-      break;
-    case "Tab":
-      console.log("li01: TAB pressed");
-      break;
-    case "Enter":
-      // Do something for "enter" or "return" key press.
-      console.log("li01: ENTER pressed");
-      break;
-    case "Escape":
-      // Do something for "esc" key press.
-      break;
-    default:
-      return; // Quit when this doesn't handle the key event.
-  }
-  // Cancel the default action to avoid it being handled twice
-  event.preventDefault();
-}, true);
+                focusedLi.classList.toggle("has-kbrd-hover");
+                event.preventDefault();
+            break;
+            case "Escape":
 
-document.getElementById("li02").addEventListener("keydown", function (event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
+            break;
+            default:
+            return; // Quit when this doesn't handle the key event.
+        }
+        
+    }, true);
+}
 
-  switch (event.key) {
-    case "ArrowDown":
-      // Do something for "down arrow" key press.
-      break;
-    case "ArrowUp":
-      // Do something for "up arrow" key press.
-      break;
-    case "ArrowLeft":
-      // Do something for "left arrow" key press.
-      break;
-    case "ArrowRight":
-      // Do something for "right arrow" key press.
-      break;
-    case "Tab":
-      console.log("li02: TAB pressed");
-      break;
-    case "Enter":
-      // Do something for "enter" or "return" key press.
-      console.log("li02: ENTER pressed");
-      break;
-    case "Escape":
-      // Do something for "esc" key press.
-      break;
-    default:
-      return; // Quit when this doesn't handle the key event.
-  }
-  // Cancel the default action to avoid it being handled twice
-  event.preventDefault();
-}, true);
-
-document.getElementById("li03").addEventListener("keydown", function (event) {
-  if (event.defaultPrevented) {
-    return; // Do nothing if the event was already processed
-  }
-
-  switch (event.key) {
-    case "ArrowDown":
-      // Do something for "down arrow" key press.
-      break;
-    case "ArrowUp":
-      // Do something for "up arrow" key press.
-      break;
-    case "ArrowLeft":
-      // Do something for "left arrow" key press.
-      break;
-    case "ArrowRight":
-      // Do something for "right arrow" key press.
-      break;
-    case "Tab":
-      console.log("li03: TAB pressed");
-      break;
-    case "Enter":
-      // Do something for "enter" or "return" key press.
-      console.log("li03: ENTER pressed");
-      break;
-    case "Escape":
-      // Do something for "esc" key press.
-      break;
-    default:
-      return; // Quit when this doesn't handle the key event.
-  }
-  // Cancel the default action to avoid it being handled twice
-  event.preventDefault();
-}, true);
 
 function getOrbitControlsFocus()
 {
