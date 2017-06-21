@@ -240,6 +240,10 @@ function getOrbitControlsFocus()
             // consider how this effects keyboard access - then again Orbitcontrols!
             // but, also, look at tabindex = -1. Need to provide way to menu from
             // keyboard, when in OrbitControls ... TODO: look-up exit key combo
+
+            // ISSUE: might make keyboard flash-up momentarily on Android device
+            //        MUST be better way of getting the focus back ... I must be
+            //        doing this in a silly way.
             document.getElementById('controlsFocus').focus();
             setTimeout(function() {
                 document.getElementById("cameraPos").style.display="none";

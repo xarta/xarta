@@ -4,6 +4,8 @@ js
 js-debug-home/homepage.js
 js-debug-home/beep.js
 js-debug-home/cookie-consent.js
+js-debug-home/defer.js
+js-debug-home/defer.js.map
 css/*.css
 css/css-debug/styles.css
 index.html
