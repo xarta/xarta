@@ -41,7 +41,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const fs = require('fs');   // https://nodejs.org/api/fs.html#fs_file_system
 
 // my own attempt at cache busting (don't want to use Gulp(rev) ... not more requires
-// and complexity !!! ... Keep It Simple :)  ) BUT REMEMBER: only call this when
+// and complexity !!! ... Keep It Simple  ) BUT REMEMBER: only call this when
 // my sources change ... not intermediates.
 // Just using date time (to hex to keep it shorter) ... not a hash per se
 // saving to file so if I save the index again, it can use the correct time value
@@ -51,16 +51,16 @@ const fs = require('fs');   // https://nodejs.org/api/fs.html#fs_file_system
 var cachebustHex = null;
 gulp.task('setDateTimeHash', function(){
     cachebustHex = ( (new Date()).getTime()  ).toString(16);
-    return gulp.src("cacheBustingHashSrc.txt")
+    return gulp.src('cacheBustingHashSrc.txt')
         .pipe (replace('NothingHere', cachebustHex))
         .pipe (rename(function (path) {
-            path.basename = path.basename.replace("Src", "Dst");
+            path.basename = path.basename.replace('Src', 'Dst');
         }))
         .pipe(gulp.dest('./'))
 });
 
 gulp.task('cachebust-html', function(){
-    fs.readFile("cacheBustingHashDst.txt", "utf-8", function(err, _data) {
+    fs.readFile('cacheBustingHashDst.txt', 'utf-8', function(err, _data) {
             cachebustHex = _data;
             gutil.log('This cachebuster datetime stamp is: ' + cachebustHex);
             gulp.start('minify-html');
@@ -70,7 +70,7 @@ gulp.task('cachebust-html', function(){
 });
 
 gulp.task('cachebust-web-config', function(){
-    return gulp.src("web.config")
+    return gulp.src('web.config')
         .pipe (replace(/styles-[0-9a-fA-F]+.css/g, 'styles-' + cachebustHex + '.css'))
         .pipe(gulp.dest(function(f) {
             gutil.log('NEARLY DONE');
@@ -85,14 +85,14 @@ gulp.task('TEST', function(){
 // minifyJS and minifyCSS (as options) break my page at the moment
 // need to learn how to pass options to minifyJS here
 gulp.task('minify-html', function() {
-    return gulp.src("html-debug/*-debug.html")
+    return gulp.src('html-debug/*-debug.html')
         .pipe (htmlmin({collapseWhitespace: true, conservativeCollapse: true, caseSensitive: true, minifyJS: true, minifyCSS: false, removeComments: true, removeEmptyElements: false }))
         .pipe (replace('<script></script>', ''))
         .pipe (replace('homepage-min.js', 'homepage-' + cachebustHex + '.js'))
         .pipe (replace('defer-min.js', 'defer-' + cachebustHex + '.js'))
         .pipe (replace('styles.css', 'styles-' + cachebustHex + '.css'))
         .pipe (rename(function (path) {
-            path.basename = path.basename.replace("-debug", "");
+            path.basename = path.basename.replace('-debug', '');
         }))
         .pipe(gulp.dest('./'))
 });
@@ -103,14 +103,14 @@ gulp.task('minify-html', function() {
 // as well as debugging js (i.e. don't have to prettify all the time when stepping)
 // ... wanted to reduce bandwidth use on my account on cloudinary.com
 gulp.task('debug-js', function() {
-    return gulp.src("html-debug/*-debug.html")
+    return gulp.src('html-debug/*-debug.html')
         .pipe (replace('js/homepage-min.js', 'js-debug-home/homepage.js'))
         .pipe (replace('js/OrbitControls-min.js', 'js-debug-home/OrbitControls.js'))
         .pipe (replace('https://cdn.jsdelivr.net/threejs/0.85.2/three.min.js', 'js-debug-home/three.js'))
         .pipe (replace('https://res.cloudinary.com/xarta/image/upload/','images/'))
         .pipe (replace(/v\d{10}\/xarta\//g, ''))
         .pipe (rename(function (path) {
-            path.basename = path.basename.replace("-debug", "-d");
+            path.basename = path.basename.replace('-debug', '-d');
         }))
         .pipe(gulp.dest('./'))    
 });
@@ -120,7 +120,7 @@ gulp.task('debug-js', function() {
 // for debugging (so only effects homepage.js which is generated every time)
 // - reduce bandwidth use on Cloudinary account when debugging
 gulp.task('homepage-js-cloudinary', function() {
-    return gulp.src("js-debug-home/homepage.js")
+    return gulp.src('js-debug-home/homepage.js')
         .pipe (replace("setPath('https://res.cloudinary.com/xarta/image/upload/'", "setPath('https://xarta.co.uk/images/'"))
         .pipe (replace('https://res.cloudinary.com/xarta/image/upload/','images/'))
         .pipe (replace(/v\d{10}\/xarta\//g, ''))
@@ -148,7 +148,7 @@ gulp.task('minify-css', function() {
 gulp.task('cachebust-homepage-min', function() {
   return gulp.src('js/homepage-min.js')
     .pipe (rename(function (path) {
-        path.basename = path.basename.replace("min", cachebustHex);
+        path.basename = path.basename.replace('min', cachebustHex);
     }))
     .pipe(gulp.dest('js'))   
 });
@@ -156,7 +156,7 @@ gulp.task('cachebust-homepage-min', function() {
 gulp.task('cachebust-defer-min', function() {
   return gulp.src('js/defer-min.js')
     .pipe (rename(function (path) {
-        path.basename = path.basename.replace("min", cachebustHex);
+        path.basename = path.basename.replace('min', cachebustHex);
     }))
     .pipe(gulp.dest('js'))   
 });
@@ -164,7 +164,7 @@ gulp.task('cachebust-defer-min', function() {
 gulp.task('cachebust-styles-css', function() {
   return gulp.src('css/styles.css')
     .pipe (rename(function (path) {
-        path.basename = path.basename.replace("styles", 'styles-' + cachebustHex);
+        path.basename = path.basename.replace('styles', 'styles-' + cachebustHex);
     }))
     .pipe(gulp.dest('css'));
 });

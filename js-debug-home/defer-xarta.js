@@ -707,6 +707,8 @@ function YouTubeVidWall()
  * HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\InetStp ... set to 9 temporarily
  * IIS: install media services 4.1
  * if ogv, add throttling setting (data ... maybe 200kbs should be plenty)
+ * (mp4 ... testing at 100% encoding bitrate)
+ * mp4 seems to work on most platforms ... use for now until I can make a selection
  */
 
 
@@ -716,8 +718,19 @@ html5VidLink.addEventListener('touchstart', function(e){
 }, false);
 
 html5VidLink.onclick = function(){
-    introVideo();
-    html5VidPlayer.play();
+    if ( !(typeof window.html5VidPlayer === 'undefined' || window.html5VidPlayer === null) ) 
+    {
+        introVideo();
+        if (html5VidPlayer.paused) {
+            html5VidPlayer.play();
+        } else {
+            html5VidPlayer.pause();
+        }
+    }
+    else
+    {
+        new Beep(22050).play(500, 0.05, [Beep.utils.amplify(8000)]);
+    }
     return false;
 };
 
@@ -725,8 +738,7 @@ var html5VidPlayer = null;      // referred to in scene.js
 var videoImageContext = null;   // referred to in scene.js
 var videoTexture = null;        // referred to in scene.js
 
-(function introVideoSetUp()
-{
+setTimeout(function() {
     // trying this way as issues with mobile click to play (so being "greedy")
 
     /**
@@ -745,21 +757,30 @@ var videoTexture = null;        // referred to in scene.js
 	html5VidPlayer.id = 'video';
 	// html5VidPlayer.type = ' video/ogg; codecs="theora, vorbis" ';
     html5VidPlayer.crossOrigin = "anonymous";
-    html5VidPlayer.src = "https://xarta.co.uk/videos/test.mp4";
+
+
+    /** ********************************************************************
+     *  VIDEO SOURCE HERE
+     */
+    html5VidPlayer.src = "https://xarta.co.uk/videos/underconstruction.mp4";
+    // **********************************************************************
+
+
 	html5VidPlayer.load(); // must call after setting/changing source
     html5VidPlayer.loop = true;
+    
+    // TODO: GUI / controls using the CSS3Renderer BECAUSE else I'll have to mess about
+    // with raycasting etc. within the WebGL scene.  Can't use video element onclick
+    // as part of mesh for WebGL object.
 
-})();
+}, 4000);
 
 
 function introVideo()
 {
-
-	
-
 	var videoImage = document.createElement( 'canvas' );
-	videoImage.width = 480;
-	videoImage.height = 204;
+	videoImage.width = 426;
+	videoImage.height = 240;
 
     if ( (typeof window.videoImageContext === 'undefined' || window.videoImageContext === null) ) 
     {
@@ -781,12 +802,13 @@ function introVideo()
 	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
 	// the geometry on which the movie will be displayed;
 	// 		movie image will be scaled to fit these dimensions.
-	var movieGeometry = new THREE.PlaneGeometry( 480, 204, 4, 4 );
+	var movieGeometry = new THREE.PlaneGeometry( 426, 240, 4, 4 );
 	var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
 	movieScreen.position.set(0,50,-300);
 	sceneGL.add(movieScreen);
 	
 	camera.position.set(0,150,300);
 	camera.lookAt(movieScreen.position);
+
 }
 
