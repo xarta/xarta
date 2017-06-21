@@ -190,12 +190,12 @@ gulp.task("minify-home-js", function() {
 // see: https://github.com/gulp-sourcemaps/gulp-sourcemaps
 // when I need to, use base e.g.
 // gulp.src(["src/test.js", "src/testdir/test2.js"], { base: "src" })
-/*
-polyfill.js ... from: http://babeljs.io/docs/usage/polyfill/
-              ... installed using NPM, and copied from module dist folder
-              ... needed to fix non ES2015 compatibility in Edge (for of)
-              ... gave error: Object doesn&apos;t support property or method "ToString"
-*/
+
+// polyfill.js ... from: http://babeljs.io/docs/usage/polyfill/
+//             ... installed using NPM, and copied from module dist folder
+//             ... needed to fix non ES2015 compatibility in Edge (for of)
+//             ... gave error: Object doesn&apos;t support property or method "ToString"
+
 
 gulp.task("concat-home-js", function() {
   return gulp.src([ "./js-debug-home/polyfill.js",
