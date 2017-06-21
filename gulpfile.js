@@ -26,7 +26,8 @@
          ... Have to use a subdirectory.
 */
 
-var gulp = require('gulp');             // look for gulp in package node-modules
+ // look for gulp in package node-modules
+var gulp = require('gulp');
 const gutil = require('gulp-util');
 var sass = require('gulp-sass');
 var minify = require('gulp-minify');
