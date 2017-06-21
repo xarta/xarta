@@ -1,6 +1,7 @@
 console.log("defer.js loaded");
 
 var xartalog;
+// SEE YOUTUBE SECTION, AND VIDEO SECTION, FOR MORE GLOBALS
 
 function hasClass(el, className)
     {
@@ -16,30 +17,32 @@ function hasClass(el, className)
         }
     }
 
-
+(function(){
 // DEBUG - SHOW
-if (window.xartaDebug === true)
-{
-    for (var i=0; i<document.getElementsByClassName("debug").length; i++)
+    if (window.xartaDebug === true)
     {
-        document.getElementsByClassName("debug")[i].style.display = "block";
-    }
+        for (var i=0; i<document.getElementsByClassName("debug").length; i++)
+        {
+            document.getElementsByClassName("debug")[i].style.display = "block";
+        }
 
-    xartalog = function (msg) 
-    {
-        var p = document.getElementById('log');
-        p.innerHTML = msg + "<br>" + p.innerHTML;
-    }
+        window.xartalog = function (msg) 
+        {
+            var p = document.getElementById('log');
+            p.innerHTML = msg + "<br>" + p.innerHTML;
+        }
 
-    xartalog("<h2>Using staging server: in debug mode:</h2><br>");
-}
-else
-{
-    xartalog = function (msg)
-    {
-        console.log(msg);
+        xartalog("<h2>Using staging server: in debug mode:</h2><br>");
     }
-}
+    else
+    {
+        window.xartalog = function (msg)
+        {
+            console.log(msg);
+        }
+    }
+})();
+
 
 
 // https://github.com/luciferous/beepjs -------------------------------------------------------
@@ -160,69 +163,72 @@ navDrawer.addEventListener("keydown", function (event) {
   //event.preventDefault();
 }, true);
 
-for (let navLi of document.querySelectorAll("#li01, #li02, #li03")) 
-{
-    navLi.addEventListener("keydown", function (event) 
+(function(){
+    for (let navLi of document.querySelectorAll("#li01, #li02, #li03")) 
     {
-        if (event.defaultPrevented) 
+        navLi.addEventListener("keydown", function (event) 
         {
-            return; // Do nothing if the event was already processed
-        }
-        
-        let focusedhref = document.querySelectorAll('.sticky :focus');
-        let focusedLi = focusedhref[0].parentNode;
-        let focusedLiID = focusedLi.id;
-        let focusedLiNum = focusedLiID.substr(3,1);
+            if (event.defaultPrevented) 
+            {
+                return; // Do nothing if the event was already processed
+            }
+            
+            let focusedhref = document.querySelectorAll('.sticky :focus');
+            let focusedLi = focusedhref[0].parentNode;
+            let focusedLiID = focusedLi.id;
+            let focusedLiNum = focusedLiID.substr(3,1);
 
-        console.log("focusedLiID = " + focusedLiID);
-        console.log("focusedLiNum = " + focusedLiNum);
-        
-        switch (event.key) {
-            case "ArrowDown":
-                let newLiNumDown = (focusedLiNum) %3 + 1;
-                document.querySelector("#li0" + newLiNumDown + " a").focus();
-            break;
-            case "ArrowUp":
-                let newLiNumUp = (focusedLiNum + 4) %3 + 1;
-                document.querySelector("#li0" + newLiNumUp + " a").focus();
-            break;
-            case "ArrowLeft":
-                document.querySelector("#li0" + focusedLiNum + " li > a").focus();
-                // TODO - navigate children of li01, li02, li03 etc.
-                /**
-                 * This will be tricky ... focusedLiNum might be undefined? Check.
-                 * Look at siblings?  Count/length children? Just need to index
-                 * children that are visible, so can iterate over.
-                 * 
-                 * nb: don't want ArrowLeft to work if flyout menu isn't out!
-                 * Will break page.
-                 */
-            break;
-            case "ArrowRight":
-                // TODO - navigate children of li01, li02, li03 etc.
-            break;
-            case "Tab":
-                event.preventDefault();
-            break;
-            case "Enter":
-                for (let navLi of document.querySelectorAll(".sticky:not(#" + focusedLiID + ")"))
-                {
-                    navLi.classList.remove("has-kbrd-hover");
-                } 
+            console.log("focusedLiID = " + focusedLiID);
+            console.log("focusedLiNum = " + focusedLiNum);
+            
+            switch (event.key) {
+                case "ArrowDown":
+                    let newLiNumDown = (focusedLiNum) %3 + 1;
+                    document.querySelector("#li0" + newLiNumDown + " a").focus();
+                break;
+                case "ArrowUp":
+                    let newLiNumUp = (focusedLiNum + 4) %3 + 1;
+                    document.querySelector("#li0" + newLiNumUp + " a").focus();
+                break;
+                case "ArrowLeft":
+                    document.querySelector("#li0" + focusedLiNum + " li > a").focus();
+                    // TODO - navigate children of li01, li02, li03 etc.
+                    /**
+                     * This will be tricky ... focusedLiNum might be undefined? Check.
+                     * Look at siblings?  Count/length children? Just need to index
+                     * children that are visible, so can iterate over.
+                     * 
+                     * nb: don't want ArrowLeft to work if flyout menu isn't out!
+                     * Will break page.
+                     */
+                break;
+                case "ArrowRight":
+                    // TODO - navigate children of li01, li02, li03 etc.
+                break;
+                case "Tab":
+                    event.preventDefault();
+                break;
+                case "Enter":
+                    for (let navLi of document.querySelectorAll(".sticky:not(#" + focusedLiID + ")"))
+                    {
+                        navLi.classList.remove("has-kbrd-hover");
+                    } 
 
-                focusedLi.classList.toggle("has-kbrd-hover");
-                event.preventDefault();
-            break;
-            case "Escape":
+                    focusedLi.classList.toggle("has-kbrd-hover");
+                    event.preventDefault();
+                break;
+                case "Escape":
 
-            break;
-            default:
-            return; // Quit when this doesn't handle the key event.
-        }
-        // Cancel the default action to avoid it being handled twice
-        //event.preventDefault();        
-    }, true);
-}
+                break;
+                default:
+                return; // Quit when this doesn't handle the key event.
+            }
+            // Cancel the default action to avoid it being handled twice
+            //event.preventDefault();        
+        }, true);
+    }
+})();
+
 
 
 function getOrbitControlsFocus()
@@ -365,60 +371,65 @@ YouTubeLink.onclick = function(){
     return false;
 };
 
-// experimenting with touch, for cancelling sticky flyout menu on repeated-tap
-// THIS IS DEPENDENT ON HACKY-WAY OF USING KNOWN INFORMATION ON OPACITY STATE
+(function(){
+    // experimenting with touch, for cancelling sticky flyout menu on repeated-tap
+    // THIS IS DEPENDENT ON HACKY-WAY OF USING KNOWN INFORMATION ON OPACITY STATE
 
-for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
-{
-    var topListButtonID = document.getElementsByClassName("sticky")[i].id;
-    
-    xartalog("Adding event listener for (" + topListButtonID + ").children[0]");
-    //xartalog("children length: " + document.getElementsByClassName("sticky")[i].children.length);
-
-    //for (var k=0; k<document.getElementById(topListButtonID).children.length; k++)
-    //{
-        //xartalog(k + ": " + document.getElementById(topListButtonID).children[k].innerHTML);
-    //}
-    
-
-    (function(topListButtonID) {
+    for (var i=0; i<document.getElementsByClassName("sticky").length; i++)
+    {
+        var topListButtonID = document.getElementsByClassName("sticky")[i].id;
         
-        // children[0] should be the <a> href link ... using that for touch detect
-            var topListButtonLINK = document.getElementById(topListButtonID).children[0];
-            topListButtonLINK.addEventListener('touchstart', function(e)
-            {
-                //var touchlist = e.touches;
-                
-                // check out pseudo focus: ... see if can use instead
-                var alreadySelected = (window.getComputedStyle(document.getElementById(topListButtonID)).opacity > 0.9);
-                window.navDrawer.style.opacity = 1.0;
+        xartalog("Adding event listener for (" + topListButtonID + ").children[0]");
+        //xartalog("children length: " + document.getElementsByClassName("sticky")[i].children.length);
 
-                xartalog("<h2>touchstart:</h2><br>Already selected (" + topListButtonID + "): " + alreadySelected);
+        //for (var k=0; k<document.getElementById(topListButtonID).children.length; k++)
+        //{
+            //xartalog(k + ": " + document.getElementById(topListButtonID).children[k].innerHTML);
+        //}
+        
 
-                if (alreadySelected)
+        (function(topListButtonID) {
+            
+            // children[0] should be the <a> href link ... using that for touch detect
+                var topListButtonLINK = document.getElementById(topListButtonID).children[0];
+                topListButtonLINK.addEventListener('touchstart', function(e)
                 {
-                    document.getElementById(topListButtonID).classList.toggle("has-hover");
-                    xartalog("toggle has-hover");
-                }
-                else
-                {
-                    document.getElementById(topListButtonID).classList.add("has-hover");
-                    xartalog("add has-hover");
-                }
+                    //var touchlist = e.touches;
+                    
+                    // check out pseudo focus: ... see if can use instead
+                    var alreadySelected = (window.getComputedStyle(document.getElementById(topListButtonID)).opacity > 0.9);
+                    window.navDrawer.style.opacity = 1.0;
 
-                if (hasClass( document.getElementById(topListButtonID), "has-hover"))
-                {
-                    window.NavHoverState = true;
-                    log("window.NavHoverState = true");
-                }
-                else
-                {
-                    window.NavHoverState = false;
-                    //console.log("window.NavHOverState = false");
-                }
-            }, false);
-    })(topListButtonID);
-}
+                    xartalog("<h2>touchstart:</h2><br>Already selected (" + topListButtonID + "): " + alreadySelected);
+
+                    if (alreadySelected)
+                    {
+                        document.getElementById(topListButtonID).classList.toggle("has-hover");
+                        xartalog("toggle has-hover");
+                    }
+                    else
+                    {
+                        document.getElementById(topListButtonID).classList.add("has-hover");
+                        xartalog("add has-hover");
+                    }
+
+                    if (hasClass( document.getElementById(topListButtonID), "has-hover"))
+                    {
+                        window.NavHoverState = true;
+                        log("window.NavHoverState = true");
+                    }
+                    else
+                    {
+                        window.NavHoverState = false;
+                        //console.log("window.NavHOverState = false");
+                    }
+                }, false);
+        })(topListButtonID);
+    }
+})();
+
+
+
 
 // *********************************************************************************************
 /**
@@ -691,39 +702,91 @@ function YouTubeVidWall()
 // *********************************************************************************************
 /**
  * HTML5 VIDEO ELEMENT
+ * 
+ * IF USING MY SERVER - ADD BIT-RATE THROTTLING
+ * HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\InetStp ... set to 9 temporarily
+ * IIS: install media services 4.1
+ * if ogv, add throttling setting (data ... maybe 200kbs should be plenty)
  */
 
-/*
-// create the video element
-	var video = document.createElement( 'video' );
-	// video.id = 'video';
-	// video.type = ' video/ogg; codecs="theora, vorbis" ';
-    video.crossOrigin = "anonymous";
-    video.src = "https://xarta.co.uk/videos/sintel.ogv";
-	video.load(); // must call after setting/changing source
-	video.play();
+
+
+html5VidLink.addEventListener('touchstart', function(e){
+    document.getElementById("li03").classList.toggle("has-hover");
+}, false);
+
+html5VidLink.onclick = function(){
+    introVideo();
+    html5VidPlayer.play();
+    return false;
+};
+
+var html5VidPlayer = null;      // referred to in scene.js
+var videoImageContext = null;   // referred to in scene.js
+var videoTexture = null;        // referred to in scene.js
+
+(function introVideoSetUp()
+{
+    // trying this way as issues with mobile click to play (so being "greedy")
+
+    /**
+     * the video gets into the videoImageContext in the WebGL render function
+     * ... see scene.js (when video present)
+     */
+
+    // create the video element html5VidPlayer
+    if ( (typeof window.html5VidPlayer === 'undefined' || window.html5VidPlayer === null) ) 
+    {
+        html5VidPlayer = document.createElement( 'video' );
+    }
+
+    // TODO: ALLOW FOR DIFFERENT VIDEO TYPES - LOOK AT AUTOMATED TRANS-THINGIES
+
+	html5VidPlayer.id = 'video';
+	// html5VidPlayer.type = ' video/ogg; codecs="theora, vorbis" ';
+    html5VidPlayer.crossOrigin = "anonymous";
+    html5VidPlayer.src = "https://xarta.co.uk/videos/test.mp4";
+	html5VidPlayer.load(); // must call after setting/changing source
+    html5VidPlayer.loop = true;
+
+})();
+
+
+function introVideo()
+{
+
 	
+
 	var videoImage = document.createElement( 'canvas' );
 	videoImage.width = 480;
 	videoImage.height = 204;
 
-	var videoImageContext = videoImage.getContext( '2d' );
+    if ( (typeof window.videoImageContext === 'undefined' || window.videoImageContext === null) ) 
+    {
+        videoImageContext = videoImage.getContext( '2d' );
+    }
+
 	// background color if no video present
 	videoImageContext.fillStyle = '#ffffff';
 	videoImageContext.fillRect( 0, 0, videoImage.width, videoImage.height );
 
-	var videoTexture = new THREE.Texture( videoImage );
+    if ( (typeof window.videoTexture === 'undefined' || window.videoTexture === null) ) 
+    {
+        videoTexture = new THREE.Texture( videoImage );
+    }
+	
 	videoTexture.minFilter = THREE.LinearFilter;
 	videoTexture.magFilter = THREE.LinearFilter;
 	
 	var movieMaterial = new THREE.MeshBasicMaterial( { map: videoTexture, overdraw: true, side:THREE.DoubleSide } );
 	// the geometry on which the movie will be displayed;
 	// 		movie image will be scaled to fit these dimensions.
-	var movieGeometry = new THREE.PlaneGeometry( 240, 100, 4, 4 );
+	var movieGeometry = new THREE.PlaneGeometry( 480, 204, 4, 4 );
 	var movieScreen = new THREE.Mesh( movieGeometry, movieMaterial );
-	movieScreen.position.set(0,50,-100);
+	movieScreen.position.set(0,50,-300);
 	sceneGL.add(movieScreen);
 	
 	camera.position.set(0,150,300);
 	camera.lookAt(movieScreen.position);
-*/
+}
+

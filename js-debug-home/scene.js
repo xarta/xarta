@@ -1145,34 +1145,25 @@ function animate() {
 
 function render() 
 {
-    if ( (typeof video === 'undefined' || video === null) ){
-        // do nothing (see if this fixes minify issue)
+    if ( !(typeof html5VidPlayer === 'undefined' || html5VidPlayer === null) ){
+       if ( !(typeof videoImageContext === 'undefined' || videoImageContext === null) ){
+            if ( !(typeof videoTexture === 'undefined' || videoTexture === null) ){
+                if ( html5VidPlayer.readyState === html5VidPlayer.HAVE_ENOUGH_DATA ) 
+                {
+                    videoImageContext.drawImage( html5VidPlayer, 0, 0 );
+                    if ( videoTexture ) 
+                        videoTexture.needsUpdate = true;
+                }
+            }
+       }
     }
-    else
-    {
-        if ( video.readyState === video.HAVE_ENOUGH_DATA ) 
-        {
-            videoImageContext.drawImage( video, 0, 0 );
-            if ( videoTexture ) 
-                videoTexture.needsUpdate = true;
-        }
-    }
-
-
 
     rendererGL.render(sceneGL, camera);
 
-    if ( (typeof rendererCSS3D === 'undefined' || rendererCSS3D === null) )
-    {
-        // do nothing    
-    }
-    else
+    if ( !(typeof rendererCSS3D === 'undefined' || rendererCSS3D === null) )
     {
         rendererCSS3D.render(sceneCSS3D, camera);
     }
-    
-        
-
 }
 
 
