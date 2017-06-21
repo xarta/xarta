@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="en-GB">
-<html prefix="og: http://ogp.me/ns#">
+<html lang="en-GB" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="utf-8">
 
@@ -117,273 +116,271 @@
 
 </head>
 
-    <body>
-        <div id="container" >
-        <div id="blocker"></div>    <!-- for three.js controls when using YouTube Iframes -->
-                                    <!-- might not be using blocker now ... leaving for mo -->
-        <div id="cameraPos"></div>  <!-- just for when debugging - see three.js camera position -->
-        
-        
-        <noscript>
-        <style>
-            .no-js {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(50, 50, 50, 0.7) 100%),
-                         url('https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg');
-                background-repeat: no-repeat;
-                background-size: cover;
-                padding: 1rem!important;
-                width: 85vw;
-                height: 120%;
-                display: block;
-            }
-            .no-js h1, .no-js h2, .no-js p {
-                overflow: auto;
-                color: wheat;
-                clip: auto;
-            }
-            .no-js h1, .no-js h2, .no-js p {
-                position: relative!important;
-                margin: inherit!important;
-                padding: inherit!important;
-                display: inline-block;
-                width: auto;
-                height: auto;
-            }
-            .no-js h1 {
-                font-size: 2rem;
-            }
-            .no-js h2 {
-                font-size: 1.6rem;
-            }
-            .no-js p {
-                font-size: 1.4rem;
-                width: 95%;
-            }
-        </style>
-        </noscript>
+<body>
+    <div id="container" >
+    <div id="blocker"></div>    <!-- for three.js controls when using YouTube Iframes -->
+                                <!-- might not be using blocker now ... leaving for mo -->
+    <div id="cameraPos"></div>  <!-- just for when debugging - see three.js camera position -->
+    
+    
+    <noscript>
+    <style>
+        .no-js {
+            background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(50, 50, 50, 0.7) 100%),
+                        url('https://res.cloudinary.com/xarta/image/upload/v1497039749/xarta/temp-background.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 1rem!important;
+            width: 85vw;
+            height: 120%;
+            display: block;
+        }
+        .no-js h1, .no-js h2, .no-js p {
+            overflow: auto;
+            color: wheat;
+            clip: auto;
+        }
+        .no-js h1, .no-js h2, .no-js p {
+            position: relative!important;
+            margin: inherit!important;
+            padding: inherit!important;
+            display: inline-block;
+            width: auto;
+            height: auto;
+        }
+        .no-js h1 {
+            font-size: 2rem;
+        }
+        .no-js h2 {
+            font-size: 1.6rem;
+        }
+        .no-js p {
+            font-size: 1.4rem;
+            width: 95%;
+        }
+    </style>
+    </noscript>
 
-        <!-- htmlmin:ignore -->
-        <!-- want this accessible to bots and screenreaders -->
-        <!-- but don't want it to impact three.js WebGL visuals -->
-        <!-- need to add skip to navigation, and keyboard tabs etc. -->
-        <div class="no-js">
-            <h1>Welcome to Xarta<br>David Bayliss's cool domain name</h1>
-            <h2>Recent exploits with programming and technology</h2>
-            <p>This is my first attempt at a website from scratch in about 10-years. 
-                It's a work in progress. I apologise for the current lack of accessibility. 
-                That's something I hope to address when I have a job again and can prioritise 
-                more ethically than I can right now with severe priority competition.
-            </p>
-            <p> I wanted to build on my three.js knowledge and incorporate audio/video. 
-                My JavaScript knowledge is pretty old and underdeveloped - around a&nbsp;partial 
-                ES3 level. While building this site I learned/implemented better practices 
-                around using NPM/Gulp for my development, and am learning more about ES2015 
-                (using Bable).
-            </p>
-            <p> Also the code has completely gotten away from me and is messy. My next steps 
-                in that regard are to learn how to use jspm and SystemJS, and refactor into 
-                suitable modules. And also to take advantage of ES2015 to simplify/decompose 
-                the code structure, using objects/classes in a more idiomatic way. I want to
-                take better advantage of document.querySelector and more advanced CSS3 for
-                example.
-            </p>
-            <h2>Job seeking</h2>
-            <p> Since my employer's insolvency at the end of August 2016, I've spent 
-                considerable time learning .Net / C# in depth, cross-platform technology, IoT etc. 
-                and went on to devise and install &amp; implement advanced networking/server 
-                configuration at home using pfSense and smart switches as the backbone. At the 
-                same time, I revisited WordPress, updating my existing sites a little, and making 
-                headway learning some PHP as I made my own WordPress plugin. Along the way I've 
-                not been able to avoid JavaScript, and hope to advance it to a basic working 
-                understanding of ES2015.
-            </p>
-            <p> This is a simple indexing/links page supporting some WebGL bling for effect. I'm 
-                using it as a vehicle to advance &amp; demonstrate some of my skills. Once stable, 
-                and once I've ticked-off technical good practices, I'll look at implementing 
-                better accessibility also. I've chosen the visual medium as the primary conveyance
-                for my "brand-messaging", and my approach / implementation of a fly-out menu is too
-                hard for me, at the moment, to make accessible.  I'm at least working on scripted
-                keyboard controls to compensate. Unfortunately I can't allow normal keyboard 
-                functionality - the normal off-screen/display:none approach is hard to implement
-                on a right-hand-side fly-out menu.
-            </p>
-            <h2>About me</h2>
-            <p> I've lived in Manchester / Stockport since 1994 and hope one day to get a job that
-                makes use of and develops my programming skills.
-            <br />
-            <p>Kind regards,
-            <p>Dave
-        </div>
-        <!-- htmlmin:ignore -->
+    <!-- htmlmin:ignore -->
+    <!-- want this accessible to bots and screenreaders -->
+    <!-- but don't want it to impact three.js WebGL visuals -->
+    <!-- need to add skip to navigation, and keyboard tabs etc. -->
+    <div class="no-js">
+        <h1>Welcome to Xarta<br>David Bayliss's cool domain name</h1>
+        <h2>Recent exploits with programming and technology</h2>
+        <p>This is my first attempt at a website from scratch in about 10-years. 
+            It's a work in progress. I apologise for the current lack of accessibility. 
+            That's something I hope to address when I have a job again and can prioritise 
+            more ethically than I can right now with severe priority competition.
+        </p>
+        <p> I wanted to build on my three.js knowledge and incorporate audio/video. 
+            My JavaScript knowledge is pretty old and underdeveloped - around a&nbsp;partial 
+            ES3 level. While building this site I learned/implemented better practices 
+            around using NPM/Gulp for my development, and am learning more about ES2015 
+            (using Bable).
+        </p>
+        <p> Also the code has completely gotten away from me and is messy. My next steps 
+            in that regard are to learn how to use jspm and SystemJS, and refactor into 
+            suitable modules. And also to take advantage of ES2015 to simplify/decompose 
+            the code structure, using objects/classes in a more idiomatic way. I want to
+            take better advantage of document.querySelector and more advanced CSS3 for
+            example.
+        </p>
+        <h2>Job seeking</h2>
+        <p> Since my employer's insolvency at the end of August 2016, I've spent 
+            considerable time learning .Net / C# in depth, cross-platform technology, IoT etc. 
+            and went on to devise and install &amp; implement advanced networking/server 
+            configuration at home using pfSense and smart switches as the backbone. At the 
+            same time, I revisited WordPress, updating my existing sites a little, and making 
+            headway learning some PHP as I made my own WordPress plugin. Along the way I've 
+            not been able to avoid JavaScript, and hope to advance it to a basic working 
+            understanding of ES2015.
+        </p>
+        <p> This is a simple indexing/links page supporting some WebGL bling for effect. I'm 
+            using it as a vehicle to advance &amp; demonstrate some of my skills. Once stable, 
+            and once I've ticked-off technical good practices, I'll look at implementing 
+            better accessibility also. I've chosen the visual medium as the primary conveyance
+            for my "brand-messaging", and my approach / implementation of a fly-out menu is too
+            hard for me, at the moment, to make accessible.  I'm at least working on scripted
+            keyboard controls to compensate. Unfortunately I can't allow normal keyboard 
+            functionality - the normal off-screen/display:none approach is hard to implement
+            on a right-hand-side fly-out menu.
+        </p>
+        <h2>About me</h2>
+        <p> I've lived in Manchester / Stockport since 1994 and hope one day to get a job that
+            makes use of and develops my programming skills.
+        <br />
+        <p>Kind regards,
+        <p>Dave
+    </div>
+    <!-- htmlmin:ignore -->
 
-        <!-- <ul class="drawer">  --> <!-- TODO: Aria or similar roles / more semantic mark-up -->
-        <!-- keyboard focus will force unwanted overflow - e.g. when menu to right - need to address -->
-            <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
-        <ul id="navigation" role="menubar" class="drawer">
-        <li id="li01" class="sticky has-hover">
-            <a href="#">
-            <i class="fa fa-github"></i>
-            <span>GitHub</span>
+    <!-- <ul class="drawer">  --> <!-- TODO: Aria or similar roles / more semantic mark-up -->
+    <!-- keyboard focus will force unwanted overflow - e.g. when menu to right - need to address -->
+        <!-- <li>Info <ul><li>1</li><li>2</li><li>3</li><ul> </li> </ul> etc. -->
+    <ul id="navigation" role="menubar" class="drawer">
+    <li id="li01" class="sticky has-hover">
+        <a href="#">
+        <i class="fa fa-github"></i>
+        <span>GitHub</span>
+        </a>
+        <ul id="ul01">
+        <li>
+            <a  rel="noreferrer" href="https://github.com/xarta/borg-contact" target="_blank" >
+            <i class="fa fa-hand-spock-o"></i>
+            <span>three.js overlay video</span>
             </a>
-            <ul id="ul01">
-            <li>
-                <a  rel="noreferrer" href="https://github.com/xarta/borg-contact" target="_blank" >
-                <i class="fa fa-hand-spock-o"></i>
-                <span>three.js overlay video</span>
-                </a>
-            </li>
-            <li>
-                <a rel="noreferrer" href="https://github.com/xarta/anxious-annie" target="_blank">
-                <i class="fa fa-home"></i>
-                <span>.Net IoT</span>
-                </a>
-            </li>
-            <li>
-                <a rel="noreferrer" href="https://github.com/xarta/xarta" target="_blank">
-                <i class="fa fa-times"></i>
-                <span>this</span>
-                </a>
-            </li>
-            <li>
-                <a rel="noreferrer" href="https://github.com/xarta/wp-syntaxhighlighter" target="_blank">
-                <i class="fa fa-code"></i>
-                <span>WP syntax highlight</span>
-                </a>
-            </li>
-            <li>
-                <a rel="noreferrer" href="https://github.com/xarta/wp-backup-bash" target="_blank">
-                <i class="fa fa-wordpress"></i>
-                <span>WP bash bkup</span>
-                </a>
-            </li>
-            <li>
-                <a rel="noreferrer" href="https://github.com/xarta/hmailserver-backup-scripts" target="_blank">
-                <i class="fa fa-envelope-o"></i>
-                <span>hMailSvr bkup</span>
-                </a>
-            </li>
-            </ul>
         </li>
-        <li id="li02" class="sticky has-hover">
-            <a href="#">
-            <i class="fa fa-globe"></i>
-            <span>Web</span>
+        <li>
+            <a rel="noreferrer" href="https://github.com/xarta/anxious-annie" target="_blank">
+            <i class="fa fa-home"></i>
+            <span>.Net IoT</span>
             </a>
-            <ul  id="ul02">
-            <li>
-                <a href="https://blog.xarta.co.uk/" target="_self">
-                <i class="fa fa-wordpress"></i>
-                <span>BLOG</span>
-                </a>
-            </li>
-            <li>
-                <a  rel="noreferrer" href="https://timeouttherapy.co.uk/" target="_blank">
-                <i class="fa fa-leaf"></i>
-                <span>timeouttherapy</span>
-                </a>
-            </li>
-            <li>
-                <a  rel="noreferrer" href="https://the-icons.co.uk/" target="_blank">
-                <i class="fa fa-microphone"></i>
-                <span>The Icons</span>
-                </a>
-            </li>
-            </ul>
         </li>
-        <li id="li03" class="sticky has-hover">
-            <a href="#">
-            <i class="fa fa-info-circle"></i>
-            <span>Dave</span>
+        <li>
+            <a rel="noreferrer" href="https://github.com/xarta/xarta" target="_blank">
+            <i class="fa fa-times"></i>
+            <span>this</span>
             </a>
-            <ul id="ul03">
-            <li>
-                <a href="https://blog.xarta.co.uk/contact/" target="_self">
-                <i class="fa fa-phone-square"></i>
-                <span>Contact</span>
-                </a>
-            </li>
-            <li> <!-- TODO: ADD NO-JS HREF AS FALLBACK (CAN CHANGE IN JS) -->
-                <a id="YouTubeLink" href="#" target="_self">
-                <i class="fa fa-video-camera"></i>
-                <span>YouTube</span>
-                </a>
-            </li>
-            <li>
-                <a id="html5VidLink" href="#" target="_self">
-                <i class="fa fa-video-camera"></i>
-                <span>Intro</span>
-                </a>
-            </li>
-            </ul>
+        </li>
+        <li>
+            <a rel="noreferrer" href="https://github.com/xarta/wp-syntaxhighlighter" target="_blank">
+            <i class="fa fa-code"></i>
+            <span>WP syntax highlight</span>
+            </a>
+        </li>
+        <li>
+            <a rel="noreferrer" href="https://github.com/xarta/wp-backup-bash" target="_blank">
+            <i class="fa fa-wordpress"></i>
+            <span>WP bash bkup</span>
+            </a>
+        </li>
+        <li>
+            <a rel="noreferrer" href="https://github.com/xarta/hmailserver-backup-scripts" target="_blank">
+            <i class="fa fa-envelope-o"></i>
+            <span>hMailSvr bkup</span>
+            </a>
         </li>
         </ul>
-        <!-- htmlmin:ignore -->
-        <script>
-            (function() {
-                // only do (asap) if script supported
-                var navDrawer = document.getElementsByClassName("drawer")[0];
-                navDrawer.style.opacity = 0.4;
-            })();
-        </script>
-        <!-- htmlmin:ignore -->
-        <div id="orbitControls" style="display:none">
-            <a id="orbClick" href="#" target="_self">
-                <i class="fa fa-street-view"></i>
-                <span>Controls</span>
-            </a>
-        </div>
-        <!-- htmlmin:ignore -->
-        <div class="restart-page">
-        <a href="javascript:history.go(0)" target="_self" title="Refresh">
-            <svg onmouseenter= "el=this;el.classList.add('active');
-                 setTimeout(function(){el.classList.remove('active')},600);
-                 new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);"
-                 xmlns="http://www.w3.org/2000/svg"  viewBox="-14 -14 80 80">
-            <g class="refresh-holder">
-                <path class="refresh" d=    
-                    "M61.063-6.444c-3.155,3.74-6.231,7.583-9.375,11.339c-0.152,
-                    0.217-0.328-0.028-0.449-0.149c-3.563-4.229-7.932-7.455-12.674-9.317
-                    c-5.465-2.145-11.4-2.48-17.007-0.985C11.578-2.971,2.838,5.738-1.176,
-                    17.122c0.005,0.002,0.009,0.004,0.014,0.007c-0.335,0.8-0.523,
-                    1.704-0.523,2.662c0,3.258,2.177,5.898,4.86,5.898c2.302,0,4.228-1.939,
-                    4.73-4.545c2.871-7.401,8.55-13.128,15.107-15.082c7.585-2.322,16.185,
-                    0.234,21.71,7.062c-3.201,3.85-6.449,7.643-9.64,11.508c8.649-0.056,
-                    17.301-0.024,25.952-0.016C61.109,14.264,61.057,3.909,61.063-6.444z"/>
-
-                <path class="refresh" d=
-                    "M46.139,30.043c-2.125,0-3.93,1.654-4.591,3.959c-0.001,
-                    0-0.003-0.001-0.004-0.002C38.768,41.512,33.18,47.439,26.6,49.55c-7.673,
-                    2.522-16.486,0.054-22.114-6.887c3.187-3.837,6.448-7.584,9.619-11.438
-                    c-8.676,0.01-17.353,0.006-26.028,0.004c-0.02,10.332-0.021,20.664,
-                    0.003,30.996c3.186-3.861,6.356-7.742,9.561-11.584c2.05,2.432,4.324,
-                    4.598,6.818,6.324c7.953,5.639,17.932,6.809,26.637,3.154c8.352-3.402,
-                    15.413-11.141,19.065-20.863C50.689,38.313,51,37.17,51,35.941C51,32.686,
-                    48.822,30.043,46.139,30.043z"/>
-            </g>
-            <path class="x" d=
-                "M13.34,38.108c0-0.568,1.728-3.423,3.84-6.342c2.112-2.92,4.147-5.755,4.523-6.3
-                c0.376-0.546-0.015-3.711-0.867-7.033c-1.767-6.885-1.928-9.174-0.708-10.066c1.667-1.222,
-                3.953,0.582,5.873,4.632l1.946,4.102l3.652-4.249c2.4-2.794,4.115-4.038,5.006-3.634c1.76,
-                0.802,2.775,3.936,1.445,4.461c-1.51,0.597-7.762,11.873-7.748,13.979c0.004,0.998,0.893,
-                3.646,1.973,5.884c0.762,1.578,1.785,2.824,1.379,3.681L31.482,41.8c-0.422,
-                0.888-1.979-1.479-3.822-3.776l-3.216-4.009l-3.565,5.014c-1.961,2.757-3.792,4.998-4.068,
-                4.981C16.533,43.992,13.34,38.677,13.34,38.108z"/>
-            </svg>
+    </li>
+    <li id="li02" class="sticky has-hover">
+        <a href="#">
+        <i class="fa fa-globe"></i>
+        <span>Web</span>
         </a>
-        </div> <!-- end of refresh-page discreet icon -->
-        <!-- htmlmin:ignore -->
-        
-        <div id="log" class = "debug" style="position: absolute; display: none;
-                                z-index: 100; top: 5px; left: 20px; 
-                                background-color: white; width: 50vw; height: 75vh;">
-        </div>
+        <ul  id="ul02">
+        <li>
+            <a href="https://blog.xarta.co.uk/" target="_self">
+            <i class="fa fa-wordpress"></i>
+            <span>BLOG</span>
+            </a>
+        </li>
+        <li>
+            <a  rel="noreferrer" href="https://timeouttherapy.co.uk/" target="_blank">
+            <i class="fa fa-leaf"></i>
+            <span>timeouttherapy</span>
+            </a>
+        </li>
+        <li>
+            <a  rel="noreferrer" href="https://the-icons.co.uk/" target="_blank">
+            <i class="fa fa-microphone"></i>
+            <span>The Icons</span>
+            </a>
+        </li>
+        </ul>
+    </li>
+    <li id="li03" class="sticky has-hover">
+        <a href="#">
+        <i class="fa fa-info-circle"></i>
+        <span>Dave</span>
+        </a>
+        <ul id="ul03">
+        <li>
+            <a href="https://blog.xarta.co.uk/contact/" target="_self">
+            <i class="fa fa-phone-square"></i>
+            <span>Contact</span>
+            </a>
+        </li>
+        <li> <!-- TODO: ADD NO-JS HREF AS FALLBACK (CAN CHANGE IN JS) -->
+            <a id="YouTubeLink" href="#" target="_self">
+            <i class="fa fa-video-camera"></i>
+            <span>YouTube</span>
+            </a>
+        </li>
+        <li>
+            <a id="html5VidLink" href="#" target="_self">
+            <i class="fa fa-video-camera"></i>
+            <span>Intro</span>
+            </a>
+        </li>
+        </ul>
+    </li>
+    </ul>
+    <!-- htmlmin:ignore -->
+    <script>
+        (function() {
+            // only do (asap) if script supported
+            var navDrawer = document.getElementsByClassName("drawer")[0];
+            navDrawer.style.opacity = 0.4;
+        })();
+    </script>
+    <!-- htmlmin:ignore -->
+    <div id="orbitControls" style="display:none">
+        <a id="orbClick" href="#" target="_self">
+            <i class="fa fa-street-view"></i>
+            <span>Controls</span>
+        </a>
+    </div>
+    <!-- htmlmin:ignore -->
+    <div class="restart-page">
+    <a href="javascript:history.go(0)" target="_self" title="Refresh">
+        <svg onmouseenter= "el=this;el.classList.add('active');
+                setTimeout(function(){el.classList.remove('active')},600);
+                new Beep(22050).play(2000, 0.05, [Beep.utils.amplify(1000)]);"
+                xmlns="http://www.w3.org/2000/svg"  viewBox="-14 -14 80 80">
+        <g class="refresh-holder">
+            <path class="refresh" d=    
+                "M61.063-6.444c-3.155,3.74-6.231,7.583-9.375,11.339c-0.152,
+                0.217-0.328-0.028-0.449-0.149c-3.563-4.229-7.932-7.455-12.674-9.317
+                c-5.465-2.145-11.4-2.48-17.007-0.985C11.578-2.971,2.838,5.738-1.176,
+                17.122c0.005,0.002,0.009,0.004,0.014,0.007c-0.335,0.8-0.523,
+                1.704-0.523,2.662c0,3.258,2.177,5.898,4.86,5.898c2.302,0,4.228-1.939,
+                4.73-4.545c2.871-7.401,8.55-13.128,15.107-15.082c7.585-2.322,16.185,
+                0.234,21.71,7.062c-3.201,3.85-6.449,7.643-9.64,11.508c8.649-0.056,
+                17.301-0.024,25.952-0.016C61.109,14.264,61.057,3.909,61.063-6.444z"></path>
 
-        </div> <!-- end of container -->
-        
-    </body>
+            <path class="refresh" d=
+                "M46.139,30.043c-2.125,0-3.93,1.654-4.591,3.959c-0.001,
+                0-0.003-0.001-0.004-0.002C38.768,41.512,33.18,47.439,26.6,49.55c-7.673,
+                2.522-16.486,0.054-22.114-6.887c3.187-3.837,6.448-7.584,9.619-11.438
+                c-8.676,0.01-17.353,0.006-26.028,0.004c-0.02,10.332-0.021,20.664,
+                0.003,30.996c3.186-3.861,6.356-7.742,9.561-11.584c2.05,2.432,4.324,
+                4.598,6.818,6.324c7.953,5.639,17.932,6.809,26.637,3.154c8.352-3.402,
+                15.413-11.141,19.065-20.863C50.689,38.313,51,37.17,51,35.941C51,32.686,
+                48.822,30.043,46.139,30.043z"></path>
+        </g>
+        <path class="x" d=
+            "M13.34,38.108c0-0.568,1.728-3.423,3.84-6.342c2.112-2.92,4.147-5.755,4.523-6.3
+            c0.376-0.546-0.015-3.711-0.867-7.033c-1.767-6.885-1.928-9.174-0.708-10.066c1.667-1.222,
+            3.953,0.582,5.873,4.632l1.946,4.102l3.652-4.249c2.4-2.794,4.115-4.038,5.006-3.634c1.76,
+            0.802,2.775,3.936,1.445,4.461c-1.51,0.597-7.762,11.873-7.748,13.979c0.004,0.998,0.893,
+            3.646,1.973,5.884c0.762,1.578,1.785,2.824,1.379,3.681L31.482,41.8c-0.422,
+            0.888-1.979-1.479-3.822-3.776l-3.216-4.009l-3.565,5.014c-1.961,2.757-3.792,4.998-4.068,
+            4.981C16.533,43.992,13.34,38.677,13.34,38.108z"></path>
+        </svg>
+    </a>
+    </div> <!-- end of refresh-page discreet icon -->
+    <!-- htmlmin:ignore -->
+    
+    <div id="log" class = "debug" style="position: absolute; display: none;
+                            z-index: 100; top: 5px; left: 20px; 
+                            background-color: white; width: 50vw; height: 75vh;">
+    </div>
 
-<footer>
+    </div> <!-- end of container -->
+    
 <!-- htmlmin:ignore -->
+
 <script>
     // NOTE TO SELF: TODO: make sure this passes through Bable too
     // (const not supported by older browsers, or fully by all newer popular browsers)
@@ -415,13 +412,13 @@
 
         setTimeout(function() {
             console.log("about to load defer.js");
-            var preloadDeferFooter = document.getElementsByTagName('footer')[0];
+            var preloadDeferhead = document.getElementsByTagName('head')[0];
             var preloadDeferscript = document.createElement('script');
             preloadDeferscript.type = 'text/javascript';
             preloadDeferscript.charset = 'utf-8';
             //preloadDeferscript.crossOrigin = 'anonymous';
             preloadDeferscript.src = 'js/defer-min.js';
-            preloadDeferFooter.appendChild(preloadDeferscript);            
+            preloadDeferhead.appendChild(preloadDeferscript);            
         }, 2000);
 
 
@@ -473,7 +470,7 @@
     }
 </script>
 <!-- htmlmin:ignore -->
-</footer>
+</body>
 
 </html>
 
